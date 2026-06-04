@@ -88,11 +88,6 @@ Athom Homey Pro app (**nl.creitive.enlighten**), Homey SDK v3. Local monitor/con
 
 ## Commands
 
-> [!IMPORTANT]
-> **NO GIT**: Do not run any git commands (e.g., `git status`, `git diff`).
-
 * `npm install` — Dependencies
 * `npm run lint` — Linter
 * `npx homey app run` / `validate` / `install` / `build` — Standard Homey CLI tools.
-
-Enphase brand color: #F37321
