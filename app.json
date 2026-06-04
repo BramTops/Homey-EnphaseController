@@ -14,8 +14,8 @@
     "nl": "Enphase Controller"
   },
   "description": {
-    "en": "Locally monitor real-time power, daily/lifetime energy production, and active inverters. Turn power production on/off to handle negative energy prices.",
-    "nl": "Monitor lokaal real-time vermogen, dagelijkse/totale energieproductie en actieve omvormers. Schakel stroomproductie aan/uit bij negatieve energieprijzen."
+    "en": "Monitor power, daily/lifetime energy production, and active inverters. Turn power production on/off to handle negative energy prices.",
+    "nl": "Monitor vermogen, dagelijkse/totale energieproductie en actieve omvormers. Schakel stroomproductie aan/uit bij negatieve energieprijzen."
   },
   "category": [
     "energy"
@@ -60,8 +60,12 @@
     "name": "Bram Tops",
     "email": "bramtops@outlook.com"
   },
-  "homeyCommunityTopicId": 153586,
-  "support": "https://community.homey.app/t/prevent-enphase-export-with-negative-prices/153586",
+  "homeyCommunityTopicId": 155720,
+  "support": "https://community.homey.app/t/app-pro-enphase-controller/155720",
+  "source": "https://github.com/BramTops/Homey-EnphaseController",
+  "bugs": {
+    "url": "https://github.com/BramTops/Homey-EnphaseController/issues"
+  },
   "drivers": [
     {
       "name": {
