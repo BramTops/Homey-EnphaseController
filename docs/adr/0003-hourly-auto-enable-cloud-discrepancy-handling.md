@@ -1,7 +1,7 @@
 # ADR 3: Hourly Auto-Enable Cloud Discrepancy Handling
 
 ## Status
-Accepted
+Accepted (Amended by [ADR 6](0006-local-gateway-socket-recycling-and-polling-optimizations.md))
 
 ## Date
 2026-05-26
@@ -14,7 +14,7 @@ However, Enphase Envoy gateways synchronize their local settings with the Enphas
 ## Decision
 We decided to implement a state discrepancy resolution pattern inside the Envoy driver's polling loop (`drivers/envoy/device.js`):
 1. **Desired State Tracking:** Homey maintains the user's desired state via the standard `onoff` capability value (`true` = production enabled / normal, `false` = production disabled / forced off).
-2. **Periodic Physical Polling:** Every 60 seconds, the driver polls the local Envoy for the current physical status (`powerForcedOff`) and active production metrics.
+2. **Periodic Physical Polling:** Every 120 seconds (initially 60 seconds, updated via [ADR 6](0006-local-gateway-socket-recycling-and-polling-optimizations.md)), the driver polls the local Envoy for the current physical status (`powerForcedOff`) and active production metrics.
 3. **Discrepancy Detection:** If Homey's target state is `false` (user intends production to be OFF) but the Envoy returns `powerForcedOff === false` (indicating the physical device has been re-enabled), the driver detects a state conflict.
 4. **Enforced Re-application:** Upon detecting this conflict, the driver logs the discrepancy and automatically re-sends the `setPowerForcedOff(true)` write command to the Envoy. This immediately forces the production back off, overriding the cloud sync override.
 5. **State Lock:** During this reconciliation, the Homey interface maintains the `onoff` value as `false` to present a consistent, flicker-free interface to the user.
@@ -40,4 +40,4 @@ if (currentOnoffValue === false && productionEnabled === true) {
   * Extremely robust; resolves a deep firmware/cloud interaction bug without requiring complex developer partnership contracts or cloud webhooks.
   * Retains a simple and intuitive user experience where the switch state matches actual behavior.
 * **Cons:**
-  * Introduces a potential brief window (up to 60 seconds, depending on the poll timer alignment) at the beginning of the hour where power production might briefly resume before being forced off again. *Note: Setting a shorter poll interval would decrease this window but increase local network load and Envoy CPU utilization.*
+  * Introduces a potential brief window (up to 120 seconds, depending on the poll timer alignment; initially 60 seconds but updated via [ADR 6](0006-local-gateway-socket-recycling-and-polling-optimizations.md)) at the beginning of the hour where power production might briefly resume before being forced off again. *Note: Setting a shorter poll interval would decrease this window but increase local network load and Envoy CPU utilization.*

@@ -1,12 +1,15 @@
 # ADR 4: Dual-Stack DNS Fallback Resolution & Early Verification
 
 ## Status
-Accepted
+Superseded in part by [ADR 5](0005-ip-only-direct-gateway-connection.md)
 
 ## Date
 2026-05-28
 
 ## Context
+> [!WARNING]
+> The DNS resolution fallback mechanism (Phase 1, Phase 2, and Routeability validation) described below was deprecated and removed by [ADR 5](0005-ip-only-direct-gateway-connection.md) in favor of direct IP connections. However, the connection verification and credentials validation logic during pairing and settings setup remains fully active and in use.
+
 In ADR 2, we forced an IPv4-only DNS resolution (`opts.family = 4`) for `.local` and `envoy` domains. This was done to bypass Node.js's architectural constraints when resolving multicast DNS (mDNS) addresses to unrouteable IPv6 link-local addresses (starting with `fe80::`), which do not include the interface scope identifier (`%eth0`, `%en0`) required by Node's socket layer.
 
 However, in some modern home network configurations (e.g. dual-stack environments or routers configured primarily with IPv6), the router/mDNS responder may publish a routeable global unicast IPv6 address (e.g. starting with `2a02:`) or unique local address (ULA, starting with `fd00::`) for the Envoy gateway (`envoy.local`), but *no* IPv4 record at all. In such cases, forcing IPv4-only resolution causes lookup requests to throw `getaddrinfo ENOTFOUND envoy.local` immediately, completely blocking local connections even though a valid, fully routeable IPv6 address is reachable on the network.

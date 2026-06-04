@@ -1,12 +1,15 @@
 # ADR 2: Local IPv4 DNS Resolution Override
 
 ## Status
-Accepted
+Superseded by [ADR 5](0005-ip-only-direct-gateway-connection.md)
 
 ## Date
 2026-05-26
 
 ## Context
+> [!WARNING]
+> The DNS resolution mechanism described below was completely deprecated, removed, and superseded by [ADR 5](0005-ip-only-direct-gateway-connection.md). We no longer use hostnames (`envoy.local`) or custom DNS lookup overrides, and instead connect directly using raw IP addresses.
+
 When attempting to connect to the Enphase IQ Gateway (Envoy) via its local IP or local hostname (e.g. `envoy.local` or `envoy`), standard Node.js network requests using `fetch` or `https` utilize the default system DNS lookup. 
 
 In dual-stack home networks (which support both IPv4 and IPv6), the gateway or router may publish both A (IPv4) and AAAA (IPv6) records for the device. Node.js's default lookup mechanism frequently returns IPv6 link-local addresses for `.local` mDNS hostnames. Due to Node.js's architectural constraints with link-local addresses (which require interface scope specifiers like `%eth0` or `%en0` to be appended to the IP address to be routeable), requests to the IPv6 address fail with timeouts, connection errors (`EHOSTUNREACH`), or handshake failures.
