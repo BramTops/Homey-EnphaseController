@@ -1,0 +1,11 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Power production",
+    "nl": "Stroomproductie"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/bolt.svg"
+}

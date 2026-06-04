@@ -1,0 +1,18 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Energy today",
+    "nl": "Energie vandaag"
+  },
+  "description": {
+    "en": "Energy produced today.",
+    "nl": "Geproduceerde energie vandaag."
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "insights": true,
+  "decimals": 2,
+  "units": "kWh",
+  "icon": "/assets/meter_power.svg"
+}

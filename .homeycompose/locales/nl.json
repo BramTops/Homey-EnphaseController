@@ -1,0 +1,45 @@
+{
+  "driver": {
+    "envoy": {
+      "name": "Zonnepanelen (Enphase)",
+      "error": {
+        "fields_required": "Vul alstublieft alle verplichte velden in.",
+        "auth_failed": "Verbinding mislukt: __message__",
+        "no_maintainer": "U heeft een installateurs-/onderhoudsaccount nodig om stroomproductie in- of uit te schakelen.",
+        "command_failed": "Opdracht mislukt: __message__",
+        "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__"
+      },
+      "status": {
+        "on": "Aan",
+        "off": "Uit",
+        "read_only": "Alleen-lezen",
+        "read_write": "Lezen & schrijven"
+      }
+    }
+  },
+  "pair": {
+    "start": {
+      "title": "Verbind uw Envoy-gateway",
+      "subtitle": "Verbind met uw gateway. Ondersteunt standaard Eigenaar-accounts (alleen-lezen) of Installateur/DIY-accounts voor systeembeheer.",
+      "discovery_badge": "✨ Envoy-gateway automatisch gedetecteerd op het netwerk!",
+      "email_label": "Enphase e-mailadresse",
+      "email_placeholder": "bijv. owner-or-installer@email.com",
+      "password_label": "Enphase wachtwoord",
+      "password_placeholder": "Uw wachtwoord",
+      "serial_label": "Serienummer gateway",
+      "serial_placeholder": "bijv. 122226012345",
+      "ip_label": "IP-adres gateway",
+      "ip_placeholder": "bijv. 10.0.0.123",
+      "btn_authenticate": "Verifiëren",
+      "btn_add_gateway": "Gateway toevoegen aan Homey",
+      "error_required_fields": "Vul alstublieft alle verplichte velden in.",
+      "error_auth_failed": "Verificatie mislukt. Controleer uw inloggegevens.",
+      "success_title": "Verificatie succesvol!",
+      "success_subtitle": "Uw Enphase-account is gevalideerd en de lokale gateway is succesvol verbonden.",
+      "role_maintainer": "Onderhouds- / Installateursrol",
+      "desc_maintainer": "Volledige controle actief. U kunt de productie monitoren en de stroomopwekking in- en uitschakelen.",
+      "role_owner": "Systeemeigenaarsrol",
+      "desc_owner": "Alleen-lezen actief. U kunt de productiestatus monitoren, maar de stroomopwekking is vergrendeld."
+    }
+  }
+}

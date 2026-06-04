@@ -1,0 +1,15 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Control access",
+    "nl": "Besturingstoegang"
+  },
+  "description": {
+    "en": "Enables the power toggle for this device. Determined by the use of an owner or installer account.",
+    "nl": "Activeert de aan/uit-schakelaar voor dit apparaat. Bepaald door het gebruik van een eigenaars- of installateursaccount."
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/key.svg"
+}

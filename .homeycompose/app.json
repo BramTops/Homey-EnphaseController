@@ -1,0 +1,64 @@
+{
+  "id": "nl.creitive.enlighten",
+  "version": "1.2.1",
+  "compatibility": ">=10.0.0",
+  "sdk": 3,
+  "runtime": "nodejs",
+  "brandColor": "#f0b400",
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Enphase Controller",
+    "nl": "Enphase Controller"
+  },
+  "description": {
+    "en": "Locally monitor real-time power, daily/lifetime energy production, and active inverters. Turn power production on/off to handle negative energy prices.",
+    "nl": "Monitor lokaal real-time vermogen, dagelijkse/totale energieproductie en actieve omvormers. Schakel stroomproductie aan/uit bij negatieve energieprijzen."
+  },
+  "category": [
+    "energy"
+  ],
+  "tags": {
+    "en": [
+      "enphase",
+      "envoy",
+      "iq",
+      "inverter",
+      "control",
+      "installer",
+      "maintainer",
+      "solar",
+      "microinverter",
+      "energy",
+      "gateway",
+      "dynamic tariffs"
+    ],
+    "nl": [
+      "enphase",
+      "envoy",
+      "iq",
+      "omvormer",
+      "sturing",
+      "installateur",
+      "beheerder",
+      "zonnepanelen",
+      "micro-omvormer",
+      "energie",
+      "gateway",
+      "dynamische tarieven"
+    ]
+  },
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Bram Tops",
+    "email": "bramtops@outlook.com"
+  },
+  "homeyCommunityTopicId": 153586,
+  "support": "https://community.homey.app/t/prevent-enphase-export-with-negative-prices/153586"
+}

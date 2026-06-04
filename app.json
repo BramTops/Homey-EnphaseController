@@ -1,0 +1,259 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "nl.creitive.enlighten",
+  "version": "1.2.1",
+  "compatibility": ">=10.0.0",
+  "sdk": 3,
+  "runtime": "nodejs",
+  "brandColor": "#f0b400",
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Enphase Controller",
+    "nl": "Enphase Controller"
+  },
+  "description": {
+    "en": "Locally monitor real-time power, daily/lifetime energy production, and active inverters. Turn power production on/off to handle negative energy prices.",
+    "nl": "Monitor lokaal real-time vermogen, dagelijkse/totale energieproductie en actieve omvormers. Schakel stroomproductie aan/uit bij negatieve energieprijzen."
+  },
+  "category": [
+    "energy"
+  ],
+  "tags": {
+    "en": [
+      "enphase",
+      "envoy",
+      "iq",
+      "inverter",
+      "control",
+      "installer",
+      "maintainer",
+      "solar",
+      "microinverter",
+      "energy",
+      "gateway",
+      "dynamic tariffs"
+    ],
+    "nl": [
+      "enphase",
+      "envoy",
+      "iq",
+      "omvormer",
+      "sturing",
+      "installateur",
+      "beheerder",
+      "zonnepanelen",
+      "micro-omvormer",
+      "energie",
+      "gateway",
+      "dynamische tarieven"
+    ]
+  },
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Bram Tops",
+    "email": "bramtops@outlook.com"
+  },
+  "homeyCommunityTopicId": 153586,
+  "support": "https://community.homey.app/t/prevent-enphase-export-with-negative-prices/153586",
+  "drivers": [
+    {
+      "name": {
+        "en": "Envoy Gateway",
+        "nl": "Envoy-gateway"
+      },
+      "images": {
+        "small": "/drivers/envoy/assets/images/small.png",
+        "large": "/drivers/envoy/assets/images/large.png"
+      },
+      "class": "solarpanel",
+      "discovery": "enphase-envoy",
+      "capabilities": [
+        "onoff",
+        "measure_power",
+        "last_update",
+        "meter_power",
+        "meter_power_today",
+        "power_production",
+        "connected_inverters",
+        "control_state",
+        "metered_gateway"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "title": {
+            "en": "Power production",
+            "nl": "Stroomproductie"
+          }
+        }
+      },
+      "pair": [
+        {
+          "id": "start"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "user_email",
+          "type": "text",
+          "label": {
+            "en": "Enphase Account Email",
+            "nl": "Enphase-account e-mailadres"
+          },
+          "placeholder": "owner-or-installer@email.com",
+          "required": true,
+          "value": ""
+        },
+        {
+          "id": "password",
+          "type": "password",
+          "label": {
+            "en": "Enphase Password",
+            "nl": "Enphase-wachtwoord"
+          },
+          "required": true,
+          "value": ""
+        },
+        {
+          "id": "envoy_serial",
+          "type": "text",
+          "label": {
+            "en": "Envoy Serial Number",
+            "nl": "Envoy serienummer"
+          },
+          "placeholder": "122226012345",
+          "required": true,
+          "value": ""
+        },
+        {
+          "id": "envoy_ip",
+          "type": "text",
+          "label": {
+            "en": "Envoy Local IP Address",
+            "nl": "Lokaal IP-adres van de Envoy"
+          },
+          "placeholder": "10.0.0.123",
+          "required": true,
+          "value": ""
+        }
+      ],
+      "id": "envoy"
+    }
+  ],
+  "capabilities": {
+    "connected_inverters": {
+      "type": "number",
+      "title": {
+        "en": "Micro-inverters",
+        "nl": "Micro-omvormers"
+      },
+      "description": {
+        "en": "Number of micro-inverters connected to the Envoy gateway.",
+        "nl": "Aantal micro-omvormers verbonden met de Envoy gateway."
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "insights": true,
+      "decimals": 0,
+      "icon": "/assets/icon.svg"
+    },
+    "control_state": {
+      "type": "boolean",
+      "title": {
+        "en": "Control access",
+        "nl": "Besturingstoegang"
+      },
+      "description": {
+        "en": "Enables the power toggle for this device. Determined by the use of an owner or installer account.",
+        "nl": "Activeert de aan/uit-schakelaar voor dit apparaat. Bepaald door het gebruik van een eigenaars- of installateursaccount."
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/key.svg"
+    },
+    "last_update": {
+      "type": "string",
+      "title": {
+        "en": "Last Envoy update",
+        "nl": "Laatste Envoy update"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/clock.svg"
+    },
+    "meter_power_today": {
+      "type": "number",
+      "title": {
+        "en": "Energy today",
+        "nl": "Energie vandaag"
+      },
+      "description": {
+        "en": "Energy produced today.",
+        "nl": "Geproduceerde energie vandaag."
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "insights": true,
+      "decimals": 2,
+      "units": "kWh",
+      "icon": "/assets/meter_power.svg"
+    },
+    "metered_gateway": {
+      "type": "boolean",
+      "title": {
+        "en": "Metered gateway",
+        "nl": "Metered gateway"
+      },
+      "description": {
+        "en": "Metered gateways respond much faster to on/off commands, and allow for power export limiting. Determined by the presence of active CT-clamps.",
+        "nl": "Metered gateways reageren veel sneller op aan/uit commando’s, en laten exportbegrenzing toe. Dit word bepaald door de aanwezigheid van actieve CT-klemmen."
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/sensor.svg"
+    },
+    "power_production": {
+      "type": "string",
+      "title": {
+        "en": "Power production",
+        "nl": "Stroomproductie"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/bolt.svg"
+    }
+  },
+  "discovery": {
+    "enphase-envoy": {
+      "type": "mdns-sd",
+      "mdns-sd": {
+        "name": "enphase-envoy",
+        "protocol": "tcp"
+      },
+      "id": "{{txt.serialnum}}"
+    }
+  }
+}

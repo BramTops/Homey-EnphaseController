@@ -1,0 +1,45 @@
+{
+  "driver": {
+    "envoy": {
+      "name": "Solar panels (Enphase)",
+      "error": {
+        "fields_required": "Please fill in all the required fields.",
+        "auth_failed": "Connection failed: __message__",
+        "no_maintainer": "You need an Installer/Maintainer account to enable or disable power production.",
+        "command_failed": "Command failed: __message__",
+        "save_settings_failed": "Failed to save settings: Connection error: __message__"
+      },
+      "status": {
+        "on": "On",
+        "off": "Off",
+        "read_only": "Read-only",
+        "read_write": "Read & Write"
+      }
+    }
+  },
+  "pair": {
+    "start": {
+      "title": "Connect your Envoy Gateway",
+      "subtitle": "Connect to your gateway. Supports standard Owner accounts (read-only) or Installer/DIY accounts for system control.",
+      "discovery_badge": "✨ Envoy gateway auto-detected on network!",
+      "email_label": "Enphase Email",
+      "email_placeholder": "e.g. owner-or-installer@email.com",
+      "password_label": "Enphase Password",
+      "password_placeholder": "Your password",
+      "serial_label": "Gateway Serial Number",
+      "serial_placeholder": "e.g. 122226012345",
+      "ip_label": "Gateway IP Address",
+      "ip_placeholder": "e.g. 10.0.0.123",
+      "btn_authenticate": "Authenticate",
+      "btn_add_gateway": "Add Gateway to Homey",
+      "error_required_fields": "Please fill in all the required fields.",
+      "error_auth_failed": "Authentication failed. Please verify credentials.",
+      "success_title": "Authentication Successful!",
+      "success_subtitle": "Your Enphase account was validated and the local gateway was connected successfully.",
+      "role_maintainer": "Maintainer / Installer Role",
+      "desc_maintainer": "Full control active. You can monitor production and toggle power generation on and off.",
+      "role_owner": "System Owner Role",
+      "desc_owner": "Read-only active. You can monitor production status, but power generation control is locked."
+    }
+  }
+}

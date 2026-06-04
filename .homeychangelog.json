@@ -1,0 +1,18 @@
+{
+  "1.2.1": {
+    "en": "Prevents negative night-time solar readings. \nReplaces default icons.",
+    "nl": "Voorkomt negatieve zonnepaneelmetingen in de nacht. \nVervangt standaard iconen."
+  },
+  "1.2.0": {
+    "en": "Adds \"Energy today\" (kWh) status metric. \nMore reliable pairing process. \nImproved compatibility with other Enphase apps. \nImproved gateway connection stability. \nReduced memory and cpu usage.",
+    "nl": "Voegt \"Energie vandaag\" (kWh) status-meting toe. \nBetrouwbaarder koppelingsproces. \nVerbeterde compatibiliteit met andere Enphase-apps. \nVerbeterde stabiliteit van de gateway-verbinding. \nMinder geheugen- en CPU-gebruik."
+  },
+  "1.1.0": {
+    "en": "Updates app store listing. \nImproved compatibility with other Enphase apps. \nClearer pairing instructions. \nMore readable status metrics. \nAdds metered gateway status. \nMore reliable connection checks. \nEasier connection via manual IP. \nSupports IPv6 networks. \nSupport for all account types.",
+    "nl": "Updates app store-vermelding. \nWerkt beter samen met andere Enphase-apps. \nDuidelijkere koppelinstructies. \nDuidelijkere status-metingen. \nVoegt status van metered gateway toe. \nBetrouwbaardere verbindingscontroles. \nGemakkelijker verbinden via handmatig IP. \nOndersteunt IPv6-netwerken. \nOndersteuning voor alle accounttypen."
+  },
+  "1.0.0": {
+    "en": "Initial app release.",
+    "nl": "Eerste release."
+  }
+}

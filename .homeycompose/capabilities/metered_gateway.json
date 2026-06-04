@@ -1,0 +1,15 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Metered gateway",
+    "nl": "Metered gateway"
+  },
+  "description": {
+    "en": "Metered gateways respond much faster to on/off commands, and allow for power export limiting. Determined by the presence of active CT-clamps.",
+    "nl": "Metered gateways reageren veel sneller op aan/uit commando’s, en laten exportbegrenzing toe. Dit word bepaald door de aanwezigheid van actieve CT-klemmen."
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/sensor.svg"
+}

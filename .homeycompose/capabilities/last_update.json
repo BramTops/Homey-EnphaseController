@@ -1,0 +1,11 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Last Envoy update",
+    "nl": "Laatste Envoy update"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/clock.svg"
+}
