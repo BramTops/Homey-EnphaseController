@@ -60,5 +60,9 @@
     "email": "bramtops@outlook.com"
   },
   "homeyCommunityTopicId": 155720,
-  "support": "https://community.homey.app/t/app-pro-enphase-controller/155720"
+  "support": "https://community.homey.app/t/app-pro-enphase-controller/155720",
+  "source": "https://github.com/BramTops/Homey-EnphaseController",
+  "bugs": {
+    "url": "https://github.com/BramTops/Homey-EnphaseController/issues"
+  }
 }
