@@ -253,10 +253,24 @@ class EnphaseController extends Homey.App {
       });
 
       this.apiInstances.set(serial, api);
-    } else if (ip && api.envoyIp !== ip) {
-      // Keep local IP up to date in case it changed via discovery
-      this.log(`Updating IP for shared EnvoyApi client SN ${serial} from ${api.envoyIp} to ${ip}`);
-      api.envoyIp = ip;
+    } else {
+      if (ip && api.envoyIp !== ip) {
+        this.log(`Updating IP for shared EnvoyApi client SN ${serial} from ${api.envoyIp} to ${ip}`);
+        api.envoyIp = ip;
+      }
+      if (userEmail && api.userEmail !== userEmail) {
+        this.log(`Updating userEmail for shared EnvoyApi client SN ${serial}`);
+        api.userEmail = userEmail;
+      }
+      if (password && api.password !== password) {
+        this.log(`Updating password for shared EnvoyApi client SN ${serial}`);
+        api.password = password;
+      }
+      if (initialToken && api.token !== initialToken) {
+        this.log(`Updating token for shared EnvoyApi client SN ${serial}`);
+        api.token = initialToken;
+        api.sessionCookie = null; // Clear cached cookie when token changes
+      }
     }
 
     return api;

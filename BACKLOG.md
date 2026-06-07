@@ -11,17 +11,6 @@ Track bugs, features, improvements, ideas for Enphase Controller app.
 
 ## Proposed Features
 
-- **Individual Inverter Telemetry & Power Production**
-  - *Description*: Support reading, monitoring individual microinverter status: real-time power production, active status, serial numbers. Track panel performance and health.
-  - *Technical Feasibility*:
-    - **Local Gateway (Envoy) API**: Highly feasible. Envoy Gateway expose local telemetry at `GET /api/v1/production/inverters` (require local session cookie JWT authorization). Return JSON array of connected microinverters: `serialNumber`, `lastReportWatts`, `maxReportWatts`, `lastReportDate`.
-    - **Implementation Strategy**:
-      1. *API Expansion*: Add `getInverterData()` to `EnvoyApi.js` to poll local endpoint.
-      2. *Homey Device Modeling Options*:
-         - **Option A (Sub-devices)**: Model each microinverter as separate sub-device (e.g., `drivers/envoy-inverter`). Allow standard power capability monitoring, integrate with Homey Energy. May clutter UI for large systems.
-         - **Option B (Advanced UI / Custom HTML)**: Provide summary view, custom HTML page, or JSON flow token in main Envoy device to display status. Avoid creating dozen sub-devices.
-         - *Recommendation*: Dedicated driver for microinverters. Let users pair individual inverters as sub-devices under parent Envoy gateway.
-
 - **Toggle production on/off through the Enphase Installer Cloud API**
   - *Description*: Control power production via official Enphase Installer Cloud API (v4) instead of local Envoy API.
   - *Documentation*: [Enphase Developer Portal Docs](https://developer-v4.enphase.com/docs.html)

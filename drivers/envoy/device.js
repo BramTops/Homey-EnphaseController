@@ -347,6 +347,7 @@ class EnvoyDevice extends Homey.Device {
 
         this.isMaintainer = isMaintainer;
         await this.setStoreValue('is_maintainer', isMaintainer);
+        await this.setStoreValue('enphase_token', token);
 
         this.initApi(newSettings, token);
 
