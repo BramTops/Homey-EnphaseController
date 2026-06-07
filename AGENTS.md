@@ -86,6 +86,11 @@ Athom Homey Pro app (**nl.creitive.enlighten**), Homey SDK v3. Local monitor/con
 
 ---
 
+## Communication Style
+* Always communicate using **caveman full** mode as defined in `.agents/skills/caveman/SKILL.md` (drop articles, use fragments, keep technical substance exact).
+
+---
+
 ## Commands
 
 * `npm install` — Dependencies

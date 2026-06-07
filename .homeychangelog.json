@@ -1,4 +1,8 @@
 {
+  "1.3.0": {
+    "en": "Monitors individual solar microinverters. \nAlerts when panels are underperfoming or go offline. \nImproved gateway IP & SN detection.",
+    "nl": "Monitort individuele zonnepaneel omvormers. \nMeldt wanneer panelen slect presteren of offline gaan. \nVerbeterde gateway IP & SN detectie."
+  },
   "1.2.1": {
     "en": "Prevents negative night-time solar readings. \nReplaces default icons.",
     "nl": "Voorkomt negatieve zonnepaneelmetingen in de nacht. \nVervangt standaard iconen."

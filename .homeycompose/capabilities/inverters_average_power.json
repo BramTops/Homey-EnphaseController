@@ -1,0 +1,14 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Inverter average",
+    "nl": "Omvormer gemiddelde"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "insights": true,
+  "decimals": 0,
+  "units": "W",
+  "icon": "/assets/meter_power.svg"
+}

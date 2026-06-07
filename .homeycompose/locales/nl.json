@@ -15,11 +15,46 @@
         "read_only": "Alleen-lezen",
         "read_write": "Lezen & schrijven"
       }
+    },
+    "gateway": {
+      "name": "Enphase Gateway",
+      "error": {
+        "fields_required": "Vul alstublieft alle verplichte velden in.",
+        "invalid_serial": "Ongeldig gateway serienummer.",
+        "auth_failed": "Verbinding mislukt: __message__",
+        "no_maintainer": "U heeft een installateurs-/onderhoudsaccount nodig om stroomproductie in- of uit te schakelen.",
+        "command_failed": "Opdracht mislukt: __message__",
+        "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__"
+      },
+      "status": {
+        "on": "Aan",
+        "off": "Uit"
+      }
+    },
+    "inverters": {
+      "name": "Enphase-omvormers",
+      "autocomplete": {
+        "any": "Elke omvormer"
+      },
+      "error": {
+        "no_gateway": "Nog geen Enphase Gateway gekoppeld. Koppel eerst de Gateway.",
+        "all_paired": "Alle gekoppelde Enphase Gateways hebben al omvormers toegevoegd."
+      }
+    }
+  },
+  "inverters": {
+    "alert": {
+      "message": {
+        "underperformance": "Dagpiek ligt __difference__% onder de systeemmediaan",
+        "stale": "Omvormer heeft al meer dan __hours__ uur geen gegevens gerapporteerd",
+        "mismatch": "Verschil in aantal omvormers: __expected__ panelen verwacht maar __found__ gevonden"
+      }
     }
   },
   "pair": {
     "start": {
       "title": "Verbind uw Envoy-gateway",
+      "title_inverters": "Verbind Enphase-omvormers",
       "subtitle": "Verbind met uw gateway. Ondersteunt standaard Eigenaar-accounts (alleen-lezen) of Installateur/DIY-accounts voor systeembeheer.",
       "discovery_badge": "✨ Envoy-gateway automatisch gedetecteerd op het netwerk!",
       "email_label": "Enphase e-mailadresse",
@@ -32,6 +67,7 @@
       "ip_placeholder": "bijv. 10.0.0.123",
       "btn_authenticate": "Verifiëren",
       "btn_add_gateway": "Gateway toevoegen aan Homey",
+      "btn_add_inverters": "Omvormers toevoegen aan Homey",
       "error_required_fields": "Vul alstublieft alle verplichte velden in.",
       "error_auth_failed": "Verificatie mislukt. Controleer uw inloggegevens.",
       "success_title": "Verificatie succesvol!",

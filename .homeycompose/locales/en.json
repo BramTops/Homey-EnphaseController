@@ -15,11 +15,46 @@
         "read_only": "Read-only",
         "read_write": "Read & Write"
       }
+    },
+    "gateway": {
+      "name": "Enphase Gateway",
+      "error": {
+        "fields_required": "Please fill in all the required fields.",
+        "invalid_serial": "Invalid Gateway Serial Number.",
+        "auth_failed": "Connection failed: __message__",
+        "no_maintainer": "You need an Installer/Maintainer account to enable or disable power production.",
+        "command_failed": "Command failed: __message__",
+        "save_settings_failed": "Failed to save settings: Connection error: __message__"
+      },
+      "status": {
+        "on": "On",
+        "off": "Off"
+      }
+    },
+    "inverters": {
+      "name": "Enphase Inverters",
+      "autocomplete": {
+        "any": "Any Inverter"
+      },
+      "error": {
+        "no_gateway": "No Enphase Gateway paired yet. Please pair the Gateway first.",
+        "all_paired": "All paired Enphase Gateways already have inverters added."
+      }
+    }
+  },
+  "inverters": {
+    "alert": {
+      "message": {
+        "underperformance": "Daily peak is __difference__% below the system median",
+        "stale": "Inverter has not reported in over __hours__ hour(s)",
+        "mismatch": "Inverter list mismatch: expected __expected__ panels but found __found__"
+      }
     }
   },
   "pair": {
     "start": {
       "title": "Connect your Envoy Gateway",
+      "title_inverters": "Connect Enphase Inverters",
       "subtitle": "Connect to your gateway. Supports standard Owner accounts (read-only) or Installer/DIY accounts for system control.",
       "discovery_badge": "✨ Envoy gateway auto-detected on network!",
       "email_label": "Enphase Email",
@@ -32,6 +67,7 @@
       "ip_placeholder": "e.g. 10.0.0.123",
       "btn_authenticate": "Authenticate",
       "btn_add_gateway": "Add Gateway to Homey",
+      "btn_add_inverters": "Add Inverters to Homey",
       "error_required_fields": "Please fill in all the required fields.",
       "error_auth_failed": "Authentication failed. Please verify credentials.",
       "success_title": "Authentication Successful!",

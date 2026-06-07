@@ -1,0 +1,55 @@
+{
+  "title": {
+    "en": "Inverter power changed",
+    "nl": "Vermogen van omvormer gewijzigd"
+  },
+  "titleFormatted": {
+    "en": "Inverter [[inverter_index]] power output changed",
+    "nl": "Vermogen van omvormer [[inverter_index]] gewijzigd"
+  },
+  "description": {
+    "en": "Fired when an inverter reports a change in power output.",
+    "nl": "Wordt geactiveerd wanneer een omvormer een wijziging in vermogen rapporteert."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=inverters"
+    },
+    {
+      "name": "inverter_index",
+      "type": "autocomplete",
+      "title": {
+        "en": "Select Inverter",
+        "nl": "Selecteer omvormer"
+      }
+    }
+  ],
+  "tokens": [
+    {
+      "name": "inverter_serial",
+      "type": "string",
+      "title": {
+        "en": "Inverter Serial",
+        "nl": "Serienummer omvormer"
+      }
+    },
+    {
+      "name": "inverter_index",
+      "type": "number",
+      "title": {
+        "en": "Inverter Index",
+        "nl": "Index omvormer"
+      }
+    },
+    {
+      "name": "power_watts",
+      "type": "number",
+      "title": {
+        "en": "Power (W)",
+        "nl": "Vermogen (W)"
+      }
+    }
+  ]
+}

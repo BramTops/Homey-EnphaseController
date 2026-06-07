@@ -1,0 +1,51 @@
+{
+  "name": {
+    "en": "Enphase Inverters",
+    "nl": "Enphase-omvormers"
+  },
+  "images": {
+    "small": "/drivers/inverters/assets/images/small.png",
+    "large": "/drivers/inverters/assets/images/large.png"
+  },
+  "class": "solarpanel",
+  "discovery": "enphase-envoy",
+  "capabilities": [
+    "inverters_average_power",
+    "inverters_average_load"
+  ],
+  "repair": [
+    {
+      "id": "repair"
+    }
+  ],
+  "pair": [
+    {
+      "id": "start"
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "id": "stale_timeout",
+      "type": "number",
+      "label": {
+        "en": "Stale Data Timeout (hours)",
+        "nl": "Verouderde data time-out (uren)"
+      },
+      "required": true,
+      "value": 24,
+      "min": 1,
+      "max": 168
+    }
+  ]
+}

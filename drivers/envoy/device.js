@@ -104,16 +104,11 @@ class EnvoyDevice extends Homey.Device {
       });
     }
 
-    // Initialize the failed poll timestamp tracker
+    // Initialize the failed poll timestamp tracker (kept for legacy support if needed)
     this.firstFailedPollTime = null;
 
-    // Start background status polling (every 120 seconds / 2 minutes)
-    this.pollInterval = this.homey.setInterval(() => {
-      this.pollStatus().catch(this.error);
-    }, 120000);
-
-    // Perform initial status poll asynchronously
-    this.pollStatus().catch(this.error);
+    // Register with App-level polling manager
+    this.homey.app.registerDevice(settings.envoy_serial, this);
   }
 
   /**
@@ -121,28 +116,17 @@ class EnvoyDevice extends Homey.Device {
    */
   async onUninit() {
     this.log('Envoy Device is being uninitialized');
-    if (this.pollInterval) {
-      this.homey.clearInterval(this.pollInterval);
-    }
+    const settings = this.getSettings();
+    this.homey.app.unregisterDevice(settings.envoy_serial, this);
   }
 
-  /**
-   * Instantiate or update the Envoy API client.
-   * @param {Object} settings - Device settings
-   * @param {string} [token] - Active JWT token
-   */
   initApi(settings, token) {
-    this.api = new EnvoyApi({
-      log: (msg, ...args) => this.log(`[API] ${msg}`, ...args),
+    this.api = this.homey.app.getApiInstance({
+      serial: settings.envoy_serial,
+      ip: settings.envoy_ip,
       userEmail: settings.user_email,
       password: settings.password,
-      envoySerial: settings.envoy_serial,
-      envoyIp: settings.envoy_ip,
       initialToken: token || null,
-      onTokenUpdated: async (newToken) => {
-        this.log('Token updated by API client. Saving to device store...');
-        await this.setStoreValue('enphase_token', newToken);
-      },
     });
   }
 
@@ -188,160 +172,136 @@ class EnvoyDevice extends Homey.Device {
    * Poll the Envoy gateway locally to fetch the current PowerForcedOff status
    * and update the capability state in Homey.
    */
-  async pollStatus() {
-    this.log('Polling status from local Envoy...');
-    try {
-      // Fetch power forced off state (only if Installer/Maintainer) and active production metrics
-      let powerForcedOff = false;
-      if (this.isMaintainer) {
-        powerForcedOff = await this.api.getPowerForcedOffstate();
-      }
-      const prodData = await this.api.getProductionData();
+  /**
+   * Update production telemetry received from the App orchestrator.
+   * @param {Object} prodData - Live production readings
+   * @param {boolean} powerForcedOff - True if production is disabled
+   */
+  async updateTelemetry(prodData, powerForcedOff) {
+    this.log('Updating telemetry with data received from central poll...');
 
-      // onoff is true if production is ENABLED (not forced off)
-      let productionEnabled = !powerForcedOff;
+    let productionEnabled = !powerForcedOff;
 
-      // Retrieve the user's desired state in Homey (if capability exists)
-      const currentOnoffValue = this.hasCapability('onoff') ? this.getCapabilityValue('onoff') : null;
+    // Step 1: Cloud Override Check
+    const overridden = await this.checkForCloudOverride(productionEnabled);
+    if (overridden) {
+      productionEnabled = false;
+    }
 
-      // If Homey is manually set to OFF, but the physical Envoy returned to ON (due to top-of-hour cloud sync reset),
-      // we must re-apply the OFF command to respect the user's intent.
-      // This override is only relevant and possible for Maintainer/Installer accounts.
-      if (this.isMaintainer && currentOnoffValue === false && productionEnabled === true) {
-        this.log(
-          'Discrepancy detected: Homey is OFF, but Envoy is ON (production enabled). '
-          + 'The Envoy likely reset itself during its hourly cloud sync. '
-          + "Re-applying the OFF command to enforce the user's setting.",
-        );
+    // Format readingTime to HH:mm in local timezone with DST
+    const lastUpdateStr = await this.homey.app.formatTimeLocal(prodData.readingTime || Math.round(Date.now() / 1000));
 
-        try {
-          await this.api.setPowerForcedOff(true);
-          this.log('Successfully re-applied power production control command: powerForcedOff = true');
-          productionEnabled = false; // Override status to remain OFF in Homey UI
-        } catch (err) {
-          this.error('Failed to re-apply power production control command:', err.message);
-        }
-      }
+    // Step 2: Calculate daily energy production
+    const currentDay = new Date().getDate();
+    const energyToday = await this.calculateDailyEnergy(prodData, currentDay);
 
-      // Retrieve local timezone from Homey Pro clock
-      let timezone = 'UTC';
-      try {
-        if (this.homey && this.homey.clock && typeof this.homey.clock.getTimezone === 'function') {
-          timezone = await this.homey.clock.getTimezone();
-        }
-      } catch (err) {
-        this.error('Failed to get Homey timezone:', err.message);
-      }
+    // Step 3: Update capabilities
+    await this.updateDeviceCapabilities(prodData, productionEnabled, energyToday, lastUpdateStr);
 
-      // Format readingTime to HH:mm in local timezone with DST
-      let lastUpdateStr = '';
-      try {
-        const timestampMs = prodData.readingTime ? prodData.readingTime * 1000 : Date.now();
-        const date = new Date(timestampMs);
-        const formatter = new Intl.DateTimeFormat('en-GB', {
-          timeZone: timezone,
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false,
-        });
-        lastUpdateStr = formatter.format(date);
-      } catch (err) {
-        this.error('Failed to format timestamp with timezone:', err.message);
-        const date = prodData.readingTime ? new Date(prodData.readingTime * 1000) : new Date();
-        const hh = String(date.getHours()).padStart(2, '0');
-        const mm = String(date.getMinutes()).padStart(2, '0');
-        lastUpdateStr = `${hh}:${mm}`;
-      }
+    // Step 4: Update and save metered status if changed
+    await this.updateMeteredStatus(prodData);
+  }
 
-      // Calculate Energy Today
-      let todayDay = this.getStoreValue('today_day');
-      let todayStartKwh = this.getStoreValue('today_start_kwh');
-      const currentDay = new Date().getDate();
+  /**
+   * Check if Homey is manual OFF but Envoy is ON, and re-apply OFF command if so.
+   * @param {boolean} productionEnabled
+   * @returns {Promise<boolean>} True if command was overridden to OFF
+   */
+  async checkForCloudOverride(productionEnabled) {
+    const currentOnoffValue = this.hasCapability('onoff') ? this.getCapabilityValue('onoff') : null;
 
-      if (todayDay !== currentDay || typeof todayStartKwh !== 'number') {
-        this.log(`New day detected. Resetting today's start energy meter to: ${prodData.kwhLifetime} kWh (previous day: ${todayDay}, current day: ${currentDay})`);
-        todayDay = currentDay;
-        todayStartKwh = prodData.kwhLifetime;
-        await this.setStoreValue('today_day', todayDay).catch(this.error);
-        await this.setStoreValue('today_start_kwh', todayStartKwh).catch(this.error);
-      }
-
-      let energyToday = prodData.kwhLifetime - todayStartKwh;
-      if (energyToday < 0) {
-        this.log(`Warning: Energy today calculated as negative (${energyToday} kWh). Resetting start value.`);
-        todayStartKwh = prodData.kwhLifetime;
-        await this.setStoreValue('today_start_kwh', todayStartKwh).catch(this.error);
-        energyToday = 0;
-      }
-
-      // Round to 2 decimal places
-      energyToday = Math.round(energyToday * 100) / 100;
-      this.log(`Energy today calculation: current lifetime = ${prodData.kwhLifetime} kWh, start of day = ${todayStartKwh} kWh, energy today = ${energyToday} kWh`);
-
+    if (this.isMaintainer && currentOnoffValue === false && productionEnabled === true) {
       this.log(
-        `Poll result: powerForcedOff = ${powerForcedOff}, `
-        + `wattsNow = ${prodData.wattsNow} W, `
-        + `kwhLifetime = ${prodData.kwhLifetime} kWh, `
-        + `connectedInverters = ${prodData.connectedInverters}, `
-        + `readingTime = ${prodData.readingTime} (${lastUpdateStr})`,
+        'Discrepancy detected: Homey is OFF, but Envoy is ON (production enabled). '
+        + 'The Envoy likely reset itself during its hourly cloud sync. '
+        + "Re-applying the OFF command to enforce the user's setting.",
       );
 
-      // Safely update the Homey interface states
-      if (this.hasCapability('onoff')) {
-        this.log(`Setting capability 'onoff' to: ${productionEnabled}`);
-        await this.setCapabilityValue('onoff', productionEnabled);
+      try {
+        await this.api.setPowerForcedOff(true);
+        this.log('Successfully re-applied power production control command: powerForcedOff = true');
+        return true;
+      } catch (err) {
+        this.error('Failed to re-apply power production control command:', err.message);
       }
-      await this.setCapabilityValue('measure_power', prodData.wattsNow);
-      await this.setCapabilityValue('meter_power', prodData.kwhLifetime);
-      await this.setCapabilityValue('meter_power_today', energyToday);
-      await this.setCapabilityValue('connected_inverters', prodData.connectedInverters);
-      await this.setCapabilityValue('last_update', lastUpdateStr);
+    }
+    return false;
+  }
 
-      // Update and save metered status if it changed
-      if (this.isMetered !== prodData.isMetered) {
-        this.isMetered = prodData.isMetered;
-        await this.setStoreValue('is_metered', this.isMetered).catch(this.error);
-      }
+  /**
+   * Calculate Energy Today production based on lifetime value and daily reset.
+   * @param {Object} prodData
+   * @param {number} currentDay
+   * @returns {Promise<number>} Energy produced today in kWh
+   */
+  async calculateDailyEnergy(prodData, currentDay) {
+    let todayDay = this.getStoreValue('today_day');
+    let todayStartKwh = this.getStoreValue('today_start_kwh');
 
-      // Determine and translate power production and control state status strings
-      const powerProductionStr = productionEnabled
-        ? this.homey.__('driver.envoy.status.on')
-        : this.homey.__('driver.envoy.status.off');
+    if (todayDay !== currentDay || typeof todayStartKwh !== 'number') {
+      this.log(`New day detected. Resetting today's start energy meter to: ${prodData.kwhLifetime} kWh (previous day: ${todayDay}, current day: ${currentDay})`);
+      todayDay = currentDay;
+      todayStartKwh = prodData.kwhLifetime;
+      await this.setStoreValue('today_day', todayDay).catch(this.error);
+      await this.setStoreValue('today_start_kwh', todayStartKwh).catch(this.error);
+    }
 
-      await this.setCapabilityValue('power_production', powerProductionStr);
-      await this.setCapabilityValue('control_state', this.isMaintainer);
-      await this.setCapabilityValue('metered_gateway', this.isMetered);
+    let energyToday = prodData.kwhLifetime - todayStartKwh;
+    if (energyToday < 0) {
+      this.log(`Warning: Energy today calculated as negative (${energyToday} kWh). Resetting start value.`);
+      todayStartKwh = prodData.kwhLifetime;
+      await this.setStoreValue('today_start_kwh', todayStartKwh).catch(this.error);
+      energyToday = 0;
+    }
 
-      // Explicitly mark device as available since connection succeeded
-      await this.setAvailable();
-      this.firstFailedPollTime = null; // Reset failure timer on success
-    } catch (err) {
-      this.error('Error occurred during status polling:', err.message);
+    energyToday = Math.round(energyToday * 100) / 100;
+    this.log(`Energy today calculation: current lifetime = ${prodData.kwhLifetime} kWh, start of day = ${todayStartKwh} kWh, energy today = ${energyToday} kWh`);
+    return energyToday;
+  }
 
-      if (!this.firstFailedPollTime) {
-        this.firstFailedPollTime = new Date();
-        this.log(`First poll failure recorded at: ${this.firstFailedPollTime.toISOString()}`);
-      }
+  /**
+   * Update device capabilities inside Homey UI.
+   * @param {Object} prodData
+   * @param {boolean} productionEnabled
+   * @param {number} energyToday
+   * @param {string} lastUpdateStr
+   */
+  async updateDeviceCapabilities(prodData, productionEnabled, energyToday, lastUpdateStr) {
+    this.log(
+      `Telemetry updated: powerForcedOff = ${!productionEnabled}, `
+      + `wattsNow = ${prodData.wattsNow} W, `
+      + `kwhLifetime = ${prodData.kwhLifetime} kWh, `
+      + `connectedInverters = ${prodData.connectedInverters}, `
+      + `readingTime = ${prodData.readingTime} (${lastUpdateStr})`,
+    );
 
-      const elapsedMs = Date.now() - this.firstFailedPollTime.getTime();
-      const thirtyMinutesMs = 30 * 60 * 1000;
+    if (this.hasCapability('onoff')) {
+      this.log(`Setting capability 'onoff' to: ${productionEnabled}`);
+      await this.setCapabilityValue('onoff', productionEnabled);
+    }
+    await this.setCapabilityValue('measure_power', prodData.wattsNow);
+    await this.setCapabilityValue('meter_power', prodData.kwhLifetime);
+    await this.setCapabilityValue('meter_power_today', energyToday);
+    await this.setCapabilityValue('connected_inverters', prodData.connectedInverters);
+    await this.setCapabilityValue('last_update', lastUpdateStr);
 
-      if (elapsedMs >= thirtyMinutesMs) {
-        const minutesElapsed = Math.round(elapsedMs / 60000);
-        this.log(`Downtime has persisted for ${minutesElapsed} minutes. Marking device as unavailable.`);
-        await this.setUnavailable(err.message || 'Offline');
-      } else {
-        const remainingMinutes = Math.round((thirtyMinutesMs - elapsedMs) / 60000);
-        this.warn(`Transient polling error: ${err.message}. Keeping device available (grace period remaining: ${remainingMinutes} minutes).`);
-      }
+    const powerProductionStr = productionEnabled
+      ? this.homey.__('driver.envoy.status.on')
+      : this.homey.__('driver.envoy.status.off');
 
-      // Clear token only if the cloud credentials themselves are invalid (e.g., login failed).
-      // Do not clear the cloud token on local Envoy session 401/403 errors, as those are handled by local retry logic.
-      if (err.message.includes('login failed') || err.message.includes('verify email and password')) {
-        this.log('Cloud credentials invalid or expired. Wiping token to force re-login.');
-        this.api.token = null;
-        await this.setStoreValue('enphase_token', null);
-      }
+    await this.setCapabilityValue('power_production', powerProductionStr);
+    await this.setCapabilityValue('control_state', this.isMaintainer);
+    await this.setCapabilityValue('metered_gateway', this.isMetered);
+  }
+
+  /**
+   * Check and update metered status if it has changed.
+   * @param {Object} prodData
+   */
+  async updateMeteredStatus(prodData) {
+    if (this.isMetered !== prodData.isMetered) {
+      this.isMetered = prodData.isMetered;
+      await this.setStoreValue('is_metered', this.isMetered).catch(this.error);
     }
   }
 
@@ -405,14 +365,44 @@ class EnvoyDevice extends Homey.Device {
 
         this.log('Settings validated successfully. Token and roles updated.');
 
-        // Trigger status poll immediately
-        this.pollStatus().catch(this.error);
+        // Trigger status poll immediately via app central coordinator
+        this.homey.app.triggerImmediatePoll(newSettings.envoy_serial);
 
       } catch (err) {
         this.error('Failed to validate new settings:', err.message);
         throw new Error(this.homey.__('driver.envoy.error.save_settings_failed', { message: err.message }));
       }
     }
+  }
+
+  /**
+   * Update the account role dynamically (e.g. from token refresh or auto-downgrade threshold).
+   * @param {boolean} isMaintainer
+   */
+  async updateRole(isMaintainer) {
+    if (this.isMaintainer === isMaintainer) return;
+
+    this.log(`Updating role dynamically. Active Maintainer/Installer status: ${isMaintainer}`);
+    this.isMaintainer = isMaintainer;
+    await this.setStoreValue('is_maintainer', isMaintainer).catch(this.error);
+
+    if (isMaintainer) {
+      if (!this.hasCapability('onoff')) {
+        this.log('Adding missing capability: onoff');
+        await this.addCapability('onoff').catch((err) => {
+          this.error('Failed to add capability onoff:', err.message);
+        });
+      }
+      this.registerOnoffListener();
+    } else if (this.hasCapability('onoff')) {
+      this.log('Removing unauthorized capability: onoff');
+      await this.removeCapability('onoff').catch((err) => {
+        this.error('Failed to remove capability onoff:', err.message);
+      });
+      this.onoffListenerRegistered = false;
+    }
+
+    await this.setCapabilityValue('control_state', isMaintainer).catch(this.error);
   }
 
 }

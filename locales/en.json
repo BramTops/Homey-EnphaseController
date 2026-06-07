@@ -16,6 +16,33 @@
         "read_only": "Read-only",
         "read_write": "Read & Write"
       }
+    },
+    "gateway": {
+      "name": "Enphase Gateway",
+      "error": {
+        "fields_required": "Please fill in all the required fields.",
+        "invalid_serial": "Invalid Gateway Serial Number.",
+        "auth_failed": "Connection failed: __message__",
+        "no_maintainer": "You need an Installer/Maintainer account to enable or disable power production.",
+        "command_failed": "Command failed: __message__",
+        "save_settings_failed": "Failed to save settings: Connection error: __message__"
+      },
+      "status": {
+        "on": "On",
+        "off": "Off",
+        "read_only": "Read-only",
+        "read_write": "Read & Write"
+      }
+    },
+    "inverters": {
+      "name": "Enphase Inverters",
+      "autocomplete": {
+        "any": "Any Inverter"
+      },
+      "error": {
+        "no_gateway": "No Enphase Gateway paired yet. Please pair the Gateway first.",
+        "all_paired": "All paired Enphase Gateways already have inverters added."
+      }
     }
   },
   "pair": {
@@ -45,7 +72,27 @@
       "desc_maintainer": "Full control active. You can monitor production and toggle power generation on and off.",
       "role_owner": "System Owner Role",
       "desc_owner": "Read-only active. You can monitor production status, but power generation control is locked.",
-      "discovery_badge": "✨ Envoy gateway auto-detected on network!"
+      "discovery_badge": "✨ Envoy gateway auto-detected on network!",
+      "title_inverters": "Connect Enphase Inverters",
+      "btn_add_inverters": "Add Inverters to Homey",
+      "repair_title": "Repair Gateway Connection",
+      "repair_subtitle": "Update your Enphase credentials or local Gateway IP address if they have changed.",
+      "btn_save_changes": "Save Changes"
+    }
+  },
+  "inverters": {
+    "alert": {
+      "type": {
+        "underperformance": "Underperformance",
+        "stale": "Stale data",
+        "mismatch": "Inverter mismatch"
+      },
+      "message": {
+        "underperformance": "Daily peak is __difference__% below the system median",
+        "stale": "Inverter has not reported in over __hours__ hour(s)",
+        "mismatch": "Inverter list mismatch: expected __expected__ panels but found __found__",
+        "underproducing": "Daily peak is __difference__% below the system median"
+      }
     }
   }
 }

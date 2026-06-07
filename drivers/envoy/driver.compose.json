@@ -1,8 +1,9 @@
 {
   "name": {
-    "en": "Envoy Gateway",
-    "nl": "Envoy-gateway"
+    "en": "Envoy Gateway (Legacy)",
+    "nl": "Envoy-gateway (Verouderd)"
   },
+  "deprecated": true,
   "images": {
     "small": "/drivers/envoy/assets/images/small.png",
     "large": "/drivers/envoy/assets/images/large.png"

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manage Enphase Inverters</title>
+  <style>
+    :root {
+      --homey-su: 4px;
+      
+      /* Dark Theme Options for High Premium Feel */
+      --homey-background-color: #0d0e12;
+      --homey-text-color: #f3f4f6;
+      --homey-text-color-secondary: #9ca3af;
+      --homey-text-color-error: #f87171;
+      
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --input-bg: rgba(255, 255, 255, 0.06);
+      --input-border: rgba(255, 255, 255, 0.15);
+      --input-color: #ffffff;
+      
+      --focus-border: #f0b400;
+      --focus-shadow: rgba(240, 180, 0, 0.25);
+      
+      --badge-ok-bg: rgba(34, 197, 94, 0.12);
+      --badge-ok-border: rgba(34, 197, 94, 0.25);
+      --badge-ok-text: #4ade80;
+      
+      --badge-warning-bg: rgba(234, 88, 12, 0.12);
+      --badge-warning-border: rgba(234, 88, 12, 0.25);
+      --badge-warning-text: #fb923c;
+      
+      --badge-error-bg: rgba(239, 68, 68, 0.12);
+      --badge-error-border: rgba(239, 68, 68, 0.25);
+      --badge-error-text: #f87171;
+    }
+
+    /* Support light mode if specifically forced by context */
+    @media (prefers-color-scheme: light) {
+      :root {
+        --homey-background-color: #f9fafb;
+        --homey-text-color: #111827;
+        --homey-text-color-secondary: #4b5563;
+        --homey-text-color-error: #dc2626;
+        
+        --card-bg: #ffffff;
+        --card-border: rgba(0, 0, 0, 0.08);
+        --input-bg: #ffffff;
+        --input-border: #d1d5db;
+        --input-color: #111827;
+        
+        --focus-border: #fb923c;
+        --focus-shadow: rgba(251, 146, 60, 0.15);
+        
+        --badge-ok-bg: rgba(220, 252, 231, 0.6);
+        --badge-ok-border: #bbf7d0;
+        --badge-ok-text: #15803d;
+        
+        --badge-warning-bg: rgba(ff, ed, d5, 0.6);
+        --badge-warning-border: #fed7aa;
+        --badge-warning-text: #c2410c;
+        
+        --badge-error-bg: rgba(fee, 2, 2, 0.6);
+        --badge-error-border: #fca5a5;
+        --badge-error-text: #b91c1c;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--homey-background-color);
+      color: var(--homey-text-color);
+      margin: 0;
+      padding: 16px;
+      box-sizing: border-box;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding-bottom: 32px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0 0 6px 0;
+    }
+
+    p.subtitle {
+      font-size: 13px;
+      color: var(--homey-text-color-secondary);
+      margin: 0;
+    }
+
+    /* Card styling with glassmorphism */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--focus-border);
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 8px;
+    }
+
+    /* Table styling */
+    .table-container {
+      overflow-x: auto;
+      margin: 0 -18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 10px 18px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      font-weight: 500;
+      color: var(--homey-text-color-secondary);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-badge.ok {
+      background: var(--badge-ok-bg);
+      border: 1px solid var(--badge-ok-border);
+      color: var(--badge-ok-text);
+    }
+
+    .status-badge.warning {
+      background: var(--badge-warning-bg);
+      border: 1px solid var(--badge-warning-border);
+      color: var(--badge-warning-text);
+    }
+
+    .status-badge.error {
+      background: var(--badge-error-bg);
+      border: 1px solid var(--badge-error-border);
+      color: var(--badge-error-text);
+    }
+
+    .alert-row {
+      font-size: 11px;
+      color: var(--homey-text-color-error);
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* Form control styling */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--input-bg);
+      outline: none;
+      -webkit-appearance: none;
+      accent-color: var(--focus-border);
+    }
+
+    .slider-value {
+      font-size: 14px;
+      font-weight: 600;
+      min-width: 45px;
+      text-align: right;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: var(--input-color);
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--focus-border);
+      box-shadow: 0 0 0 3px var(--focus-shadow);
+    }
+
+    .help-text {
+      font-size: 11px;
+      color: var(--homey-text-color-secondary);
+      margin-top: 6px;
+    }
+
+    /* Buttons block */
+    .buttons-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    button {
+      flex: 1;
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+      text-align: center;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: #f0b400;
+      color: #0d0e12;
+      border: none;
+      box-shadow: 0 2px 6px rgba(240, 180, 0, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: #d8a200;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--homey-text-color);
+      border: 1px solid var(--input-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--homey-text-color-secondary);
+      padding: 24px 0;
+      font-style: italic;
+    }
+
+    /* Loader */
+    .loader {
+      text-align: center;
+      padding: 30px;
+      font-size: 14px;
+      color: var(--homey-text-color-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Enphase Microinverters</h1>
+      <p class="subtitle">Real-time solar panel diagnostic log and alert overrides.</p>
+    </header>
+
+    <div id="loading" class="loader">Loading telemetry logs...</div>
+
+    <div id="content" style="display: none;">
+      <!-- Diagnostic Log Table Card -->
+      <div class="card">
+        <h2 class="card-title">Panel Telemetry Log</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Panel</th>
+                <th>Serial Number</th>
+                <th>Watts (W)</th>
+                <th>Today (kWh)</th>
+                <th>Peak (W)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="inverter-rows">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Configurations thresholds settings card -->
+      <div class="card">
+        <h2 class="card-title">Diagnostics Thresholds</h2>
+        
+        <div class="form-group">
+          <label for="underperf-slider">Underperformance Alert Threshold</label>
+          <div class="slider-container">
+            <input type="range" id="underperf-slider" min="5" max="50" step="1" oninput="updateSliderVal(this.value)">
+            <span class="slider-value" id="underperf-val">15%</span>
+          </div>
+          <p class="help-text">Trigger a warning alert if a panel is producing below the system average by this percentage. Only evaluates during daylight hours (average > 25W).</p>
+        </div>
+
+        <div class="form-group">
+          <label for="stale-input">Communication Stale Timeout (hours)</label>
+          <input type="number" id="stale-input" min="1" max="168" step="1">
+          <p class="help-text">Timeout limit in hours before raising a warning for inactive PLC communications. Default is 24 hours.</p>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="buttons-group">
+        <button class="btn-secondary" onclick="clearAlerts()">Clear Active Alerts</button>
+        <button class="btn-primary" onclick="saveSettings()">Save Configuration</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    // Helper to request data from driver
+    function loadData() {
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('content').style.display = 'none';
+
+      Homey.emit('get_repair_data', {}, function(err, result) {
+        document.getElementById('loading').style.display = 'none';
+        
+        if (err) {
+          alert('Failed to load logs: ' + err.message);
+          return;
+        }
+
+        document.getElementById('content').style.display = 'block';
+
+        // 1. Render rows
+        const tbody = document.getElementById('inverter-rows');
+        tbody.innerHTML = '';
+
+        if (!result.inverters || result.inverters.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No panels found. Please ensure pairing was successful.</td></tr>';
+        } else {
+          result.inverters.forEach(function(inv) {
+            const tr = document.createElement('tr');
+            
+            let badgeClass = 'ok';
+            let statusLabel = inv.status || 'OK';
+            if (statusLabel === 'Warning' || statusLabel === 'Underperforming') {
+              badgeClass = 'warning';
+            } else if (statusLabel === 'Error' || statusLabel === 'Offline') {
+              badgeClass = 'error';
+            }
+
+            let alertSpan = '';
+            if (inv.alert) {
+              alertSpan = `<span class="alert-row">⚠️ ${inv.alert.message}</span>`;
+            }
+
+            tr.innerHTML = `
+              <td>Inverter ${inv.index}</td>
+              <td><code>${inv.serial}</code></td>
+              <td><strong>${inv.lastReportWatts} W</strong></td>
+              <td>${inv.meter_power_today.toFixed(2)} kWh</td>
+              <td>${inv.maxReportWatts} W</td>
+              <td>
+                <span class="status-badge ${badgeClass}">${statusLabel}</span>
+                ${alertSpan}
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+
+        // 2. Set settings values
+        if (result.settings) {
+          const threshold = result.settings.underperformanceThreshold || 15;
+          document.getElementById('underperf-slider').value = threshold;
+          document.getElementById('underperf-val').innerText = threshold + '%';
+          document.getElementById('stale-input').value = result.settings.staleTimeout || 24;
+        }
+      });
+    }
+
+    function updateSliderVal(val) {
+      document.getElementById('underperf-val').innerText = val + '%';
+    }
+
+    function saveSettings() {
+      const underperf = document.getElementById('underperf-slider').value;
+      const stale = document.getElementById('stale-input').value;
+
+      Homey.showLoadingOverlay();
+
+      Homey.emit('save_settings', {
+        underperformanceThreshold: Number(underperf),
+        staleTimeout: Number(stale)
+      }, function(err, result) {
+        Homey.hideLoadingOverlay();
+        if (err) {
+          alert('Failed to save settings: ' + err.message);
+        } else {
+          Homey.close(); // Close repair view upon saving successfully
+        }
+      });
+    }
+
+    function clearAlerts() {
+      if (confirm('Are you sure you want to clear all active alerts? This resets the panel status to OK until the next diagnostics check.')) {
+        Homey.showLoadingOverlay();
+        Homey.emit('clear_alerts', {}, function(err, result) {
+          Homey.hideLoadingOverlay();
+          if (err) {
+            alert('Failed to clear alerts: ' + err.message);
+          } else {
+            loadData(); // Reload table data
+          }
+        });
+      }
+    }
+
+    // Initialize
+    onHomeyReady(function() {
+      loadData();
+    });
+  </script>
+
+</body>
+</html>
