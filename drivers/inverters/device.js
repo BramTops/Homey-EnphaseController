@@ -354,19 +354,7 @@ class InvertersDevice extends Homey.Device {
       }
 
       // Resolve final panel status capability
-      const panelAlerts = Object.values(this.activeAlerts).filter((a) => a.serial === serial);
-      if (panelAlerts.length > 0) {
-        const types = panelAlerts.map((a) => a.type);
-        let statusText = 'Error';
-        if (types.includes('stale')) {
-          statusText = 'Offline';
-        } else if (types.includes('underperformance')) {
-          statusText = 'Underperforming';
-        }
-        await this.setCapabilityValue(`inverter_status.${serial}`, statusText).catch(this.error);
-      } else {
-        await this.setCapabilityValue(`inverter_status.${serial}`, 'OK').catch(this.error);
-      }
+      await this.updateInverterStatusCapability(serial).catch(this.error);
     }
   }
 
@@ -473,6 +461,16 @@ class InvertersDevice extends Homey.Device {
       this.log(`Resolving Alert: Key=${alertKey}`);
       delete this.activeAlerts[alertKey];
       await this.setStoreValue('activeAlerts', this.activeAlerts);
+
+      // Update capability value immediately
+      if (serial === 'mismatch') {
+        const serials = this.getStoreValue('inverters') || [];
+        for (const s of serials) {
+          await this.updateInverterStatusCapability(s).catch(this.error);
+        }
+      } else {
+        await this.updateInverterStatusCapability(serial).catch(this.error);
+      }
     }
   }
 
@@ -502,7 +500,27 @@ class InvertersDevice extends Homey.Device {
       delete this.activeAlerts[k];
     }
     await this.setStoreValue('activeAlerts', this.activeAlerts);
-    await this.setCapabilityValue(`inverter_status.${serial}`, 'OK').catch(this.error);
+    await this.updateInverterStatusCapability(serial).catch(this.error);
+  }
+
+  /**
+   * Helper to update status capability of a specific inverter based on current active alerts.
+   * @param {string} serial - Inverter serial number
+   */
+  async updateInverterStatusCapability(serial) {
+    const panelAlerts = Object.values(this.activeAlerts).filter((a) => a.serial === serial);
+    if (panelAlerts.length > 0) {
+      const types = panelAlerts.map((a) => a.type);
+      let statusText = 'Error';
+      if (types.includes('stale')) {
+        statusText = 'Offline';
+      } else if (types.includes('underperformance')) {
+        statusText = 'Underperforming';
+      }
+      await this.setCapabilityValue(`inverter_status.${serial}`, statusText).catch(this.error);
+    } else {
+      await this.setCapabilityValue(`inverter_status.${serial}`, 'OK').catch(this.error);
+    }
   }
 
   /**
