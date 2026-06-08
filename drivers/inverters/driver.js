@@ -51,13 +51,40 @@ class InvertersDriver extends Homey.Driver {
         clearAlertAction.registerArgumentAutocompleteListener('inverter_index', async (query, args) => {
           return this.resolveAutocompleteInverters(query, args.device);
         });
+        clearAlertAction.registerRunListener(async (args, state) => {
+          this.log('clear_inverter_alert action triggered');
+          if (args.device && args.inverter_index) {
+            const inverterId = typeof args.inverter_index === 'object' ? args.inverter_index.id : args.inverter_index;
+            if (inverterId === 'any') {
+              await args.device.clearAllAlerts();
+            } else {
+              await args.device.clearInverterAlert(inverterId);
+            }
+            return true;
+          }
+          return false;
+        });
       }
     } catch (err) {
-      this.error('Failed to register autocomplete for clear_inverter_alert:', err.message);
+      this.error('Failed to register clear_inverter_alert flow:', err.message);
     }
 
-    // 3. Trigger Card: inverter_alert_triggered
-    // No registerRunListener required as there are no dropdown/filter arguments.
+    // 3. Action Card: clear_all_alerts
+    try {
+      const clearAllAlertsAction = this.homey.flow.getActionCard('clear_all_alerts');
+      if (clearAllAlertsAction) {
+        clearAllAlertsAction.registerRunListener(async (args, state) => {
+          this.log('clear_all_alerts action triggered');
+          if (args.device) {
+            await args.device.clearAllAlerts();
+            return true;
+          }
+          return false;
+        });
+      }
+    } catch (err) {
+      this.error('Failed to register clear_all_alerts flow:', err.message);
+    }
   }
 
   /**
