@@ -463,6 +463,18 @@
       ],
       "settings": [
         {
+          "id": "underperformance_threshold",
+          "type": "number",
+          "label": {
+            "en": "Underperformance Alert Threshold (%)",
+            "nl": "Onderprestatie waarschuwingsdrempel (%)"
+          },
+          "required": true,
+          "value": 15,
+          "min": 5,
+          "max": 50
+        },
+        {
           "id": "stale_timeout",
           "type": "number",
           "label": {
