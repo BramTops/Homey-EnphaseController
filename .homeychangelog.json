@@ -26,5 +26,9 @@
   "1.3.2": {
     "en": "Configure underperforming inverter threshold. \nInstant feedback clearing alerts.",
     "nl": "Stel onderprestatie-drempel omvormers in. \nDirecte feedback bij wissen alarmen."
+  },
+  "1.3.3": {
+    "en": "Improved login troubleshooting.",
+    "nl": "Verbeterde foutopsporing bij inloggen."
   }
 }
