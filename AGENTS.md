@@ -9,6 +9,7 @@ Athom Homey Pro app (**nl.creitive.enlighten**), Homey SDK v3. Local monitor/con
 ---
 
 ## Reference Sources
+* [PROTOCOLS.md](docs/PROTOCOLS.md) — Detailed Enphase Gateway API specifications (solar, battery, charger, cloud).
 * https://apps.developer.homey.app/ — Homey developer docs
 * https://github.com/vincentwolsink/home_assistant_enphase_envoy_installer — HA Envoy installer (useful for local APIs)
 * https://community.homey.app/ — Homey forums
@@ -33,7 +34,7 @@ Athom Homey Pro app (**nl.creitive.enlighten**), Homey SDK v3. Local monitor/con
   * `flow/`, `locales/`, `screensavers/`, `signals/` — Flow cards, translations, and signals.
 * `drivers/` — Device drivers.
   * `envoy/` — Legacy Envoy driver.
-  * `gateway/` — Enphase Gateway driver (telemetry, production control).
+  * `gateway/` — Enphase Solar driver (telemetry, production control).
   * `inverters/` — Enphase Inverters driver (handles dynamic inverter telemetry, status, and alerts).
 * `lib/` — Shared libraries.
   * `EnvoyAuth.js` — Cloud JWT auth, cloud login scraping, local token verification, cookie caching.
@@ -41,7 +42,9 @@ Athom Homey Pro app (**nl.creitive.enlighten**), Homey SDK v3. Local monitor/con
   * `PairingHelper.js` — Centralized pairing helper (credential cache, UDP mDNS multicast scan fallback, pairing session setup).
   * `helpers.js` — Shared helper functions.
 * `BACKLOG.md` — Feature backlog, battery research.
-* `docs/adr/` — Architecture Decision Records (ADRs).
+* `docs/` — Documentation.
+  * `adr/` — Architecture Decision Records (ADRs).
+  * `PROTOCOLS.md` — Enphase Gateway API specifications (local and cloud).
 
 ---
 
@@ -90,6 +93,11 @@ Athom Homey Pro app (**nl.creitive.enlighten**), Homey SDK v3. Local monitor/con
 
 ### 10. ADRs
 * Record architecture decisions in `docs/adr/XXXX-title.md` (sequentially numbered) using standard ADR structure (Status, Date, Context, Decision, Consequences).
+
+### 11. Dark Mode & Color Scheme Support in Pairing Wizards
+* **Forced Dark Mode Prevention:** Web browsers (like Edge and Chrome) attempt to auto-invert colors on webviews that do not explicitly declare dark mode support. This can cause light text in dark mode to be inverted to illegible dark text.
+* **Declarations:** Always include `<meta name="color-scheme" content="light dark">` in the HTML head and set `color-scheme: light dark;` in the CSS `:root` block to signal native dark mode compatibility and prevent forced color inversion.
+* **List Elements Layouts:** Avoid using generic `ul` and `li` tags for custom inline lists (e.g. warnings, logs) in pairing wizards, as Homey's global stylesheet applies 78px height and default light text colors to all list items (designed for device listings). Use flexbox-based `div` layout classes (like `.warning-item`) instead.
 
 ---
 

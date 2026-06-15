@@ -18,7 +18,7 @@
       }
     },
     "gateway": {
-      "name": "Enphase Gateway",
+      "name": "Enphase Solar",
       "error": {
         "fields_required": "Vul alstublieft alle verplichte velden in.",
         "invalid_serial": "Ongeldig gateway serienummer.",
@@ -40,8 +40,17 @@
         "any": "Elke omvormer"
       },
       "error": {
-        "no_gateway": "Nog geen Enphase Gateway gekoppeld. Koppel eerst de Gateway.",
-        "all_paired": "Alle gekoppelde Enphase Gateways hebben al omvormers toegevoegd."
+        "no_gateway": "Nog geen Enphase Solar gekoppeld. Koppel eerst de Enphase Solar.",
+        "all_paired": "Alle gekoppelde Enphase Solar hebben al omvormers toegevoegd."
+      }
+    },
+    "homeload": {
+      "name": "Enphase Home",
+      "error": {
+        "fields_required": "Vul alstublieft alle verplichte velden in.",
+        "invalid_serial": "Ongeldig gateway serienummer.",
+        "auth_failed": "Verbinding mislukt: __message__",
+        "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__"
       }
     }
   },
@@ -62,7 +71,7 @@
       "ip_label": "IP-adres gateway",
       "ip_placeholder": "bijv. 10.0.0.123",
       "btn_authenticate": "Verifiëren",
-      "btn_add_gateway": "Gateway toevoegen aan Homey",
+      "btn_add_gateway": "Solar toevoegen aan Homey",
       "error_required_fields": "Vul alstublieft alle verplichte velden in.",
       "error_invalid_serial": "Serienummer moet exact 12 cijfers bevatten (alleen getallen).",
       "error_auth_failed": "Verificatie mislukt. Controleer uw inloggegevens.",
@@ -77,7 +86,18 @@
       "btn_add_inverters": "Omvormers toevoegen aan Homey",
       "repair_title": "Gateway verbinding herstellen",
       "repair_subtitle": "Werk uw Enphase inloggegevens of lokale IP-adres bij als deze zijn gewijzigd.",
-      "btn_save_changes": "Wijzigingen opslaan"
+      "btn_save_changes": "Wijzigingen opslaan",
+      "title_homeload": "Verbind uw Enphase Home",
+      "subtitle_homeload": "Verbind met uw gateway om het huisverbruik (substituut P1-meter) apparaat toe te voegen.",
+      "warning_title": "Aandacht vereist",
+      "warning_subtitle": "Gateway Verificatie Waarschuwingen:",
+      "warning_bypass_desc": "U kunt deze waarschuwingen negeren en doorgaan met het toevoegen van het apparaat, maar sommige functies werken mogelijk niet.",
+      "warning_not_metered": "Deze gateway lijkt niet te zijn gemeten (geen zonneproductie EIM-klem gedetecteerd). Een substituut P1-meter vereist een gemeten gateway om verbruiksgegevens op te halen.",
+      "warning_no_consumption": "Verbruiksmonitoring is uitgeschakeld of er zijn geen verbruiksklemmen geïnstalleerd op deze gateway. Huisverbruikgegevens zullen niet beschikbaar zijn.",
+      "btn_ignore_continue": "Waarschuwingen negeren & doorgaan",
+      "btn_back": "Ga terug",
+      "success_subtitle_homeload": "Uw Enphase-account is gevalideerd en het Home-apparaat is klaar om te worden toegevoegd.",
+      "btn_add_homeload": "Home toevoegen aan Homey"
     }
   },
   "inverters": {

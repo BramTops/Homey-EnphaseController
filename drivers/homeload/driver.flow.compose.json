@@ -1,0 +1,67 @@
+{
+  "triggers": [
+    {
+      "id": "consumed_power_changed",
+      "title": {
+        "en": "The home consumption power changed",
+        "nl": "Het huisverbruik vermogen is veranderd"
+      },
+      "titleFormatted": {
+        "en": "The home consumption power changed to [[value]] W",
+        "nl": "Het huisverbruik vermogen is veranderd naar [[value]] W"
+      },
+      "tokens": [
+        {
+          "name": "value",
+          "type": "number",
+          "title": {
+            "en": "Power (W)",
+            "nl": "Vermogen (W)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "consumed_energy_changed",
+      "title": {
+        "en": "The home consumption energy changed",
+        "nl": "Het huisverbruik is veranderd"
+      },
+      "titleFormatted": {
+        "en": "The home consumption energy changed to [[value]] kWh",
+        "nl": "Het huisverbruik is veranderd naar [[value]] kWh"
+      },
+      "tokens": [
+        {
+          "name": "value",
+          "type": "number",
+          "title": {
+            "en": "Energy (kWh)",
+            "nl": "Energie (kWh)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "consumed_energy_today_changed",
+      "title": {
+        "en": "The home consumption energy today changed",
+        "nl": "Het huisverbruik vandaag is veranderd"
+      },
+      "titleFormatted": {
+        "en": "The home consumption energy today changed to [[value]] kWh",
+        "nl": "Het huisverbruik vandaag is veranderd naar [[value]] kWh"
+      },
+      "tokens": [
+        {
+          "name": "value",
+          "type": "number",
+          "title": {
+            "en": "Energy (kWh)",
+            "nl": "Energie (kWh)"
+          }
+        }
+      ]
+    }
+  ]
+}

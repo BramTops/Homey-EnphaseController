@@ -1,56 +1,65 @@
 {
   "name": {
-    "en": "Enphase Solar",
-    "nl": "Enphase Solar"
+    "en": "Enphase Home",
+    "nl": "Enphase Home"
   },
   "images": {
-    "small": "/drivers/gateway/assets/images/small.png",
-    "large": "/drivers/gateway/assets/images/large.png"
+    "small": "/drivers/homeload/assets/images/small.png",
+    "large": "/drivers/homeload/assets/images/large.png"
   },
-  "class": "solarpanel",
+  "class": "sensor",
   "discovery": "enphase-envoy",
   "capabilities": [
-    "onoff",
     "measure_power",
-    "last_update",
     "meter_power",
     "meter_power_today",
-    "power_production",
-    "connected_inverters",
-    "control_state",
-    "metered_gateway"
+    "measure_power.consumed",
+    "meter_power.consumed",
+    "meter_power_today.consumed",
+    "last_update"
   ],
   "capabilitiesOptions": {
-    "onoff": {
-      "title": {
-        "en": "Power production",
-        "nl": "Stroomproductie"
-      }
-    },
     "measure_power": {
       "title": {
-        "en": "Solar power",
-        "nl": "Zonnevermogen"
+        "en": "Grid power",
+        "nl": "Netstroom vermogen"
       }
     },
     "meter_power": {
       "title": {
-        "en": "Solar energy",
-        "nl": "Zonne-energie"
+        "en": "Grid energy",
+        "nl": "Netstroom energie"
       }
     },
     "meter_power_today": {
       "title": {
-        "en": "Solar energy today",
-        "nl": "Zonne-energie vandaag"
+        "en": "Grid energy today",
+        "nl": "Netstroom energie vandaag"
+      }
+    },
+    "measure_power.consumed": {
+      "title": {
+        "en": "Home consumption power",
+        "nl": "Huisverbruik vermogen"
+      }
+    },
+    "meter_power.consumed": {
+      "title": {
+        "en": "Home consumption energy",
+        "nl": "Huisverbruik energie"
+      }
+    },
+    "meter_power_today.consumed": {
+      "title": {
+        "en": "Home consumption energy today",
+        "nl": "Huisverbruik energie vandaag"
       }
     }
   },
-  "repair": [
-    {
-      "id": "repair"
-    }
-  ],
+  "energy": {
+    "cumulative": true,
+    "cumulativeImportedCapability": "meter_power"
+  },
   "pair": [
     {
       "id": "start"

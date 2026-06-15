@@ -152,7 +152,7 @@ class EnphaseController extends Homey.App {
               const devices = gatewayDriver.getDevices();
               for (const dev of devices) {
                 if (dev.getSettings().envoy_serial === serial) {
-                  this.log(`Saving new token and updating role for Enphase Gateway device: ${dev.getName()}`);
+                  this.log(`Saving new token and updating role for Enphase Solar device: ${dev.getName()}`);
                   await dev.setStoreValue('enphase_token', newToken).catch((err) => {
                     this.error(`Failed to save token to Gateway device ${dev.getName()}:`, err.message);
                   });
@@ -186,6 +186,24 @@ class EnphaseController extends Homey.App {
             // Driver 'inverters' might not be registered or loaded yet
             this.log('Inverters driver not loaded yet. Skipping token sync.');
           }
+
+          // Propagate new token to all homeload devices with matching serial
+          try {
+            const homeloadDriver = this.homey.drivers.getDriver('homeload');
+            if (homeloadDriver) {
+              const devices = homeloadDriver.getDevices();
+              for (const dev of devices) {
+                if (dev.getSettings().envoy_serial === serial) {
+                  this.log(`Saving new token to Enphase Home device: ${dev.getName()}`);
+                  await dev.setStoreValue('enphase_token', newToken).catch((err) => {
+                    this.error(`Failed to save token to Home device ${dev.getName()}:`, err.message);
+                  });
+                }
+              }
+            }
+          } catch (err) {
+            this.log('Homeload driver not loaded or not resolved for token propagation.');
+          }
         },
         onIpUpdated: async (newIp) => {
           this.log(`IP updated for gateway serial: ${serial} to ${newIp}. Propagating to devices...`);
@@ -218,7 +236,7 @@ class EnphaseController extends Homey.App {
               for (const dev of devices) {
                 if (dev.getSettings().envoy_serial === serial) {
                   if (dev.getSettings().envoy_ip !== newIp) {
-                    this.log(`Updating IP setting for Enphase Gateway device: ${dev.getName()}`);
+                    this.log(`Updating IP setting for Enphase Solar device: ${dev.getName()}`);
                     await dev.setSettings({ envoy_ip: newIp }).catch((err) => {
                       this.error(`Failed to update IP setting for Gateway device ${dev.getName()}:`, err.message);
                     });
@@ -248,6 +266,26 @@ class EnphaseController extends Homey.App {
             }
           } catch (err) {
             this.log('Inverters driver not loaded yet. Skipping IP sync.');
+          }
+
+          // Propagate new IP to all homeload devices with matching serial
+          try {
+            const homeloadDriver = this.homey.drivers.getDriver('homeload');
+            if (homeloadDriver) {
+              const devices = homeloadDriver.getDevices();
+              for (const dev of devices) {
+                if (dev.getSettings().envoy_serial === serial) {
+                  if (dev.getSettings().envoy_ip !== newIp) {
+                    this.log(`Updating IP setting for Enphase Home device: ${dev.getName()}`);
+                    await dev.setSettings({ envoy_ip: newIp }).catch((err) => {
+                      this.error(`Failed to update IP setting for Home device ${dev.getName()}:`, err.message);
+                    });
+                  }
+                }
+              }
+            }
+          } catch (err) {
+            this.log('Homeload driver not loaded or not resolved for IP propagation.');
           }
         },
       });
@@ -395,6 +433,7 @@ class EnphaseController extends Homey.App {
       // Determine device types registered
       let hasGateway = false;
       let hasInverters = false;
+      let hasHomeload = false;
       let isMaintainer = false;
 
       for (const dev of devices) {
@@ -406,6 +445,8 @@ class EnphaseController extends Homey.App {
           }
         } else if (driverId === 'inverters') {
           hasInverters = true;
+        } else if (driverId === 'homeload') {
+          hasHomeload = true;
         }
       }
 
@@ -414,8 +455,8 @@ class EnphaseController extends Homey.App {
         let powerForcedOff = false;
         let invertersData = null;
 
-        // 1. Fetch production telemetry if Gateway device is paired
-        if (hasGateway) {
+        // 1. Fetch production telemetry if Gateway or Homeload device is paired
+        if (hasGateway || hasHomeload) {
           if (isMaintainer) {
             try {
               powerForcedOff = await api.getPowerForcedOffstate();
@@ -464,6 +505,12 @@ class EnphaseController extends Homey.App {
           } else if (driverId === 'inverters') {
             if (invertersData) {
               await dev.updateTelemetry(invertersData).catch((err) => {
+                this.error(`[Manager] Device ${dev.getName()} updateTelemetry failed:`, err.message);
+              });
+            }
+          } else if (driverId === 'homeload') {
+            if (prodData) {
+              await dev.updateTelemetry(prodData).catch((err) => {
                 this.error(`[Manager] Device ${dev.getName()} updateTelemetry failed:`, err.message);
               });
             }

@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "nl.creitive.enlighten",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "compatibility": ">=12.0.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -179,6 +179,90 @@
           }
         ],
         "id": "inverter_power_changed"
+      },
+      {
+        "id": "consumed_power_changed",
+        "title": {
+          "en": "The home consumption power changed",
+          "nl": "Het huisverbruik vermogen is veranderd"
+        },
+        "titleFormatted": {
+          "en": "The home consumption power changed to [[value]] W",
+          "nl": "Het huisverbruik vermogen is veranderd naar [[value]] W"
+        },
+        "tokens": [
+          {
+            "name": "value",
+            "type": "number",
+            "title": {
+              "en": "Power (W)",
+              "nl": "Vermogen (W)"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=homeload"
+          }
+        ]
+      },
+      {
+        "id": "consumed_energy_changed",
+        "title": {
+          "en": "The home consumption energy changed",
+          "nl": "Het huisverbruik is veranderd"
+        },
+        "titleFormatted": {
+          "en": "The home consumption energy changed to [[value]] kWh",
+          "nl": "Het huisverbruik is veranderd naar [[value]] kWh"
+        },
+        "tokens": [
+          {
+            "name": "value",
+            "type": "number",
+            "title": {
+              "en": "Energy (kWh)",
+              "nl": "Energie (kWh)"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=homeload"
+          }
+        ]
+      },
+      {
+        "id": "consumed_energy_today_changed",
+        "title": {
+          "en": "The home consumption energy today changed",
+          "nl": "Het huisverbruik vandaag is veranderd"
+        },
+        "titleFormatted": {
+          "en": "The home consumption energy today changed to [[value]] kWh",
+          "nl": "Het huisverbruik vandaag is veranderd naar [[value]] kWh"
+        },
+        "tokens": [
+          {
+            "name": "value",
+            "type": "number",
+            "title": {
+              "en": "Energy (kWh)",
+              "nl": "Energie (kWh)"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=homeload"
+          }
+        ]
       }
     ],
     "actions": [
@@ -329,8 +413,8 @@
     },
     {
       "name": {
-        "en": "Enphase Gateway",
-        "nl": "Enphase Gateway"
+        "en": "Enphase Solar",
+        "nl": "Enphase Solar"
       },
       "images": {
         "small": "/drivers/gateway/assets/images/small.png",
@@ -354,6 +438,24 @@
           "title": {
             "en": "Power production",
             "nl": "Stroomproductie"
+          }
+        },
+        "measure_power": {
+          "title": {
+            "en": "Solar power",
+            "nl": "Zonnevermogen"
+          }
+        },
+        "meter_power": {
+          "title": {
+            "en": "Solar energy",
+            "nl": "Zonne-energie"
+          }
+        },
+        "meter_power_today": {
+          "title": {
+            "en": "Solar energy today",
+            "nl": "Zonne-energie vandaag"
           }
         }
       },
@@ -424,6 +526,131 @@
         }
       ],
       "id": "gateway"
+    },
+    {
+      "name": {
+        "en": "Enphase Home",
+        "nl": "Enphase Home"
+      },
+      "images": {
+        "small": "/drivers/homeload/assets/images/small.png",
+        "large": "/drivers/homeload/assets/images/large.png"
+      },
+      "class": "sensor",
+      "discovery": "enphase-envoy",
+      "capabilities": [
+        "measure_power",
+        "meter_power",
+        "meter_power_today",
+        "measure_power.consumed",
+        "meter_power.consumed",
+        "meter_power_today.consumed",
+        "last_update"
+      ],
+      "capabilitiesOptions": {
+        "measure_power": {
+          "title": {
+            "en": "Grid power",
+            "nl": "Netstroom vermogen"
+          }
+        },
+        "meter_power": {
+          "title": {
+            "en": "Grid energy",
+            "nl": "Netstroom energie"
+          }
+        },
+        "meter_power_today": {
+          "title": {
+            "en": "Grid energy today",
+            "nl": "Netstroom energie vandaag"
+          }
+        },
+        "measure_power.consumed": {
+          "title": {
+            "en": "Home consumption power",
+            "nl": "Huisverbruik vermogen"
+          }
+        },
+        "meter_power.consumed": {
+          "title": {
+            "en": "Home consumption energy",
+            "nl": "Huisverbruik energie"
+          }
+        },
+        "meter_power_today.consumed": {
+          "title": {
+            "en": "Home consumption energy today",
+            "nl": "Huisverbruik energie vandaag"
+          }
+        }
+      },
+      "energy": {
+        "cumulative": true,
+        "cumulativeImportedCapability": "meter_power"
+      },
+      "pair": [
+        {
+          "id": "start"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "user_email",
+          "type": "text",
+          "label": {
+            "en": "Enphase Account Email",
+            "nl": "Enphase-account e-mailadres"
+          },
+          "placeholder": "owner-or-installer@email.com",
+          "required": true,
+          "value": ""
+        },
+        {
+          "id": "password",
+          "type": "password",
+          "label": {
+            "en": "Enphase Password",
+            "nl": "Enphase-wachtwoord"
+          },
+          "required": true,
+          "value": ""
+        },
+        {
+          "id": "envoy_serial",
+          "type": "text",
+          "label": {
+            "en": "Envoy Serial Number",
+            "nl": "Envoy serienummer"
+          },
+          "placeholder": "122226012345",
+          "required": true,
+          "value": ""
+        },
+        {
+          "id": "envoy_ip",
+          "type": "text",
+          "label": {
+            "en": "Envoy Local IP Address",
+            "nl": "Lokaal IP-adres van de Envoy"
+          },
+          "placeholder": "10.0.0.123",
+          "required": true,
+          "value": ""
+        }
+      ],
+      "id": "homeload"
     },
     {
       "name": {
