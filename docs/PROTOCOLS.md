@@ -136,8 +136,31 @@ To check if CT clamps are physically present and software-enabled on the Gateway
     ```
 *   **Parsing Details:**
     *   `state`: A value of `"enabled"` indicates that the CT measurements are active and configured. A value of `"disabled"` indicates that the meter/clamp is inactive.
-    *   `measurementType`: Identifies the target of the CT clamp. `"production"` represents the solar production CT, and `"consumption"` represents the home/mains consumption CT.
+    *   `measurementType`: Identifies the target of the CT clamp. `"production"` represents the solar production CT. `"consumption"`, `"net-consumption"`, or `"total-consumption"` represents the home/mains consumption CT.
     *   **Simultaneous Clamp Support:** The Gateway natively supports having clamps installed and enabled on **both** the solar array (Production CT) and the home mains (Consumption CT) at the same time for complete, high-resolution metering.
+
+### Detailed Meter Energy Readings (Import/Export Registers)
+To retrieve precise, cumulative imported (delivered) and exported (received) active energy from physical CT meters:
+*   **Endpoint:** `GET https://<gateway_ip>/ivp/meters/readings`
+*   **Response Format:**
+    ```json
+    [
+      {
+        "eid": 704643584,
+        "timestamp": 1718467200,
+        "actEnergyDlvd": 14069173.236,
+        "actEnergyRcvd": 693190.807,
+        "activePower": -65.589,
+        "voltage": 226.87,
+        "current": -1.853
+      }
+    ]
+    ```
+*   **Parsing Details:**
+    *   `eid`: Matches the meter's `eid` returned in `/ivp/meters`.
+    *   `actEnergyDlvd`: Cumulative Active Energy Delivered (Wh) - representing imported energy (energy consumed from the grid on the gridpower meter, or energy consumed by the home on the homepower meter).
+    *   `actEnergyRcvd`: Cumulative Active Energy Received (Wh) - representing exported energy (energy returned to the grid on the gridpower meter, or energy exported past the home clamp on the homepower meter).
+    *   `activePower`: Real-time net active power (W). Matches `wNow` from `production.json`.
 
 ### System Production & Consumption
 Provides aggregate telemetry for production, grid export/import, and load consumption.
@@ -192,8 +215,15 @@ Provides aggregate telemetry for production, grid export/import, and load consum
             1.  **Total Consumption (Load Only):** The CTs are physically placed on the main lines *before* or *separate from* the solar generation lines. They measure the pure house consumption directly. In this mode, the Envoy calculates the net grid flow mathematically: `Net Grid = Total Consumption - Solar Production`.
             2.  **Net Consumption (Load with Solar):** The CTs are placed on the grid mains in a position where they capture the combined solar export and grid import. They measure the net flow to/from the grid. In this mode, the Envoy calculates the home load mathematically: `Total Consumption = Net Consumption + Solar Production`.
         *   **JSON Fields mapping:**
-            *   `consumption` type `"total-consumption"`: The absolute power consumed by home loads (appliances, heating, etc.).
-            *   `consumption` type `"net-consumption"`: The net power flow to/from the grid. A **positive** value indicates import from the grid; a **negative** value indicates export/surplus solar power injected into the grid.
+            *   Depending on the firmware version, elements inside the `consumption` array are either identified directly by `type` (e.g. `"type": "total-consumption"` / `"type": "net-consumption"`) or they all use `"type": "eim"` and are distinguished by the `measurementType` property (e.g. `"measurementType": "total-consumption"` / `"measurementType": "net-consumption"`).
+            *   `total-consumption` / `"total-consumption"`: The absolute power consumed by home loads (appliances, heating, etc.). This value is always positive.
+            *   `net-consumption` / `"net-consumption"`: The net power flow to/from the grid. A **positive** value indicates import from the grid; a **negative** value indicates export/surplus solar power injected into the grid.
+        *   **Firmware Variations & Naming Arrays**:
+            *   **Firmware D5.x and older**: Uses generic `"consumption"` in `/ivp/meters` endpoint to identify physical mains CT clamps. In `production.json`, keys `"total-consumption"` and `"net-consumption"` are accessed via the elements' `type` property.
+            *   **Firmware D7.x, D8.x and newer**: Differentiates between `"net-consumption"` and `"total-consumption"` in `/ivp/meters` if configured explicitly. In `production.json`, elements inside `consumption` use generic `"type": "eim"` and use `measurementType` property to distinguish them.
+            *   **Internal Mapping Arrays**:
+                *   `GRIDPOWER_METER_TYPES`: `['net-consumption', 'consumption']`
+                *   `HOMEPOWER_METER_TYPES`: `['total-consumption', 'consumption']`
     *   **Non-Metered Systems:**
         *   Has no CT clamps installed.
         *   Reports solar production only, by aggregating reported telemetry from all active microinverters.

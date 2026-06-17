@@ -1,7 +1,7 @@
 {
   "triggers": [
     {
-      "id": "consumed_power_changed",
+      "id": "home_power_changed",
       "title": {
         "en": "The home consumption power changed",
         "nl": "Het huisverbruik vermogen is veranderd"
@@ -22,7 +22,7 @@
       ]
     },
     {
-      "id": "consumed_energy_changed",
+      "id": "home_energy_changed",
       "title": {
         "en": "The home consumption energy changed",
         "nl": "Het huisverbruik is veranderd"
@@ -43,7 +43,7 @@
       ]
     },
     {
-      "id": "consumed_energy_today_changed",
+      "id": "home_energy_today_changed",
       "title": {
         "en": "The home consumption energy today changed",
         "nl": "Het huisverbruik vandaag is veranderd"

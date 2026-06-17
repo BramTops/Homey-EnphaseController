@@ -17,24 +17,69 @@ class HomeLoadDevice extends Homey.Device {
     // Retrieve stored store values
     const initialToken = this.getStoreValue('enphase_token');
     this.isMetered = !!this.getStoreValue('is_metered');
-    this.hasConsumption = !!this.getStoreValue('has_consumption');
+    this.hasGridpower = !!this.getStoreValue('has_gridpower');
+    this.hasHomepower = !!this.getStoreValue('has_homepower');
 
-    // Check and add missing capabilities dynamically for older paired devices
-    const requiredCapabilities = [
+    // 1. Ensure static gridpower capabilities are present
+    const staticCapabilities = [
       'measure_power',
       'meter_power',
       'meter_power_today',
-      'measure_power.consumed',
-      'meter_power.consumed',
-      'meter_power_today.consumed',
+      'meter_power.produced',
+      'meter_power_today.produced',
       'last_update',
     ];
 
-    for (const cap of requiredCapabilities) {
+    for (const cap of staticCapabilities) {
       if (!this.hasCapability(cap)) {
-        this.log(`Adding missing capability: ${cap}`);
+        this.log(`Adding missing static capability: ${cap}`);
         await this.addCapability(cap).catch((err) => {
-          this.error(`Failed to add capability ${cap}:`, err.message);
+          this.error(`Failed to add static capability ${cap}:`, err.message);
+        });
+      }
+    }
+
+    // 2. Manage dynamic homepower capabilities
+    const homeCapabilities = [
+      'measure_power.home',
+      'meter_power.home',
+      'meter_power_today.home',
+      'meter_power.home_produced',
+      'meter_power_today.home_produced',
+    ];
+
+    if (this.hasHomepower) {
+      for (const cap of homeCapabilities) {
+        if (!this.hasCapability(cap)) {
+          this.log(`Adding missing dynamic homepower capability: ${cap}`);
+          await this.addCapability(cap).catch((err) => {
+            this.error(`Failed to add homepower capability ${cap}:`, err.message);
+          });
+        }
+      }
+    } else {
+      for (const cap of homeCapabilities) {
+        if (this.hasCapability(cap)) {
+          this.log(`Removing dynamic homepower capability (not active on gateway): ${cap}`);
+          await this.removeCapability(cap).catch((err) => {
+            this.error(`Failed to remove homepower capability ${cap}:`, err.message);
+          });
+        }
+      }
+    }
+
+    // 3. Clean up legacy backward compatibility capabilities if present (.consumed namespace)
+    const legacyCapabilities = [
+      'measure_power.consumed',
+      'meter_power.consumed',
+      'meter_power_today.consumed',
+    ];
+
+    for (const cap of legacyCapabilities) {
+      if (this.hasCapability(cap)) {
+        this.log(`Removing legacy capability: ${cap}`);
+        await this.removeCapability(cap).catch((err) => {
+          this.error(`Failed to remove legacy capability ${cap}:`, err.message);
         });
       }
     }
@@ -71,73 +116,127 @@ class HomeLoadDevice extends Homey.Device {
     // Format readingTime to HH:mm in local timezone with DST
     const lastUpdateStr = await this.homey.app.formatTimeLocal(prodData.readingTime || Math.round(Date.now() / 1000));
 
-    // Calculate daily energy consumption for grid
+    // Calculate daily energy consumption for grid (imported and exported)
     const currentDay = new Date().getDate();
-    const gridEnergyToday = await this.calculateDailyEnergy(prodData.netConsumptionKwhLifetime, currentDay, '_net');
+    const gridpowerEnergyTodayImported = await this.calculateDailyEnergy(prodData.gridpowerKwhImported, currentDay, '_gridpower_import');
+    const gridpowerEnergyTodayExported = await this.calculateDailyEnergy(prodData.gridpowerKwhExported, currentDay, '_gridpower_export');
 
     // Update primary capabilities (Grid Consumption)
     this.log(
       'Grid telemetry updated: '
-      + `gridWattsNow = ${prodData.netConsumptionWattsNow} W, `
-      + `gridKwhLifetime = ${prodData.netConsumptionKwhLifetime} kWh, `
-      + `gridEnergyToday = ${gridEnergyToday} kWh, `
+      + `gridpowerWatts = ${prodData.gridpowerWatts} W, `
+      + `gridpowerKwhImported = ${prodData.gridpowerKwhImported} kWh, `
+      + `gridpowerEnergyTodayImported = ${gridpowerEnergyTodayImported} kWh, `
+      + `gridpowerKwhExported = ${prodData.gridpowerKwhExported} kWh, `
+      + `gridpowerEnergyTodayExported = ${gridpowerEnergyTodayExported} kWh, `
       + `readingTime = ${prodData.readingTime} (${lastUpdateStr})`,
     );
 
-    await this.setCapabilityValue('measure_power', prodData.netConsumptionWattsNow);
-    await this.setCapabilityValue('meter_power', prodData.netConsumptionKwhLifetime);
-    await this.setCapabilityValue('meter_power_today', gridEnergyToday);
+    await this.setCapabilityValue('measure_power', prodData.gridpowerWatts);
+    await this.setCapabilityValue('meter_power', prodData.gridpowerKwhImported);
+    await this.setCapabilityValue('meter_power_today', gridpowerEnergyTodayImported);
     await this.setCapabilityValue('last_update', lastUpdateStr);
 
-    // If total home consumption is available, calculate and update it too
-    if (prodData.hasConsumption) {
-      const homeEnergyToday = await this.calculateDailyEnergy(prodData.consumptionKwhLifetime, currentDay, '_consumed');
+    if (this.hasCapability('meter_power.produced')) {
+      await this.setCapabilityValue('meter_power.produced', prodData.gridpowerKwhExported);
+    }
+    if (this.hasCapability('meter_power_today.produced')) {
+      await this.setCapabilityValue('meter_power_today.produced', gridpowerEnergyTodayExported);
+    }
 
-      this.log(
-        'Home consumption telemetry updated: '
-        + `homeWattsNow = ${prodData.consumptionWattsNow} W, `
-        + `homeKwhLifetime = ${prodData.consumptionKwhLifetime} kWh, `
-        + `homeEnergyToday = ${homeEnergyToday} kWh`,
-      );
+    // Handle dynamic updates to homepower availability state at runtime
+    if (this.hasHomepower !== prodData.hasHomepower) {
+      this.hasHomepower = prodData.hasHomepower;
+      await this.setStoreValue('has_homepower', this.hasHomepower).catch(this.error);
 
-      const oldPower = this.getCapabilityValue('measure_power.consumed');
-      const oldEnergy = this.getCapabilityValue('meter_power.consumed');
-      const oldEnergyToday = this.getCapabilityValue('meter_power_today.consumed');
-
-      await this.setCapabilityValue('measure_power.consumed', prodData.consumptionWattsNow);
-      await this.setCapabilityValue('meter_power.consumed', prodData.consumptionKwhLifetime);
-      await this.setCapabilityValue('meter_power_today.consumed', homeEnergyToday);
-
-      if (oldPower !== prodData.consumptionWattsNow) {
-        const trigger = this.homey.flow.getDeviceTriggerCard('consumed_power_changed');
-        if (trigger) {
-          trigger.trigger(this, { value: prodData.consumptionWattsNow }, {}).catch(this.error);
+      const homeCapabilities = [
+        'measure_power.home',
+        'meter_power.home',
+        'meter_power_today.home',
+        'meter_power.home_produced',
+        'meter_power_today.home_produced',
+      ];
+      if (this.hasHomepower) {
+        for (const cap of homeCapabilities) {
+          if (!this.hasCapability(cap)) {
+            this.log(`Adding homepower capability at runtime: ${cap}`);
+            await this.addCapability(cap).catch(this.error);
+          }
         }
-      }
-
-      if (oldEnergy !== prodData.consumptionKwhLifetime) {
-        const trigger = this.homey.flow.getDeviceTriggerCard('consumed_energy_changed');
-        if (trigger) {
-          trigger.trigger(this, { value: prodData.consumptionKwhLifetime }, {}).catch(this.error);
-        }
-      }
-
-      if (oldEnergyToday !== homeEnergyToday) {
-        const trigger = this.homey.flow.getDeviceTriggerCard('consumed_energy_today_changed');
-        if (trigger) {
-          trigger.trigger(this, { value: homeEnergyToday }, {}).catch(this.error);
+      } else {
+        for (const cap of homeCapabilities) {
+          if (this.hasCapability(cap)) {
+            this.log(`Removing homepower capability at runtime: ${cap}`);
+            await this.removeCapability(cap).catch(this.error);
+          }
         }
       }
     }
 
-    // Update stores if metered status changes
+    // If home consumption is available, calculate and update it too
+    if (this.hasHomepower) {
+      const homepowerEnergyTodayImported = await this.calculateDailyEnergy(prodData.homepowerKwhImported, currentDay, '_homepower_import');
+      const homepowerEnergyTodayExported = await this.calculateDailyEnergy(prodData.homepowerKwhExported, currentDay, '_homepower_export');
+
+      this.log(
+        'Home consumption telemetry updated: '
+        + `homepowerWatts = ${prodData.homepowerWatts} W, `
+        + `homepowerKwhImported = ${prodData.homepowerKwhImported} kWh, `
+        + `homepowerEnergyTodayImported = ${homepowerEnergyTodayImported} kWh, `
+        + `homepowerKwhExported = ${prodData.homepowerKwhExported} kWh, `
+        + `homepowerEnergyTodayExported = ${homepowerEnergyTodayExported} kWh`,
+      );
+
+      const oldPower = this.getCapabilityValue('measure_power.home');
+      const oldEnergy = this.getCapabilityValue('meter_power.home');
+      const oldEnergyToday = this.getCapabilityValue('meter_power_today.home');
+
+      if (this.hasCapability('measure_power.home')) {
+        await this.setCapabilityValue('measure_power.home', prodData.homepowerWatts);
+      }
+      if (this.hasCapability('meter_power.home')) {
+        await this.setCapabilityValue('meter_power.home', prodData.homepowerKwhImported);
+      }
+      if (this.hasCapability('meter_power_today.home')) {
+        await this.setCapabilityValue('meter_power_today.home', homepowerEnergyTodayImported);
+      }
+      if (this.hasCapability('meter_power.home_produced')) {
+        await this.setCapabilityValue('meter_power.home_produced', prodData.homepowerKwhExported);
+      }
+      if (this.hasCapability('meter_power_today.home_produced')) {
+        await this.setCapabilityValue('meter_power_today.home_produced', homepowerEnergyTodayExported);
+      }
+
+      if (oldPower !== prodData.homepowerWatts) {
+        const trigger = this.homey.flow.getDeviceTriggerCard('home_power_changed');
+        if (trigger) {
+          trigger.trigger(this, { value: prodData.homepowerWatts }, {}).catch(this.error);
+        }
+      }
+
+      if (oldEnergy !== prodData.homepowerKwhImported) {
+        const trigger = this.homey.flow.getDeviceTriggerCard('home_energy_changed');
+        if (trigger) {
+          trigger.trigger(this, { value: prodData.homepowerKwhImported }, {}).catch(this.error);
+        }
+      }
+
+      if (oldEnergyToday !== homepowerEnergyTodayImported) {
+        const trigger = this.homey.flow.getDeviceTriggerCard('home_energy_today_changed');
+        if (trigger) {
+          trigger.trigger(this, { value: homepowerEnergyTodayImported }, {}).catch(this.error);
+        }
+      }
+    }
+
+    // Update stores if metered status or gridpower state changes
     if (this.isMetered !== prodData.isMetered) {
       this.isMetered = prodData.isMetered;
       await this.setStoreValue('is_metered', this.isMetered).catch(this.error);
     }
-    if (this.hasConsumption !== prodData.hasConsumption) {
-      this.hasConsumption = prodData.hasConsumption;
-      await this.setStoreValue('has_consumption', this.hasConsumption).catch(this.error);
+    if (this.hasGridpower !== prodData.hasGridpower) {
+      this.hasGridpower = prodData.hasGridpower;
+      await this.setStoreValue('has_gridpower', this.hasGridpower).catch(this.error);
     }
   }
 

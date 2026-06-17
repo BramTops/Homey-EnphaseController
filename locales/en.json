@@ -93,11 +93,13 @@
       "warning_subtitle": "Gateway Verification Warnings:",
       "warning_bypass_desc": "You can ignore these warnings and continue adding the device, but some features may not work.",
       "warning_not_metered": "This gateway does not appear to be metered (no solar production EIM clamp detected). A substitute P1 meter device requires a metered gateway to fetch consumption data.",
-      "warning_no_consumption": "Consumption monitoring is disabled or consumption clamps are not installed on this gateway. Home load data will not be available.",
+      "warning_no_gridpower": "Grid power monitoring (net-consumption) is not active or clamps are not installed on this gateway. Homey will not be able to track main grid import/export.",
+      "warning_no_gridpower_but_homepower": "Grid power monitoring (net-consumption) is not active, but home power consumption (total-consumption) is active. Homey can still track home load power.",
       "btn_ignore_continue": "Ignore Warnings & Continue",
       "btn_back": "Go Back",
       "success_subtitle_homeload": "Your Enphase account was validated and the home device is ready to be added.",
-      "btn_add_homeload": "Add Home to Homey"
+      "btn_add_homeload": "Add Home to Homey",
+      "warning_no_consumption": "Consumption monitoring is disabled or consumption clamps are not installed on this gateway. Home load data will not be available."
     }
   },
   "inverters": {

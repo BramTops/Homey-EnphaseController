@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,56 +10,6 @@
     :root {
       color-scheme: light dark;
       --homey-su: 4px;
-      
-      /* Light Mode Default Theme */
-      --homey-background-color: #ffffff;
-      --homey-text-color: #1a1a1a;
-      --homey-text-color-secondary: #666666;
-      --homey-text-color-error: #d32f2f;
-      --homey-text-color-warning: #ea580c;
-      
-      --input-bg: #ffffff;
-      --input-border: #dcdcdc;
-      --input-color: #1a1a1a;
-      --focus-border: #0081ff;
-      --focus-shadow: rgba(0, 129, 255, 0.15);
-      
-      --badge-bg: rgba(0, 129, 255, 0.06);
-      --badge-border: rgba(0, 129, 255, 0.15);
-      --badge-text: #0066cc;
-      
-      --error-bg: rgba(211, 47, 47, 0.04);
-      --error-border: rgba(211, 47, 47, 0.15);
-      
-      --warning-bg: rgba(234, 88, 12, 0.05);
-      --warning-border: rgba(234, 88, 12, 0.2);
-    }
-
-    /* Support standard system dark mode if running standalone/iframe and Homey hasn't overridden it */
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --homey-background-color: #121212;
-        --homey-text-color: #f3f4f6;
-        --homey-text-color-secondary: #9ca3af;
-        --homey-text-color-error: #f87171;
-        --homey-text-color-warning: #fb923c;
-        
-        --input-bg: rgba(255, 255, 255, 0.06);
-        --input-border: rgba(255, 255, 255, 0.15);
-        --input-color: #ffffff;
-        --focus-border: #3b82f6;
-        --focus-shadow: rgba(59, 130, 246, 0.25);
-        
-        --badge-bg: rgba(59, 130, 246, 0.12);
-        --badge-border: rgba(59, 130, 246, 0.25);
-        --badge-text: #93c5fd;
-        
-        --error-bg: rgba(239, 68, 68, 0.1);
-        --error-border: rgba(239, 68, 68, 0.25);
-        
-        --warning-bg: rgba(249, 115, 22, 0.1);
-        --warning-border: rgba(249, 115, 22, 0.25);
-      }
     }
 
     body {
@@ -101,122 +52,12 @@
       fill: #ffffff;
     }
 
-    /* Fallback classes in case Homey Style Library classes are not fully active */
-    .homey-header {
-      text-align: center;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--input-border);
-      padding-bottom: 16px;
-    }
-    
-    .homey-title {
-      font-size: 22px;
-      font-weight: 600;
-      margin: 0 0 8px 0;
-      color: var(--homey-text-color);
-    }
-
-    .homey-subtitle {
-      font-size: 14px;
-      color: var(--homey-text-color-secondary);
-      margin: 0;
-      line-height: 1.5;
-    }
-
-    .homey-form {
-      margin-top: 16px;
-    }
-
-    .homey-form-group {
-      margin-bottom: 18px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .homey-form-label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--homey-text-color);
-      margin-bottom: 6px;
-      text-align: left;
-    }
-
-    .homey-form-input {
-      width: 100%;
-      background: var(--input-bg);
-      border: 1px solid var(--input-border);
-      border-radius: 6px;
-      padding: 10px 14px;
-      color: var(--input-color);
-      font-size: 14px;
-      font-family: inherit;
-      box-sizing: border-box;
-      transition: all 0.2s ease;
-    }
-
-    .homey-form-input:focus {
-      outline: none;
-      border-color: var(--focus-border);
-      background: var(--input-bg);
-      box-shadow: 0 0 0 3px var(--focus-shadow);
-    }
-
-    /* Button Style matching Homey's primary style */
-    .homey-button-primary-shadow-full,
-    .homey-button-secondary {
-      width: 100%;
-      border-radius: 6px;
-      padding: 12px 14px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      box-sizing: border-box;
-      transition: all 0.2s ease;
-      margin-top: 8px;
-      text-align: center;
-      display: block;
-    }
-
-    .homey-button-primary-shadow-full {
-      background: #0081ff;
-      color: #ffffff;
-      border: none;
-      box-shadow: 0 2px 6px rgba(0, 129, 255, 0.2);
-    }
-
-    .homey-button-primary-shadow-full:hover {
-      background: #0066cc;
-      box-shadow: 0 4px 10px rgba(0, 129, 255, 0.3);
-    }
-
-    .homey-button-primary-shadow-full:active {
-      background: #0055b3;
-    }
-
-    .homey-button-secondary {
-      background: transparent;
-      color: var(--homey-text-color-secondary);
-      border: 1px solid var(--input-border);
-    }
-
-    .homey-button-secondary:hover {
-      background: rgba(0, 0, 0, 0.04);
-      color: var(--homey-text-color);
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .homey-button-secondary:hover {
-        background: rgba(255, 255, 255, 0.04);
-      }
-    }
-
     /* Custom UI Component: Discovery Badge */
     .discovery-badge {
       display: none;
-      background: var(--badge-bg);
-      border: 1px solid var(--badge-border);
-      color: var(--badge-text);
+      background: rgba(0, 129, 255, 0.06);
+      border: 1px solid rgba(0, 129, 255, 0.15);
+      color: #0066cc;
       font-size: 13px;
       padding: 10px 14px;
       border-radius: 8px;
@@ -227,16 +68,33 @@
     }
 
     @keyframes pulse {
-      0% { opacity: 0.95; }
-      50% { opacity: 1; transform: scale(1.01); }
-      100% { opacity: 0.95; }
+      0% {
+        opacity: 0.95;
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.01);
+      }
+
+      100% {
+        opacity: 0.95;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .discovery-badge {
+        background: rgba(59, 130, 246, 0.12);
+        border: 1px solid rgba(59, 130, 246, 0.25);
+        color: #93c5fd;
+      }
     }
 
     /* Custom UI Component: Error Message */
     .error-msg {
       display: none;
-      background: var(--error-bg);
-      border: 1px solid var(--error-border);
+      background: rgba(211, 47, 47, 0.04);
+      border: 1px solid rgba(211, 47, 47, 0.15);
       color: var(--homey-text-color-error);
       font-size: 13px;
       padding: 12px 14px;
@@ -244,6 +102,13 @@
       margin-bottom: 18px;
       line-height: 1.5;
       text-align: left;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .error-msg {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.25);
+      }
     }
 
     /* Warnings panel */
@@ -254,11 +119,18 @@
     }
 
     .warning-box {
-      background: var(--warning-bg);
-      border: 1px solid var(--warning-border);
+      background: rgba(234, 88, 12, 0.05);
+      border: 1px solid rgba(234, 88, 12, 0.2);
       border-radius: 8px;
       padding: 14px;
       margin-bottom: 18px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .warning-box {
+        background: rgba(249, 115, 22, 0.1);
+        border: 1px solid rgba(249, 115, 22, 0.25);
+      }
     }
 
     .warning-box h3 {
@@ -327,37 +199,43 @@
       font-weight: 500;
       transition: all 0.3s ease;
     }
+
     .field-note.detected {
       color: #22c55e;
     }
+
     .field-note.not-found {
       color: #ea580c;
     }
+
     @media (prefers-color-scheme: dark) {
       .field-note.detected {
         color: #4ade80;
       }
+
       .field-note.not-found {
         color: #f97316;
       }
     }
   </style>
 </head>
+
 <body>
 
   <div class="card">
-    
+
     <!-- Pairing Form -->
     <div id="form-container">
       <header class="homey-header">
         <div class="logo-container">
           <!-- House SVG -->
           <svg viewBox="0 0 24 24">
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
           </svg>
         </div>
         <h1 class="homey-title" data-i18n="pair.start.title_homeload">Enphase Home</h1>
-        <p class="homey-subtitle" data-i18n="pair.start.subtitle_homeload">Connect to your gateway to add the home consumption (P1 substitute) device.</p>
+        <p class="homey-subtitle" data-i18n="pair.start.subtitle_homeload">Connect to your gateway to add the home
+          consumption (P1 substitute) device.</p>
       </header>
 
       <div class="error-msg" id="error-msg"></div>
@@ -365,36 +243,44 @@
       <form class="homey-form" onsubmit="event.preventDefault(); submitPairing();">
         <div class="homey-form-group">
           <label class="homey-form-label" for="email" data-i18n="pair.start.email_label">Enphase Email</label>
-          <input class="homey-form-input" type="email" id="email" placeholder="e.g. owner-or-installer@email.com" data-i18n-placeholder="pair.start.email_placeholder" required>
+          <input class="homey-form-input" type="text" id="email" placeholder="e.g. owner-or-installer@email.com"
+            data-i18n-placeholder="pair.start.email_placeholder" required>
         </div>
 
         <div class="homey-form-group">
           <label class="homey-form-label" for="password" data-i18n="pair.start.password_label">Enphase Password</label>
-          <input class="homey-form-input" type="password" id="password" placeholder="Your password" data-i18n-placeholder="pair.start.password_placeholder" required>
+          <input class="homey-form-input" type="password" id="password" placeholder="Your password"
+            data-i18n-placeholder="pair.start.password_placeholder" required>
         </div>
 
         <div class="homey-form-group">
           <label class="homey-form-label" for="serial" data-i18n="pair.start.serial_label">Gateway Serial Number</label>
-          <input class="homey-form-input" type="text" id="serial" placeholder="e.g. 122226012345" data-i18n-placeholder="pair.start.serial_placeholder" pattern="\d{12}" minlength="12" maxlength="12" required>
+          <input class="homey-form-input" type="text" id="serial" placeholder="e.g. 122226012345"
+            data-i18n-placeholder="pair.start.serial_placeholder" pattern="\d{12}" minlength="12" maxlength="12"
+            required>
           <div class="field-note" id="serial-note"></div>
         </div>
 
         <div class="homey-form-group">
           <label class="homey-form-label" for="ip" data-i18n="pair.start.ip_label">Gateway IP Address</label>
-          <input class="homey-form-input" type="text" id="ip" placeholder="e.g. 10.0.0.123" data-i18n-placeholder="pair.start.ip_placeholder" required>
+          <input class="homey-form-input" type="text" id="ip" placeholder="e.g. 10.0.0.123"
+            data-i18n-placeholder="pair.start.ip_placeholder" required>
           <div class="field-note" id="ip-note"></div>
         </div>
 
-        <button class="homey-button-primary-shadow-full" id="btn-connect" type="submit" data-i18n="pair.start.btn_authenticate">Authenticate</button>
+        <button class="homey-button-primary-shadow-full" id="btn-connect" type="submit"
+          data-i18n="pair.start.btn_authenticate">Authenticate</button>
       </form>
     </div>
 
     <!-- Warnings Screen -->
     <div id="warning-container" class="warning-container">
       <header class="homey-header">
-        <div class="logo-container" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);">
+        <div class="logo-container"
+          style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);">
           <svg viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
           </svg>
         </div>
         <h1 class="homey-title" data-i18n="pair.start.warning_title">Attention Required</h1>
@@ -402,30 +288,38 @@
 
       <div class="warning-box">
         <h3>
-          <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+          <svg viewBox="0 0 24 24">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+          </svg>
           <span data-i18n="pair.start.warning_subtitle">Gateway Verification Warnings:</span>
         </h3>
         <div class="warning-list" id="warning-list">
         </div>
       </div>
 
-      <p class="homey-subtitle" style="text-align: center; margin-bottom: 24px;" data-i18n="pair.start.warning_bypass_desc">You can ignore these warnings and continue adding the device, but some features may not work.</p>
+      <p class="homey-subtitle" style="text-align: center; margin-bottom: 24px;"
+        data-i18n="pair.start.warning_bypass_desc">You can ignore these warnings and continue adding the device, but
+        some features may not work.</p>
 
-      <button class="homey-button-primary-shadow-full" onclick="showSuccessScreen()" data-i18n="pair.start.btn_ignore_continue">Ignore Warnings & Continue</button>
+      <button class="homey-button-primary-shadow-full" onclick="showSuccessScreen()"
+        data-i18n="pair.start.btn_ignore_continue">Ignore Warnings & Continue</button>
       <button class="homey-button-secondary" onclick="showForm()" data-i18n="pair.start.btn_back">Go Back</button>
     </div>
 
     <!-- Success Screen -->
     <div id="success-container" class="success-container">
       <div class="success-icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
       </div>
       <h1 class="homey-title" data-i18n="pair.start.success_title">Authentication Successful!</h1>
-      <p class="homey-subtitle" style="margin-bottom: 24px;" data-i18n="pair.start.success_subtitle_homeload">Your Enphase account was validated and the home device is ready to be added.</p>
+      <p class="homey-subtitle" style="margin-bottom: 24px;" data-i18n="pair.start.success_subtitle_homeload">Your
+        Enphase account was validated and the home device is ready to be added.</p>
 
-      <button class="homey-button-primary-shadow-full" onclick="finishPairing()" data-i18n="pair.start.btn_add_homeload">Add Home to Homey</button>
+      <button class="homey-button-primary-shadow-full" onclick="finishPairing()"
+        data-i18n="pair.start.btn_add_homeload">Add Home to Homey</button>
     </div>
 
   </div>
@@ -437,13 +331,13 @@
       document.title = Homey.__('pair.start.title_homeload');
 
       // Search all elements with data-i18n and replace content
-      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
         const key = el.getAttribute('data-i18n');
         el.textContent = Homey.__(key);
       });
 
       // Search all elements with data-i18n-placeholder and replace placeholder
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
         const key = el.getAttribute('data-i18n-placeholder');
         el.placeholder = Homey.__(key);
       });
@@ -453,14 +347,14 @@
     translateUI();
 
     // Auto-detect IP and Serial from the driver when the view loads
-    Homey.emit('get_discovered_ip', {}, function(err, result) {
+    Homey.emit('get_discovered_ip', {}, function (err, result) {
       const ipNoteEl = document.getElementById('ip-note');
       const serialNoteEl = document.getElementById('serial-note');
-      
+
       if (!err && result) {
         const discoveredIp = result.ip;
         const discoveredSerial = result.serial;
-        
+
         if (discoveredIp) {
           document.getElementById('ip').value = discoveredIp;
           ipNoteEl.textContent = Homey.__('pair.start.ip_auto_detected');
@@ -470,7 +364,7 @@
           ipNoteEl.textContent = Homey.__('pair.start.ip_not_found');
           ipNoteEl.className = 'field-note not-found';
         }
-        
+
         if (discoveredSerial) {
           document.getElementById('serial').value = discoveredSerial;
           serialNoteEl.textContent = Homey.__('pair.start.serial_auto_detected');
@@ -484,7 +378,7 @@
         document.getElementById('ip').value = '';
         ipNoteEl.textContent = Homey.__('pair.start.ip_not_found');
         ipNoteEl.className = 'field-note not-found';
-        
+
         document.getElementById('serial').value = '';
         serialNoteEl.textContent = Homey.__('pair.start.serial_not_found');
         serialNoteEl.className = 'field-note not-found';
@@ -492,7 +386,7 @@
     });
 
     // Try to pre-fill from cached credentials
-    Homey.emit('get_cached_credentials', {}, function(err, result) {
+    Homey.emit('get_cached_credentials', {}, function (err, result) {
       if (!err && result) {
         if (result.user_email) {
           document.getElementById('email').value = result.user_email;
@@ -504,7 +398,7 @@
     });
 
     // Listen for dynamic discovery updates from the backend in real-time
-    Homey.on('discovery_update', function(result) {
+    Homey.on('discovery_update', function (result) {
       if (result) {
         const ipNoteEl = document.getElementById('ip-note');
         const serialNoteEl = document.getElementById('serial-note');
@@ -517,7 +411,7 @@
           ipNoteEl.textContent = Homey.__('pair.start.ip_auto_detected');
           ipNoteEl.className = 'field-note detected';
         }
-        
+
         if (result.serial && (!serialInput.value || serialInput.value.trim() === '')) {
           serialInput.value = result.serial;
           serialNoteEl.textContent = Homey.__('pair.start.serial_auto_detected');
@@ -558,7 +452,7 @@
       };
 
       // Emit login credentials to driver.js
-      Homey.emit('login', data, function(err, result) {
+      Homey.emit('login', data, function (err, result) {
         Homey.hideLoadingOverlay();
 
         if (err) {
@@ -571,8 +465,12 @@
           if (!result.isMetered) {
             warnings.push(Homey.__('pair.start.warning_not_metered'));
           }
-          if (!result.hasConsumption) {
-            warnings.push(Homey.__('pair.start.warning_no_consumption'));
+          if (!result.hasGridpower) {
+            if (result.hasHomepower) {
+              warnings.push(Homey.__('pair.start.warning_no_gridpower_but_homepower'));
+            } else {
+              warnings.push(Homey.__('pair.start.warning_no_gridpower'));
+            }
           }
 
           if (warnings.length > 0) {
@@ -583,7 +481,7 @@
 
             const listEl = document.getElementById('warning-list');
             listEl.innerHTML = '';
-            warnings.forEach(function(warn) {
+            warnings.forEach(function (warn) {
               const div = document.createElement('div');
               div.className = 'warning-item';
               div.textContent = warn;
@@ -622,4 +520,5 @@
   </script>
 
 </body>
+
 </html>

@@ -13,9 +13,13 @@
     "measure_power",
     "meter_power",
     "meter_power_today",
-    "measure_power.consumed",
-    "meter_power.consumed",
-    "meter_power_today.consumed",
+    "meter_power.produced",
+    "meter_power_today.produced",
+    "measure_power.home",
+    "meter_power.home",
+    "meter_power_today.home",
+    "meter_power.home_produced",
+    "meter_power_today.home_produced",
     "last_update"
   ],
   "capabilitiesOptions": {
@@ -27,38 +31,63 @@
     },
     "meter_power": {
       "title": {
-        "en": "Grid energy",
-        "nl": "Netstroom energie"
+        "en": "Grid energy imported",
+        "nl": "Netstroom energie geïmporteerd"
       }
     },
     "meter_power_today": {
       "title": {
-        "en": "Grid energy today",
-        "nl": "Netstroom energie vandaag"
+        "en": "Grid energy imported today",
+        "nl": "Netstroom energie geïmporteerd vandaag"
       }
     },
-    "measure_power.consumed": {
+    "meter_power.produced": {
+      "title": {
+        "en": "Grid energy exported",
+        "nl": "Netstroom energie geëxporteerd"
+      }
+    },
+    "meter_power_today.produced": {
+      "title": {
+        "en": "Grid energy exported today",
+        "nl": "Netstroom energie geëxporteerd vandaag"
+      }
+    },
+    "measure_power.home": {
       "title": {
         "en": "Home consumption power",
         "nl": "Huisverbruik vermogen"
       }
     },
-    "meter_power.consumed": {
+    "meter_power.home": {
       "title": {
         "en": "Home consumption energy",
         "nl": "Huisverbruik energie"
       }
     },
-    "meter_power_today.consumed": {
+    "meter_power_today.home": {
       "title": {
         "en": "Home consumption energy today",
         "nl": "Huisverbruik energie vandaag"
+      }
+    },
+    "meter_power.home_produced": {
+      "title": {
+        "en": "Home energy exported",
+        "nl": "Huisenergie geëxporteerd"
+      }
+    },
+    "meter_power_today.home_produced": {
+      "title": {
+        "en": "Home energy exported today",
+        "nl": "Huisenergie geëxporteerd vandaag"
       }
     }
   },
   "energy": {
     "cumulative": true,
-    "cumulativeImportedCapability": "meter_power"
+    "cumulativeImportedCapability": "meter_power",
+    "cumulativeExportedCapability": "meter_power.produced"
   },
   "pair": [
     {

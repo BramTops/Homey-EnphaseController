@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "nl.creitive.enlighten",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "compatibility": ">=12.0.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -181,7 +181,7 @@
         "id": "inverter_power_changed"
       },
       {
-        "id": "consumed_power_changed",
+        "id": "home_power_changed",
         "title": {
           "en": "The home consumption power changed",
           "nl": "Het huisverbruik vermogen is veranderd"
@@ -209,7 +209,7 @@
         ]
       },
       {
-        "id": "consumed_energy_changed",
+        "id": "home_energy_changed",
         "title": {
           "en": "The home consumption energy changed",
           "nl": "Het huisverbruik is veranderd"
@@ -237,7 +237,7 @@
         ]
       },
       {
-        "id": "consumed_energy_today_changed",
+        "id": "home_energy_today_changed",
         "title": {
           "en": "The home consumption energy today changed",
           "nl": "Het huisverbruik vandaag is veranderd"
@@ -542,9 +542,13 @@
         "measure_power",
         "meter_power",
         "meter_power_today",
-        "measure_power.consumed",
-        "meter_power.consumed",
-        "meter_power_today.consumed",
+        "meter_power.produced",
+        "meter_power_today.produced",
+        "measure_power.home",
+        "meter_power.home",
+        "meter_power_today.home",
+        "meter_power.home_produced",
+        "meter_power_today.home_produced",
         "last_update"
       ],
       "capabilitiesOptions": {
@@ -556,38 +560,63 @@
         },
         "meter_power": {
           "title": {
-            "en": "Grid energy",
-            "nl": "Netstroom energie"
+            "en": "Grid energy imported",
+            "nl": "Netstroom energie geïmporteerd"
           }
         },
         "meter_power_today": {
           "title": {
-            "en": "Grid energy today",
-            "nl": "Netstroom energie vandaag"
+            "en": "Grid energy imported today",
+            "nl": "Netstroom energie geïmporteerd vandaag"
           }
         },
-        "measure_power.consumed": {
+        "meter_power.produced": {
+          "title": {
+            "en": "Grid energy exported",
+            "nl": "Netstroom energie geëxporteerd"
+          }
+        },
+        "meter_power_today.produced": {
+          "title": {
+            "en": "Grid energy exported today",
+            "nl": "Netstroom energie geëxporteerd vandaag"
+          }
+        },
+        "measure_power.home": {
           "title": {
             "en": "Home consumption power",
             "nl": "Huisverbruik vermogen"
           }
         },
-        "meter_power.consumed": {
+        "meter_power.home": {
           "title": {
             "en": "Home consumption energy",
             "nl": "Huisverbruik energie"
           }
         },
-        "meter_power_today.consumed": {
+        "meter_power_today.home": {
           "title": {
             "en": "Home consumption energy today",
             "nl": "Huisverbruik energie vandaag"
+          }
+        },
+        "meter_power.home_produced": {
+          "title": {
+            "en": "Home energy exported",
+            "nl": "Huisenergie geëxporteerd"
+          }
+        },
+        "meter_power_today.home_produced": {
+          "title": {
+            "en": "Home energy exported today",
+            "nl": "Huisenergie geëxporteerd vandaag"
           }
         }
       },
       "energy": {
         "cumulative": true,
-        "cumulativeImportedCapability": "meter_power"
+        "cumulativeImportedCapability": "meter_power",
+        "cumulativeExportedCapability": "meter_power.produced"
       },
       "pair": [
         {
