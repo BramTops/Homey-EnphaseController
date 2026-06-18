@@ -1,0 +1,11 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Inverter Status",
+    "nl": "Omvormer-status"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/inverter.svg"
+}

@@ -1,0 +1,55 @@
+{
+  "title": {
+    "en": "An alert was triggered",
+    "nl": "Er is een alarm afgegaan"
+  },
+  "titleFormatted": {
+    "en": "An inverter alert was triggered",
+    "nl": "Er is een omvormer-alarm afgegaan"
+  },
+  "description": {
+    "en": "Fired when a new alert is registered.",
+    "nl": "Wordt geactiveerd wanneer er een nieuw alarm wordt geregistreerd."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=inverters"
+    }
+  ],
+  "tokens": [
+    {
+      "name": "inverter_serial",
+      "type": "string",
+      "title": {
+        "en": "Inverter Serial",
+        "nl": "Serienummer omvormer"
+      }
+    },
+    {
+      "name": "inverter_index",
+      "type": "number",
+      "title": {
+        "en": "Inverter Index",
+        "nl": "Index omvormer"
+      }
+    },
+    {
+      "name": "alert_type",
+      "type": "string",
+      "title": {
+        "en": "Alert Type",
+        "nl": "Alarmtype"
+      }
+    },
+    {
+      "name": "alert_message",
+      "type": "string",
+      "title": {
+        "en": "Alert Message",
+        "nl": "Alarmbericht"
+      }
+    }
+  ]
+}

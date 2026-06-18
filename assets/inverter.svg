@@ -1,0 +1,50 @@
+<svg viewBox="210 170 550 550" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Mounting Brackets (Ears) Outer Silhouette -->
+    <!-- Top Left -->
+    <path d="M 330 230 H 260 V 290 H 330" stroke-width="24" />
+    <path d="M 285 250 H 305 V 270 H 285 Z" stroke-width="12" />
+    
+    <!-- Top Right -->
+    <path d="M 600 220 H 670 V 280 H 600" stroke-width="24" />
+    <path d="M 625 240 H 645 V 260 H 625 Z" stroke-width="12" />
+    
+    <!-- Bottom Left -->
+    <path d="M 325 630 H 255 V 690 H 325" stroke-width="24" />
+    <path d="M 280 650 H 300 V 670 H 280 Z" stroke-width="12" />
+    
+    <!-- Bottom Right -->
+    <path d="M 640 630 H 710 V 690 H 640" stroke-width="24" />
+    <path d="M 665 650 H 685 V 670 H 665 Z" stroke-width="12" />
+
+    <!-- Connectors (Plugs) Protruding on the Right Side -->
+    <!-- Top Plug -->
+    <path d="M 630 340 H 700 V 390 H 630" stroke-width="24" />
+    <path d="M 700 355 V 375" stroke-width="12" />
+    
+    <!-- Middle Plug -->
+    <path d="M 635 440 H 695 V 465 H 635" stroke-width="20" />
+    
+    <!-- Bottom Plug -->
+    <path d="M 640 580 H 715 V 650 H 640" stroke-width="28" />
+
+    <!-- Main Inverter Chassis (Thick stroke outline) -->
+    <path d="M 360 190 L 600 180 C 620 180 630 190 630 210 L 630 330 L 640 680 C 640 700 630 710 610 710 L 360 700 C 340 700 330 690 325 670 L 325 510 C 200 500 200 290 325 280 L 330 210 C 330 190 340 190 360 190 Z" stroke-width="36" />
+
+    <!-- Top Rectangular Section -->
+    <rect x="380" y="220" width="200" height="230" rx="16" stroke-width="20" />
+    
+    <!-- Decorative T-Shape Line under Top Box -->
+    <path d="M 480 450 V 495 M 440 475 H 520" stroke-width="20" />
+
+    <!-- Center circular indent -->
+    <circle cx="530" cy="400" r="25" stroke-width="20" />
+
+    <!-- Bottom Info Label Card -->
+    <rect x="360" y="520" width="220" height="150" rx="16" stroke-width="16" />
+    
+    <!-- Centered Enphase Logo in Label -->
+    <circle cx="470" cy="595" r="20" stroke-width="12" />
+    <path d="M 456 595 H 484" stroke-width="12" />
+  </g>
+</svg>

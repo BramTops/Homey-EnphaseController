@@ -2,6 +2,22 @@
 
 All notable changes to the Enphase Controller application for Homey Pro will be documented in this file, grouped by work session (day) and described in a user-centric way.
 
+## 2026-06-12
+
+- Improved authentication stability.
+
+## 2026-06-09
+
+- Improved login troubleshooting.
+
+## 2026-06-07
+
+- Monitors individual solar microinverters.
+- Detects underperforming solar panels.
+- Alerts when panels offline.
+- Finds gateway IP automatically.
+- Simpler and faster pairing.
+
 ## 2026-06-03
 
 - Replaces default icons.

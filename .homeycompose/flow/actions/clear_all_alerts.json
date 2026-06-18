@@ -1,0 +1,17 @@
+{
+  "title": {
+    "en": "Clear all active alerts",
+    "nl": "Wis alle actieve alarmen"
+  },
+  "description": {
+    "en": "Resets the alert engine state, clearing all active flags.",
+    "nl": "Reset de status van de alarmen en wist alle actieve alarmen."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=inverters"
+    }
+  ]
+}

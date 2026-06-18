@@ -1,0 +1,14 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Average load",
+    "nl": "Gemiddelde belasting"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "insights": true,
+  "decimals": 0,
+  "units": "%",
+  "icon": "/assets/meter_power.svg"
+}

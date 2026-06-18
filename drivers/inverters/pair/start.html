@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connect Enphase Inverters</title>
+  <style>
+    :root {
+      --homey-su: 4px;
+      
+      /* Light Mode Default Theme */
+      --homey-background-color: #ffffff;
+      --homey-text-color: #1a1a1a;
+      --homey-text-color-secondary: #666666;
+      --homey-text-color-error: #d32f2f;
+      
+      --input-bg: #ffffff;
+      --input-border: #dcdcdc;
+      --input-color: #1a1a1a;
+      --focus-border: #0081ff;
+      --focus-shadow: rgba(0, 129, 255, 0.15);
+      
+      --badge-bg: rgba(0, 129, 255, 0.06);
+      --badge-border: rgba(0, 129, 255, 0.15);
+      --badge-text: #0066cc;
+      
+      --error-bg: rgba(211, 47, 47, 0.04);
+      --error-border: rgba(211, 47, 47, 0.15);
+    }
+
+    /* Support standard system dark mode if running standalone/iframe and Homey hasn't overridden it */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --homey-background-color: #121212;
+        --homey-text-color: #f3f4f6;
+        --homey-text-color-secondary: #9ca3af;
+        --homey-text-color-error: #f87171;
+        
+        --input-bg: rgba(255, 255, 255, 0.06);
+        --input-border: rgba(255, 255, 255, 0.15);
+        --input-color: #ffffff;
+        --focus-border: #3b82f6;
+        --focus-shadow: rgba(59, 130, 246, 0.25);
+        
+        --badge-bg: rgba(59, 130, 246, 0.12);
+        --badge-border: rgba(59, 130, 246, 0.25);
+        --badge-text: #93c5fd;
+        
+        --error-bg: rgba(239, 68, 68, 0.1);
+        --error-border: rgba(239, 68, 68, 0.25);
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: transparent;
+      color: var(--homey-text-color);
+      margin: 0;
+      padding: 8px;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+      padding: 8px;
+    }
+
+    /* Logo Styling */
+    .logo-container {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);
+      border-radius: 12px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);
+    }
+
+    .logo-container svg {
+      width: 26px;
+      height: 26px;
+      fill: #ffffff;
+    }
+
+    /* Fallback classes in case Homey Style Library classes are not fully active */
+    .homey-header {
+      text-align: center;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--input-border);
+      padding-bottom: 16px;
+    }
+    
+    .homey-title {
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+      color: var(--homey-text-color);
+    }
+
+    .homey-subtitle {
+      font-size: 14px;
+      color: var(--homey-text-color-secondary);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .homey-form {
+      margin-top: 16px;
+    }
+
+    .homey-form-group {
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .homey-form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--homey-text-color);
+      margin-bottom: 6px;
+      text-align: left;
+    }
+
+    .homey-form-input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: var(--input-color);
+      font-size: 14px;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+    }
+
+    .homey-form-input:focus {
+      outline: none;
+      border-color: var(--focus-border);
+      background: var(--input-bg);
+      box-shadow: 0 0 0 3px var(--focus-shadow);
+    }
+
+    /* Button Style matching Homey's primary style */
+    .homey-button-primary,
+    .homey-button-primary-full,
+    .homey-button-primary-shadow-full {
+      width: 100%;
+      background: #0081ff;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      box-sizing: border-box;
+      box-shadow: 0 2px 6px rgba(0, 129, 255, 0.2);
+      transition: all 0.2s ease;
+      margin-top: 8px;
+      text-align: center;
+      display: block;
+    }
+
+    .homey-button-primary:hover,
+    .homey-button-primary-full:hover,
+    .homey-button-primary-shadow-full:hover {
+      background: #0066cc;
+      box-shadow: 0 4px 10px rgba(0, 129, 255, 0.3);
+    }
+
+    .homey-button-primary:active,
+    .homey-button-primary-full:active,
+    .homey-button-primary-shadow-full:active {
+      background: #0055b3;
+    }
+
+    /* Custom UI Component: Discovery Badge */
+    .discovery-badge {
+      display: none;
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+      color: var(--badge-text);
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      text-align: center;
+      font-weight: 500;
+      animation: pulse 2.5s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.95; }
+      50% { opacity: 1; transform: scale(1.01); }
+      100% { opacity: 0.95; }
+    }
+
+    /* Custom UI Component: Error Message */
+    .error-msg {
+      display: none;
+      background: var(--error-bg);
+      border: 1px solid var(--error-border);
+      color: var(--homey-text-color-error);
+      font-size: 13px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      line-height: 1.5;
+      text-align: left;
+    }
+
+    /* Success state styling */
+    .success-container {
+      display: none;
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    .success-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(34, 197, 94, 0.12);
+      border: 2px solid #22c55e;
+      border-radius: 50%;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 16px;
+      color: #22c55e;
+    }
+
+    .role-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .role-maintainer {
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      color: #a855f7;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .role-maintainer {
+        color: #d8b4fe;
+      }
+    }
+
+    .role-owner {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #3b82f6;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .role-owner {
+        color: #93c5fd;
+      }
+    }
+
+    .role-desc {
+      font-size: 13px;
+      color: var(--homey-text-color-secondary);
+      margin-top: 10px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .field-note {
+      font-size: 12px;
+      margin-top: 6px;
+      color: var(--homey-text-color-secondary);
+      line-height: 1.4;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .field-note.detected {
+      color: #22c55e;
+    }
+    .field-note.not-found {
+      color: #ea580c;
+    }
+    @media (prefers-color-scheme: dark) {
+      .field-note.detected {
+        color: #4ade80;
+      }
+      .field-note.not-found {
+        color: #f97316;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    
+    <!-- Pairing Form -->
+    <div id="form-container">
+      <header class="homey-header">
+        <div class="logo-container">
+          <!-- Solar SVG -->
+          <svg viewBox="0 0 24 24">
+            <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5c.55 0 1 .45 1 1v2c0 .55-.45 1-1 1s-1-.45-1-1V3c0-.55.45-1 1-1zm0 14c.55 0 1 .45 1 1v2c0 .55-.45 1-1 1s-1-.45-1-1v-2c0-.55.45-1 1-1zM5.27 6.68c.39-.39 1.02-.39 1.41 0l1.41 1.41c.39.39.39 1.02 0 1.41s-1.02.39-1.41 0L5.27 8.09c-.39-.39-.39-1.03 0-1.41zm10.64 10.64c.39-.39 1.02-.39 1.41 0l1.41 1.41c.39.39.39 1.02 0 1.41s-1.02.39-1.41 0l-1.41-1.41c-.39-.39-.39-1.03 0-1.41zM2 12c0-.55.45-1 1-1h2c0 .55-.45 1-1 1s-1-.45-1-1zm14 0c0-.55.45-1 1-1h2c.55 0 1 .45 1 1s-.45 1-1 1h-2c-.55 0-1-.45-1-1zM6.68 18.73c-.39-.39-.39-1.02 0-1.41l1.41-1.41c.39-.39 1.02-.39 1.41 0s.39 1.02 0 1.41l-1.41 1.41c-.39.39-1.03.39-1.41 0zM17.32 5.27c.39.39.39 1.02 0 1.41l-1.41 1.41c-.39.39-1.02.39-1.41 0s-.39-1.02 0-1.41l1.41-1.41c.39-.39 1.03-.39 1.41 0z"/>
+          </svg>
+        </div>
+        <h1 class="homey-title" data-i18n="pair.start.title_inverters">Connect Enphase Inverters</h1>
+        <p class="homey-subtitle" data-i18n="pair.start.subtitle">Connect to your gateway. Supports standard Owner accounts (read-only) or Installer/DIY accounts for system control.</p>
+      </header>
+
+      <div class="error-msg" id="error-msg"></div>
+
+      <form class="homey-form" onsubmit="event.preventDefault(); submitPairing();">
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="email" data-i18n="pair.start.email_label">Enphase Email</label>
+          <input class="homey-form-input" type="email" id="email" placeholder="e.g. owner-or-installer@email.com" data-i18n-placeholder="pair.start.email_placeholder" required>
+        </div>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="password" data-i18n="pair.start.password_label">Enphase Password</label>
+          <input class="homey-form-input" type="password" id="password" placeholder="Your password" data-i18n-placeholder="pair.start.password_placeholder" required>
+        </div>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="serial" data-i18n="pair.start.serial_label">Gateway Serial Number</label>
+          <input class="homey-form-input" type="text" id="serial" placeholder="e.g. 122226012345" data-i18n-placeholder="pair.start.serial_placeholder" pattern="\d{12}" minlength="12" maxlength="12" required>
+          <div class="field-note" id="serial-note"></div>
+        </div>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="ip" data-i18n="pair.start.ip_label">Gateway IP Address</label>
+          <input class="homey-form-input" type="text" id="ip" placeholder="e.g. 10.0.0.123" data-i18n-placeholder="pair.start.ip_placeholder" required>
+          <div class="field-note" id="ip-note"></div>
+        </div>
+
+        <button class="homey-button-primary-shadow-full" id="btn-connect" type="submit" data-i18n="pair.start.btn_authenticate">Authenticate</button>
+      </form>
+    </div>
+
+    <!-- Success Screen -->
+    <div id="success-container" class="success-container">
+      <div class="success-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h1 class="homey-title" data-i18n="pair.start.success_title">Authentication Successful!</h1>
+      <p class="homey-subtitle" data-i18n="pair.start.success_subtitle">Your Enphase account was validated and the local gateway was connected successfully.</p>
+      
+      <div id="role-badge-container"></div>
+      <div id="role-desc-container" class="role-desc"></div>
+
+      <button class="homey-button-primary-shadow-full" onclick="finishPairing()" data-i18n="pair.start.btn_add_inverters">Add Inverters to Homey</button>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+    // Run translation immediately on load
+    function translateUI() {
+      // Set window title
+      document.title = Homey.__('pair.start.title_inverters');
+
+      // Search all elements with data-i18n and replace content
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = Homey.__(key);
+      });
+
+      // Search all elements with data-i18n-placeholder and replace placeholder
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+        const key = el.getAttribute('data-i18n-placeholder');
+        el.placeholder = Homey.__(key);
+      });
+    }
+
+    // Execute translation
+    translateUI();
+
+    // Auto-detect IP and Serial from the driver when the view loads
+    Homey.emit('get_discovered_ip', {}, function(err, result) {
+      const ipNoteEl = document.getElementById('ip-note');
+      const serialNoteEl = document.getElementById('serial-note');
+      
+      if (!err && result) {
+        const discoveredIp = result.ip;
+        const discoveredSerial = result.serial;
+        
+        if (discoveredIp) {
+          document.getElementById('ip').value = discoveredIp;
+          ipNoteEl.textContent = Homey.__('pair.start.ip_auto_detected');
+          ipNoteEl.className = 'field-note detected';
+        } else {
+          document.getElementById('ip').value = '';
+          ipNoteEl.textContent = Homey.__('pair.start.ip_not_found');
+          ipNoteEl.className = 'field-note not-found';
+        }
+        
+        if (discoveredSerial) {
+          document.getElementById('serial').value = discoveredSerial;
+          serialNoteEl.textContent = Homey.__('pair.start.serial_auto_detected');
+          serialNoteEl.className = 'field-note detected';
+        } else {
+          document.getElementById('serial').value = '';
+          serialNoteEl.textContent = Homey.__('pair.start.serial_not_found');
+          serialNoteEl.className = 'field-note not-found';
+        }
+      } else {
+        document.getElementById('ip').value = '';
+        ipNoteEl.textContent = Homey.__('pair.start.ip_not_found');
+        ipNoteEl.className = 'field-note not-found';
+        
+        document.getElementById('serial').value = '';
+        serialNoteEl.textContent = Homey.__('pair.start.serial_not_found');
+        serialNoteEl.className = 'field-note not-found';
+      }
+    });
+
+    // Try to pre-fill from cached credentials
+    Homey.emit('get_cached_credentials', {}, function(err, result) {
+      if (!err && result) {
+        if (result.user_email) {
+          document.getElementById('email').value = result.user_email;
+        }
+        if (result.password) {
+          document.getElementById('password').value = result.password;
+        }
+      }
+    });
+
+    // Listen for dynamic discovery updates from the backend in real-time
+    Homey.on('discovery_update', function(result) {
+      if (result) {
+        const ipNoteEl = document.getElementById('ip-note');
+        const serialNoteEl = document.getElementById('serial-note');
+        const ipInput = document.getElementById('ip');
+        const serialInput = document.getElementById('serial');
+
+        // Only auto-fill if the input field is currently empty (user hasn't typed yet)
+        if (result.ip && (!ipInput.value || ipInput.value.trim() === '')) {
+          ipInput.value = result.ip;
+          ipNoteEl.textContent = Homey.__('pair.start.ip_auto_detected');
+          ipNoteEl.className = 'field-note detected';
+        }
+        
+        if (result.serial && (!serialInput.value || serialInput.value.trim() === '')) {
+          serialInput.value = result.serial;
+          serialNoteEl.textContent = Homey.__('pair.start.serial_auto_detected');
+          serialNoteEl.className = 'field-note detected';
+        }
+      }
+    });
+
+    function submitPairing() {
+      // Clear previous error
+      const errorMsg = document.getElementById('error-msg');
+      errorMsg.style.display = 'none';
+      errorMsg.innerText = '';
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const serial = document.getElementById('serial').value.trim();
+      const ip = document.getElementById('ip').value.trim();
+
+      if (!email || !password || !serial || !ip) {
+        showError(Homey.__('pair.start.error_required_fields'));
+        return;
+      }
+
+      if (!/^\d{12}$/.test(serial)) {
+        showError(Homey.__('pair.start.error_invalid_serial'));
+        return;
+      }
+
+      // Show loading overlay
+      Homey.showLoadingOverlay();
+
+      const data = {
+        user_email: email,
+        password: password,
+        envoy_serial: serial,
+        envoy_ip: ip
+      };
+
+      // Emit login credentials to driver.js
+      Homey.emit('login', data, function(err, result) {
+        Homey.hideLoadingOverlay();
+
+        if (err) {
+          showError(err.message || Homey.__('pair.start.error_auth_failed'));
+          return;
+        }
+
+        if (result && result.success) {
+          // Transition to success screen
+          document.getElementById('form-container').style.display = 'none';
+          document.getElementById('success-container').style.display = 'block';
+
+          const badgeContainer = document.getElementById('role-badge-container');
+          const descContainer = document.getElementById('role-desc-container');
+
+          if (result.isMaintainer) {
+            badgeContainer.innerHTML = '<span class="role-badge role-maintainer">' + Homey.__('pair.start.role_maintainer') + '</span>';
+            descContainer.innerText = Homey.__('pair.start.desc_maintainer');
+          } else {
+            badgeContainer.innerHTML = '<span class="role-badge role-owner">' + Homey.__('pair.start.role_owner') + '</span>';
+            descContainer.innerText = Homey.__('pair.start.desc_owner');
+          }
+        }
+      });
+    }
+
+    function showError(msg) {
+      const errorMsg = document.getElementById('error-msg');
+      errorMsg.innerText = msg;
+      errorMsg.style.display = 'block';
+    }
+
+    function finishPairing() {
+      // Trigger default list_devices page to register the device in Homey
+      Homey.nextView();
+    }
+  </script>
+
+</body>
+</html>

@@ -1,18 +1,38 @@
 {
-  "1.2.1": {
-    "en": "Prevents negative night-time solar readings. \nReplaces default icons.",
-    "nl": "Voorkomt negatieve zonnepaneelmetingen in de nacht. \nVervangt standaard iconen."
-  },
-  "1.2.0": {
-    "en": "Adds \"Energy today\" (kWh) status metric. \nMore reliable pairing process. \nImproved compatibility with other Enphase apps. \nImproved gateway connection stability. \nReduced memory and cpu usage.",
-    "nl": "Voegt \"Energie vandaag\" (kWh) status-meting toe. \nBetrouwbaarder koppelingsproces. \nVerbeterde compatibiliteit met andere Enphase-apps. \nVerbeterde stabiliteit van de gateway-verbinding. \nMinder geheugen- en CPU-gebruik."
+  "1.0.0": {
+    "en": "Initial app release.",
+    "nl": "Eerste release."
   },
   "1.1.0": {
     "en": "Updates app store listing. \nImproved compatibility with other Enphase apps. \nClearer pairing instructions. \nMore readable status metrics. \nAdds metered gateway status. \nMore reliable connection checks. \nEasier connection via manual IP. \nSupports IPv6 networks. \nSupport for all account types.",
     "nl": "Updates app store-vermelding. \nWerkt beter samen met andere Enphase-apps. \nDuidelijkere koppelinstructies. \nDuidelijkere status-metingen. \nVoegt status van metered gateway toe. \nBetrouwbaardere verbindingscontroles. \nGemakkelijker verbinden via handmatig IP. \nOndersteunt IPv6-netwerken. \nOndersteuning voor alle accounttypen."
   },
-  "1.0.0": {
-    "en": "Initial app release.",
-    "nl": "Eerste release."
+  "1.2.0": {
+    "en": "Adds \"Energy today\" (kWh) status metric. \nMore reliable pairing process. \nImproved compatibility with other Enphase apps. \nImproved gateway connection stability. \nReduced memory and cpu usage.",
+    "nl": "Voegt \"Energie vandaag\" (kWh) status-meting toe. \nBetrouwbaarder koppelingsproces. \nVerbeterde compatibiliteit met andere Enphase-apps. \nVerbeterde stabiliteit van de gateway-verbinding. \nMinder geheugen- en CPU-gebruik."
+  },
+  "1.2.1": {
+    "en": "Prevents negative night-time solar readings. \nReplaces default icons.",
+    "nl": "Voorkomt negatieve zonnepaneelmetingen in de nacht. \nVervangt standaard iconen."
+  },
+  "1.3.0": {
+    "en": "Monitors individual solar microinverters. \nAlerts when panels are underperfoming or go offline. \nImproved gateway IP & SN detection.",
+    "nl": "Monitort individuele zonnepaneel omvormers. \nMeldt wanneer panelen slecht presteren of offline gaan. \nVerbeterde gateway IP & SN detectie."
+  },
+  "1.3.1": {
+    "en": "Fix bug in authentication flow.",
+    "nl": "Fout in authenticatie-flow opgelost."
+  },
+  "1.3.2": {
+    "en": "Configure underperforming inverter threshold. \nInstant feedback clearing alerts.",
+    "nl": "Stel onderprestatie-drempel omvormers in. \nDirecte feedback bij wissen alarmen."
+  },
+  "1.3.3": {
+    "en": "Improved login troubleshooting.",
+    "nl": "Verbeterde foutopsporing bij inloggen."
+  },
+  "1.3.4": {
+    "en": "Improved authentication stability.",
+    "nl": "Verbeterde stabiliteit van de authenticatie."
   }
 }

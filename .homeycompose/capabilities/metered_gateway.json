@@ -11,5 +11,5 @@
   "getable": true,
   "setable": false,
   "uiComponent": "sensor",
-  "icon": "/assets/sensor.svg"
+  "icon": "/assets/gateway.svg"
 }

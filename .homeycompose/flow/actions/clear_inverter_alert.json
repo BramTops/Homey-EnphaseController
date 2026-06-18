@@ -1,0 +1,29 @@
+{
+  "title": {
+    "en": "Clear active alert for inverter",
+    "nl": "Wis actief alarm voor omvormer"
+  },
+  "titleFormatted": {
+    "en": "Clear active alert for inverter [[inverter_index]]",
+    "nl": "Wis actief alarm voor omvormer [[inverter_index]]"
+  },
+  "description": {
+    "en": "Resets the alert state for a specific inverter.",
+    "nl": "Reset de alarmstatus voor een specifieke omvormer."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=inverters"
+    },
+    {
+      "name": "inverter_index",
+      "type": "autocomplete",
+      "title": {
+        "en": "Select Inverter",
+        "nl": "Selecteer omvormer"
+      }
+    }
+  ]
+}
