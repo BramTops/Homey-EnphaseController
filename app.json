@@ -366,47 +366,65 @@
       ],
       "settings": [
         {
-          "id": "user_email",
-          "type": "text",
+          "type": "group",
           "label": {
-            "en": "Enphase Account Email",
-            "nl": "Enphase-account e-mailadres"
+            "en": "Enphase account",
+            "nl": "Enphase-account"
           },
-          "placeholder": "owner-or-installer@email.com",
-          "required": true,
-          "value": ""
+          "children": [
+            {
+              "id": "user_email",
+              "type": "text",
+              "label": {
+                "en": "Email address",
+                "nl": "E-mailadres"
+              },
+              "placeholder": "owner-or-installer@email.com",
+              "required": true,
+              "value": ""
+            },
+            {
+              "id": "password",
+              "type": "password",
+              "label": {
+                "en": "Password",
+                "nl": "Wachtwoord"
+              },
+              "required": true,
+              "value": ""
+            }
+          ]
         },
         {
-          "id": "password",
-          "type": "password",
+          "type": "group",
           "label": {
-            "en": "Enphase Password",
-            "nl": "Enphase-wachtwoord"
+            "en": "Envoy gateway",
+            "nl": "Envoy-gateway"
           },
-          "required": true,
-          "value": ""
-        },
-        {
-          "id": "envoy_serial",
-          "type": "text",
-          "label": {
-            "en": "Envoy Serial Number",
-            "nl": "Envoy serienummer"
-          },
-          "placeholder": "122226012345",
-          "required": true,
-          "value": ""
-        },
-        {
-          "id": "envoy_ip",
-          "type": "text",
-          "label": {
-            "en": "Envoy Local IP Address",
-            "nl": "Lokaal IP-adres van de Envoy"
-          },
-          "placeholder": "10.0.0.123",
-          "required": true,
-          "value": ""
+          "children": [
+            {
+              "id": "envoy_serial",
+              "type": "text",
+              "label": {
+                "en": "Serial number",
+                "nl": "Serienummer"
+              },
+              "placeholder": "122226012345",
+              "required": true,
+              "value": ""
+            },
+            {
+              "id": "envoy_ip",
+              "type": "text",
+              "label": {
+                "en": "Local IP address",
+                "nl": "Lokaal IP-adres"
+              },
+              "placeholder": "10.0.0.123",
+              "required": true,
+              "value": ""
+            }
+          ]
         }
       ],
       "id": "envoy"
@@ -482,47 +500,65 @@
       ],
       "settings": [
         {
-          "id": "user_email",
-          "type": "text",
+          "type": "group",
           "label": {
-            "en": "Enphase Account Email",
-            "nl": "Enphase-account e-mailadres"
+            "en": "Enphase account",
+            "nl": "Enphase-account"
           },
-          "placeholder": "owner-or-installer@email.com",
-          "required": true,
-          "value": ""
+          "children": [
+            {
+              "id": "user_email",
+              "type": "text",
+              "label": {
+                "en": "Email address",
+                "nl": "E-mailadres"
+              },
+              "placeholder": "owner-or-installer@email.com",
+              "required": true,
+              "value": ""
+            },
+            {
+              "id": "password",
+              "type": "password",
+              "label": {
+                "en": "Password",
+                "nl": "Wachtwoord"
+              },
+              "required": true,
+              "value": ""
+            }
+          ]
         },
         {
-          "id": "password",
-          "type": "password",
+          "type": "group",
           "label": {
-            "en": "Enphase Password",
-            "nl": "Enphase-wachtwoord"
+            "en": "Envoy gateway",
+            "nl": "Envoy-gateway"
           },
-          "required": true,
-          "value": ""
-        },
-        {
-          "id": "envoy_serial",
-          "type": "text",
-          "label": {
-            "en": "Envoy Serial Number",
-            "nl": "Envoy serienummer"
-          },
-          "placeholder": "122226012345",
-          "required": true,
-          "value": ""
-        },
-        {
-          "id": "envoy_ip",
-          "type": "text",
-          "label": {
-            "en": "Envoy Local IP Address",
-            "nl": "Lokaal IP-adres van de Envoy"
-          },
-          "placeholder": "10.0.0.123",
-          "required": true,
-          "value": ""
+          "children": [
+            {
+              "id": "envoy_serial",
+              "type": "text",
+              "label": {
+                "en": "Serial number",
+                "nl": "Serienummer"
+              },
+              "placeholder": "122226012345",
+              "required": true,
+              "value": ""
+            },
+            {
+              "id": "envoy_ip",
+              "type": "text",
+              "label": {
+                "en": "Local IP address",
+                "nl": "Lokaal IP-adres"
+              },
+              "placeholder": "10.0.0.123",
+              "required": true,
+              "value": ""
+            }
+          ]
         }
       ],
       "id": "gateway"
@@ -636,47 +672,65 @@
       ],
       "settings": [
         {
-          "id": "user_email",
-          "type": "text",
+          "type": "group",
           "label": {
-            "en": "Enphase Account Email",
-            "nl": "Enphase-account e-mailadres"
+            "en": "Enphase account",
+            "nl": "Enphase-account"
           },
-          "placeholder": "owner-or-installer@email.com",
-          "required": true,
-          "value": ""
+          "children": [
+            {
+              "id": "user_email",
+              "type": "text",
+              "label": {
+                "en": "Email address",
+                "nl": "E-mailadres"
+              },
+              "placeholder": "owner-or-installer@email.com",
+              "required": true,
+              "value": ""
+            },
+            {
+              "id": "password",
+              "type": "password",
+              "label": {
+                "en": "Password",
+                "nl": "Wachtwoord"
+              },
+              "required": true,
+              "value": ""
+            }
+          ]
         },
         {
-          "id": "password",
-          "type": "password",
+          "type": "group",
           "label": {
-            "en": "Enphase Password",
-            "nl": "Enphase-wachtwoord"
+            "en": "Envoy gateway",
+            "nl": "Envoy-gateway"
           },
-          "required": true,
-          "value": ""
-        },
-        {
-          "id": "envoy_serial",
-          "type": "text",
-          "label": {
-            "en": "Envoy Serial Number",
-            "nl": "Envoy serienummer"
-          },
-          "placeholder": "122226012345",
-          "required": true,
-          "value": ""
-        },
-        {
-          "id": "envoy_ip",
-          "type": "text",
-          "label": {
-            "en": "Envoy Local IP Address",
-            "nl": "Lokaal IP-adres van de Envoy"
-          },
-          "placeholder": "10.0.0.123",
-          "required": true,
-          "value": ""
+          "children": [
+            {
+              "id": "envoy_serial",
+              "type": "text",
+              "label": {
+                "en": "Serial number",
+                "nl": "Serienummer"
+              },
+              "placeholder": "122226012345",
+              "required": true,
+              "value": ""
+            },
+            {
+              "id": "envoy_ip",
+              "type": "text",
+              "label": {
+                "en": "Local IP address",
+                "nl": "Lokaal IP-adres"
+              },
+              "placeholder": "10.0.0.123",
+              "required": true,
+              "value": ""
+            }
+          ]
         }
       ],
       "id": "homeload"
@@ -719,28 +773,37 @@
       ],
       "settings": [
         {
-          "id": "underperformance_threshold",
-          "type": "number",
+          "type": "group",
           "label": {
-            "en": "Underperformance Alert Threshold (%)",
-            "nl": "Onderprestatie waarschuwingsdrempel (%)"
+            "en": "Alert thresholds",
+            "nl": "Waarschuwingsdrempels"
           },
-          "required": true,
-          "value": 15,
-          "min": 5,
-          "max": 50
-        },
-        {
-          "id": "stale_timeout",
-          "type": "number",
-          "label": {
-            "en": "Stale Data Timeout (hours)",
-            "nl": "Verouderde data time-out (uren)"
-          },
-          "required": true,
-          "value": 24,
-          "min": 1,
-          "max": 168
+          "children": [
+            {
+              "id": "underperformance_threshold",
+              "type": "number",
+              "label": {
+                "en": "Inverter underperformance (%)",
+                "nl": "Onderprestatie omvormers (%)"
+              },
+              "required": true,
+              "value": 15,
+              "min": 5,
+              "max": 50
+            },
+            {
+              "id": "stale_timeout",
+              "type": "number",
+              "label": {
+                "en": "Stale data timeout (hours)",
+                "nl": "Verouderde data time-out (uren)"
+              },
+              "required": true,
+              "value": 24,
+              "min": 1,
+              "max": 168
+            }
+          ]
         }
       ],
       "id": "inverters"
