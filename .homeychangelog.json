@@ -44,7 +44,7 @@
     "nl": "Voegt monitoring van huisverbruik toe. \nMonitort import en export stroomnet. \nVerbetert donkere modus bij koppelen."
   },
   "1.4.0": {
-    "en": "Renames solar inverters device. \nMore consistent device naming.",
-    "nl": "Hernieuwde naam zonnepaneel omvormers. \nConsistentere naamgeving van apparaten."
+    "en": "More consistent device naming \nand setting grouping.",
+    "nl": "Consistentere naamgeving van apparaten \nen instellingengroepering."
   }
 }

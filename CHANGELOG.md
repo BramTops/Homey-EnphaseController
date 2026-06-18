@@ -4,8 +4,7 @@ All notable changes to the Enphase Controller application for Homey Pro will be 
 
 ## 2026-06-18
 
-- Renames solar inverters device.
-- More consistent device naming.
+- More consistent device naming and setting grouping.
 
 ## 2026-06-17
 
