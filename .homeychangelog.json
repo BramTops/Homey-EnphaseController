@@ -44,7 +44,7 @@
     "nl": "Voegt monitoring van huisverbruik toe. \nMonitort import en export stroomnet. \nVerbetert donkere modus bij koppelen."
   },
   "1.4.0": {
-    "en": "More consistent device naming \nand setting grouping.",
-    "nl": "Consistentere naamgeving van apparaten \nen instellingengroepering."
+    "en": "More consistent device naming and setting grouping.",
+    "nl": "Consistentere naamgeving van apparaten en instellingengroepering."
   }
 }
