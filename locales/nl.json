@@ -35,7 +35,7 @@
       }
     },
     "inverters": {
-      "name": "Enphase-omvormers",
+      "name": "Enphase Solar inverters",
       "autocomplete": {
         "any": "Elke omvormer"
       },
@@ -82,7 +82,7 @@
       "role_owner": "Systeemeigenaarsrol",
       "desc_owner": "Alleen-lezen actief. U kunt de productiestatus monitoren, maar de stroomopwekking is vergrendeld.",
       "discovery_badge": "✨ Envoy-gateway automatisch gedetecteerd op het netwerk!",
-      "title_inverters": "Verbind Enphase-omvormers",
+      "title_inverters": "Verbind Enphase Solar inverters",
       "btn_add_inverters": "Omvormers toevoegen aan Homey",
       "repair_title": "Gateway verbinding herstellen",
       "repair_subtitle": "Werk uw Enphase inloggegevens of lokale IP-adres bij als deze zijn gewijzigd.",

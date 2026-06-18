@@ -35,7 +35,7 @@
       }
     },
     "inverters": {
-      "name": "Enphase Inverters",
+      "name": "Enphase Solar inverters",
       "autocomplete": {
         "any": "Any Inverter"
       },
@@ -82,7 +82,7 @@
       "role_owner": "System Owner Role",
       "desc_owner": "Read-only active. You can monitor production status, but power generation control is locked.",
       "discovery_badge": "✨ Envoy gateway auto-detected on network!",
-      "title_inverters": "Connect Enphase Inverters",
+      "title_inverters": "Connect Enphase Solar inverters",
       "btn_add_inverters": "Add Inverters to Homey",
       "repair_title": "Repair Gateway Connection",
       "repair_subtitle": "Update your Enphase credentials or local Gateway IP address if they have changed.",

@@ -32,7 +32,7 @@
       }
     },
     "inverters": {
-      "name": "Enphase-omvormers",
+      "name": "Enphase Solar inverters",
       "autocomplete": {
         "any": "Elke omvormer"
       },
@@ -63,7 +63,7 @@
   "pair": {
     "start": {
       "title": "Verbind uw Envoy-gateway",
-      "title_inverters": "Verbind Enphase-omvormers",
+      "title_inverters": "Verbind Enphase Solar inverters",
       "subtitle": "Verbind met uw gateway. Ondersteunt standaard Eigenaar-accounts (alleen-lezen) of Installateur/DIY-accounts voor systeembeheer.",
       "discovery_badge": "✨ Envoy-gateway automatisch gedetecteerd op het netwerk!",
       "email_label": "Enphase e-mailadresse",

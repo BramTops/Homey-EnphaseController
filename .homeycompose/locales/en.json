@@ -32,7 +32,7 @@
       }
     },
     "inverters": {
-      "name": "Enphase Inverters",
+      "name": "Enphase Solar inverters",
       "autocomplete": {
         "any": "Any Inverter"
       },
@@ -63,7 +63,7 @@
   "pair": {
     "start": {
       "title": "Connect your Envoy Gateway",
-      "title_inverters": "Connect Enphase Inverters",
+      "title_inverters": "Connect Enphase Solar inverters",
       "subtitle": "Connect to your gateway. Supports standard Owner accounts (read-only) or Installer/DIY accounts for system control.",
       "discovery_badge": "✨ Envoy gateway auto-detected on network!",
       "email_label": "Enphase Email",
