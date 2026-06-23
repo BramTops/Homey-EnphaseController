@@ -5,28 +5,29 @@ const Homey = require('homey');
 const PairingHelper = require('../../lib/PairingHelper');
 const EnvoyApi = require('../../lib/EnvoyApi');
 
-class GatewayDriver extends Homey.Driver {
+class HomeLoadDriver extends Homey.Driver {
 
   /**
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('Enphase Solar Driver has been initialized');
+    this.log('Enphase Home Driver has been initialized');
   }
 
   /**
-   * onPair is called when a user pairs a new Envoy device.
+   * onPair is called when a user pairs a new Enphase Home device.
    * @param {Homey.PairSession} session - The pairing session
    */
   async onPair(session) {
     PairingHelper.setupPairingSession(this, session, {
-      deviceNameKey: 'driver.gateway.name',
-      errorPrefix: 'driver.gateway',
+      deviceNameKey: 'driver.homeload.name',
+      deviceIdSuffix: 'homeload',
+      errorPrefix: 'driver.homeload',
     });
   }
 
   /**
-   * onRepair is called when a user repairs a Gateway device.
+   * onRepair is called when a user repairs a Enphase Home device.
    * @param {Homey.PairSession} session - The repair session
    * @param {Homey.Device} device - The device instance being repaired
    */
@@ -119,11 +120,11 @@ class GatewayDriver extends Homey.Driver {
       } = data;
 
       if (!userEmail || !password || !envoySerial || !envoyIp) {
-        throw new Error(this.homey.__('driver.gateway.error.fields_required'));
+        throw new Error(this.homey.__('driver.homeload.error.fields_required'));
       }
 
       if (!/^\d{12}$/.test(envoySerial)) {
-        throw new Error(this.homey.__('driver.gateway.error.invalid_serial'));
+        throw new Error(this.homey.__('driver.homeload.error.invalid_serial'));
       }
 
       this.log(`Repair login attempt for email: ${userEmail}, Serial: ${envoySerial}, IP: ${envoyIp}`);
@@ -154,7 +155,7 @@ class GatewayDriver extends Homey.Driver {
         };
       } catch (err) {
         this.error('Authentication test failed during repair:', err.message);
-        throw new Error(this.homey.__('driver.gateway.error.auth_failed', { message: err.message }));
+        throw new Error(this.homey.__('driver.homeload.error.auth_failed', { message: err.message }));
       }
     });
 
@@ -167,7 +168,7 @@ class GatewayDriver extends Homey.Driver {
         envoy_ip: envoyIp,
       } = data;
 
-      this.log(`Saving repaired settings for gateway: ${device.getName()}`);
+      this.log(`Saving repaired settings for Enphase Home: ${device.getName()}`);
 
       // Update global cached settings
       await this.homey.settings.set('user_email', userEmail);
@@ -187,4 +188,4 @@ class GatewayDriver extends Homey.Driver {
 
 }
 
-module.exports = GatewayDriver;
+module.exports = HomeLoadDriver;

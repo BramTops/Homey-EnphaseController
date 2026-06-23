@@ -1,56 +1,94 @@
 {
   "name": {
-    "en": "Enphase Solar",
-    "nl": "Enphase Solar"
+    "en": "Enphase Home",
+    "nl": "Enphase Home"
   },
   "images": {
-    "small": "/drivers/gateway/assets/images/small.png",
-    "large": "/drivers/gateway/assets/images/large.png"
+    "small": "/drivers/homeload/assets/images/small.png",
+    "large": "/drivers/homeload/assets/images/large.png"
   },
-  "class": "solarpanel",
+  "class": "sensor",
   "discovery": "enphase-envoy",
   "capabilities": [
-    "onoff",
     "measure_power",
-    "last_update",
     "meter_power",
     "meter_power_today",
-    "power_production",
-    "connected_inverters",
-    "control_state",
-    "metered_gateway"
+    "meter_power.produced",
+    "meter_power_today.produced",
+    "measure_power.home",
+    "meter_power.home",
+    "meter_power_today.home",
+    "meter_power.home_produced",
+    "meter_power_today.home_produced",
+    "last_update"
   ],
   "capabilitiesOptions": {
-    "onoff": {
-      "title": {
-        "en": "Power production",
-        "nl": "Stroomproductie"
-      }
-    },
     "measure_power": {
       "title": {
-        "en": "Solar power",
-        "nl": "Zonnevermogen"
+        "en": "Grid power",
+        "nl": "Netstroom vermogen"
       }
     },
     "meter_power": {
       "title": {
-        "en": "Solar energy",
-        "nl": "Zonne-energie"
+        "en": "Grid energy imported",
+        "nl": "Netstroom energie geïmporteerd"
       }
     },
     "meter_power_today": {
       "title": {
-        "en": "Solar energy today",
-        "nl": "Zonne-energie vandaag"
+        "en": "Grid energy imported today",
+        "nl": "Netstroom energie geïmporteerd vandaag"
+      }
+    },
+    "meter_power.produced": {
+      "title": {
+        "en": "Grid energy exported",
+        "nl": "Netstroom energie geëxporteerd"
+      }
+    },
+    "meter_power_today.produced": {
+      "title": {
+        "en": "Grid energy exported today",
+        "nl": "Netstroom energie geëxporteerd vandaag"
+      }
+    },
+    "measure_power.home": {
+      "title": {
+        "en": "Home consumption power",
+        "nl": "Huisverbruik vermogen"
+      }
+    },
+    "meter_power.home": {
+      "title": {
+        "en": "Home consumption energy",
+        "nl": "Huisverbruik energie"
+      }
+    },
+    "meter_power_today.home": {
+      "title": {
+        "en": "Home consumption energy today",
+        "nl": "Huisverbruik energie vandaag"
+      }
+    },
+    "meter_power.home_produced": {
+      "title": {
+        "en": "Home energy exported",
+        "nl": "Huisenergie geëxporteerd"
+      }
+    },
+    "meter_power_today.home_produced": {
+      "title": {
+        "en": "Home energy exported today",
+        "nl": "Huisenergie geëxporteerd vandaag"
       }
     }
   },
-  "repair": [
-    {
-      "id": "repair"
-    }
-  ],
+  "energy": {
+    "cumulative": true,
+    "cumulativeImportedCapability": "meter_power",
+    "cumulativeExportedCapability": "meter_power.produced"
+  },
   "pair": [
     {
       "id": "start"

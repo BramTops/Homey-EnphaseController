@@ -2,6 +2,16 @@
 
 All notable changes to the Enphase Controller application for Homey Pro will be documented in this file, grouped by work session (day) and described in a user-centric way.
 
+## 2026-06-18
+
+- More consistent device naming and setting grouping.
+
+## 2026-06-17
+
+- Adds home electricity usage monitoring.
+- Tracks grid imports and exports.
+- Improves pairing wizard dark mode.
+
 ## 2026-06-12
 
 - Improved authentication stability.

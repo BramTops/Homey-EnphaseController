@@ -34,5 +34,17 @@
   "1.3.4": {
     "en": "Improved authentication stability.",
     "nl": "Verbeterde stabiliteit van de authenticatie."
+  },
+  "1.3.5": {
+    "en": "Added support for metered gateway readings.",
+    "nl": "Ondersteuning voor metered gateway toegevoegd."
+  },
+  "1.3.6": {
+    "en": "Adds home electricity usage monitoring. \nTracks grid imports and exports. \nImproves pairing wizard dark mode.",
+    "nl": "Voegt monitoring van huisverbruik toe. \nMonitort import en export stroomnet. \nVerbetert donkere modus bij koppelen."
+  },
+  "1.4.0": {
+    "en": "More consistent device naming and setting grouping.",
+    "nl": "Consistentere naamgeving van apparaten en instellingengroepering."
   }
 }

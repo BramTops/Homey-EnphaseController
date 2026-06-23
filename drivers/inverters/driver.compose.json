@@ -1,7 +1,7 @@
 {
   "name": {
-    "en": "Enphase Inverters",
-    "nl": "Enphase-omvormers"
+    "en": "Enphase Solar inverters",
+    "nl": "Enphase Solar inverters"
   },
   "images": {
     "small": "/drivers/inverters/assets/images/small.png",
@@ -36,28 +36,37 @@
   ],
   "settings": [
     {
-      "id": "underperformance_threshold",
-      "type": "number",
+      "type": "group",
       "label": {
-        "en": "Underperformance Alert Threshold (%)",
-        "nl": "Onderprestatie waarschuwingsdrempel (%)"
+        "en": "Alert thresholds",
+        "nl": "Waarschuwingsdrempels"
       },
-      "required": true,
-      "value": 15,
-      "min": 5,
-      "max": 50
-    },
-    {
-      "id": "stale_timeout",
-      "type": "number",
-      "label": {
-        "en": "Stale Data Timeout (hours)",
-        "nl": "Verouderde data time-out (uren)"
-      },
-      "required": true,
-      "value": 24,
-      "min": 1,
-      "max": 168
+      "children": [
+        {
+          "id": "underperformance_threshold",
+          "type": "number",
+          "label": {
+            "en": "Inverter underperformance (%)",
+            "nl": "Onderprestatie omvormers (%)"
+          },
+          "required": true,
+          "value": 15,
+          "min": 5,
+          "max": 50
+        },
+        {
+          "id": "stale_timeout",
+          "type": "number",
+          "label": {
+            "en": "Stale data timeout (hours)",
+            "nl": "Verouderde data time-out (uren)"
+          },
+          "required": true,
+          "value": 24,
+          "min": 1,
+          "max": 168
+        }
+      ]
     }
   ]
 }

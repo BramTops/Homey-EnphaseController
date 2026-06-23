@@ -18,7 +18,7 @@
       }
     },
     "gateway": {
-      "name": "Enphase Gateway",
+      "name": "Enphase Solar",
       "error": {
         "fields_required": "Please fill in all the required fields.",
         "invalid_serial": "Invalid Gateway Serial Number.",
@@ -35,13 +35,22 @@
       }
     },
     "inverters": {
-      "name": "Enphase Inverters",
+      "name": "Enphase Solar inverters",
       "autocomplete": {
         "any": "Any Inverter"
       },
       "error": {
-        "no_gateway": "No Enphase Gateway paired yet. Please pair the Gateway first.",
-        "all_paired": "All paired Enphase Gateways already have inverters added."
+        "no_gateway": "No Enphase Solar paired yet. Please pair the Enphase Solar first.",
+        "all_paired": "All paired Enphase Solar already have inverters added."
+      }
+    },
+    "homeload": {
+      "name": "Enphase Home",
+      "error": {
+        "fields_required": "Please fill in all the required fields.",
+        "invalid_serial": "Invalid Gateway Serial Number.",
+        "auth_failed": "Connection failed: __message__",
+        "save_settings_failed": "Failed to save settings: Connection error: __message__"
       }
     }
   },
@@ -62,7 +71,7 @@
       "ip_label": "Gateway IP Address",
       "ip_placeholder": "e.g. 10.0.0.123",
       "btn_authenticate": "Authenticate",
-      "btn_add_gateway": "Add Gateway to Homey",
+      "btn_add_gateway": "Add Solar to Homey",
       "error_required_fields": "Please fill in all the required fields.",
       "error_invalid_serial": "Serial number must be exactly 12 digits (numbers only).",
       "error_auth_failed": "Authentication failed. Please verify credentials.",
@@ -73,11 +82,24 @@
       "role_owner": "System Owner Role",
       "desc_owner": "Read-only active. You can monitor production status, but power generation control is locked.",
       "discovery_badge": "✨ Envoy gateway auto-detected on network!",
-      "title_inverters": "Connect Enphase Inverters",
+      "title_inverters": "Connect Enphase Solar inverters",
       "btn_add_inverters": "Add Inverters to Homey",
       "repair_title": "Repair Gateway Connection",
       "repair_subtitle": "Update your Enphase credentials or local Gateway IP address if they have changed.",
-      "btn_save_changes": "Save Changes"
+      "btn_save_changes": "Save Changes",
+      "title_homeload": "Connect your Enphase Home",
+      "subtitle_homeload": "Connect to your gateway to add the home consumption (P1 substitute) device.",
+      "warning_title": "Attention Required",
+      "warning_subtitle": "Gateway Verification Warnings:",
+      "warning_bypass_desc": "You can ignore these warnings and continue adding the device, but some features may not work.",
+      "warning_not_metered": "This gateway does not appear to be metered (no solar production EIM clamp detected). A substitute P1 meter device requires a metered gateway to fetch consumption data.",
+      "warning_no_gridpower": "Grid power monitoring (net-consumption) is not active or clamps are not installed on this gateway. Homey will not be able to track main grid import/export.",
+      "warning_no_gridpower_but_homepower": "Grid power monitoring (net-consumption) is not active, but home power consumption (total-consumption) is active. Homey can still track home load power.",
+      "btn_ignore_continue": "Ignore Warnings & Continue",
+      "btn_back": "Go Back",
+      "success_subtitle_homeload": "Your Enphase account was validated and the home device is ready to be added.",
+      "btn_add_homeload": "Add Home to Homey",
+      "warning_no_consumption": "Consumption monitoring is disabled or consumption clamps are not installed on this gateway. Home load data will not be available."
     }
   },
   "inverters": {
