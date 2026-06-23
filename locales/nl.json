@@ -25,7 +25,8 @@
         "auth_failed": "Verbinding mislukt: __message__",
         "no_maintainer": "U heeft een installateurs-/onderhoudsaccount nodig om stroomproductie in- of uit te schakelen.",
         "command_failed": "Opdracht mislukt: __message__",
-        "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__"
+        "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__",
+        "not_metered": "Deze gateway is niet gemeten (geen zonneproductie CT-klemmen gedetecteerd). Productielimiet opties vereisen een gemeten gateway."
       },
       "status": {
         "on": "Aan",

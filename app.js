@@ -435,6 +435,7 @@ class EnphaseController extends Homey.App {
       let hasInverters = false;
       let hasHomeload = false;
       let isMaintainer = false;
+      let isMetered = false; // Tracks if the gateway is metered (has solar production clamps)
 
       for (const dev of devices) {
         const driverId = dev.driver.id;
@@ -442,6 +443,9 @@ class EnphaseController extends Homey.App {
           hasGateway = true;
           if (dev.isMaintainer) {
             isMaintainer = true;
+          }
+          if (dev.isMetered) {
+            isMetered = true;
           }
         } else if (driverId === 'inverters') {
           hasInverters = true;
@@ -454,6 +458,7 @@ class EnphaseController extends Homey.App {
         let prodData = null;
         let powerForcedOff = false;
         let invertersData = null;
+        let pelSettings = null; // Stored DPEL (dynamic limit) settings from local gateway API
 
         // 1. Fetch production telemetry if Gateway or Homeload device is paired
         if (hasGateway || hasHomeload) {
@@ -484,6 +489,15 @@ class EnphaseController extends Homey.App {
                 }
               }
             }
+
+            // Fetch dynamic PEL settings only if the gateway is metered (see ADR 0003)
+            if (isMetered) {
+              try {
+                pelSettings = await api.getDpelSettings();
+              } catch (err) {
+                this.error(`[Manager] Failed to fetch DPEL settings for serial ${serial}:`, err.message);
+              }
+            }
           }
           prodData = await api.getProductionData();
         }
@@ -498,7 +512,8 @@ class EnphaseController extends Homey.App {
           const driverId = dev.driver.id;
           if (driverId === 'gateway' || driverId === 'envoy') {
             if (prodData) {
-              await dev.updateTelemetry(prodData, powerForcedOff).catch((err) => {
+              // Legacy envoy device signature will ignore pelSettings, gateway device will consume it
+              await dev.updateTelemetry(prodData, powerForcedOff, pelSettings).catch((err) => {
                 this.error(`[Manager] Device ${dev.getName()} updateTelemetry failed:`, err.message);
               });
             }

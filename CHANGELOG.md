@@ -2,6 +2,11 @@
 
 All notable changes to the Enphase Controller application for Homey Pro will be documented in this file, grouped by work session (day) and described in a user-centric way.
 
+## 2026-06-23
+
+- Adds solar production limiting.
+- Enables net export limits.
+
 ## 2026-06-18
 
 - More consistent device naming and setting grouping.

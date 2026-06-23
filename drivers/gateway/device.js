@@ -88,21 +88,8 @@ class GatewayDevice extends Homey.Device {
     // Initialize API Client
     this.initApi(settings, initialToken);
 
-    // Dynamically manage the 'onoff' capability based on user role (Maintainer vs. System Owner)
-    if (this.isMaintainer) {
-      if (!this.hasCapability('onoff')) {
-        this.log('Adding missing capability: onoff');
-        await this.addCapability('onoff').catch((err) => {
-          this.error('Failed to add capability onoff:', err.message);
-        });
-      }
-      this.registerOnoffListener();
-    } else if (this.hasCapability('onoff')) {
-      this.log('Removing unauthorized capability: onoff');
-      await this.removeCapability('onoff').catch((err) => {
-        this.error('Failed to remove capability onoff:', err.message);
-      });
-    }
+    // Dynamically update PEL and onoff capabilities based on current role and metered status (see ADR 0003)
+    await this.ensurePelCapabilities();
 
     // Initialize the failed poll timestamp tracker (kept for legacy support if needed)
     this.firstFailedPollTime = null;
@@ -134,6 +121,11 @@ class GatewayDevice extends Homey.Device {
    * Register the capability listener for the power switch (onoff).
    * Ensures the listener is registered at most once to prevent duplicate callback registration errors.
    */
+  /**
+   * Register the capability listener for the power switch (onoff).
+   * Ensures the listener is registered at most once to prevent duplicate callback registration errors.
+   * Remaps ON/OFF toggles on metered gateways to dynamic PEL commands to avoid disabling battery/contactor communications (ADR 0003).
+   */
   registerOnoffListener() {
     if (this.onoffListenerRegistered) {
       return;
@@ -154,11 +146,36 @@ class GatewayDevice extends Homey.Device {
       }
 
       try {
-        // value = true -> Enable production -> powerForcedOff = false
-        // value = false -> Disable production -> powerForcedOff = true
-        const forceOff = !value;
-        await this.api.setPowerForcedOff(forceOff);
-        this.log(`Successfully sent power production control command: powerForcedOff = ${forceOff}`);
+        if (this.isMetered) {
+          // Remap switch for metered gateways to dynamic PEL (see ADR 0003)
+          // Shuts down PV generation safely via microinverter curtailment (no full contactor block)
+          if (value) {
+            // ON -> Disable limit override, restore Normal solar production
+            await this.api.setDpelSettings({
+              enable: false,
+              export_limit: true,
+              limit_value_W: 0,
+            });
+            await this.setCapabilityValue('target_power_mode', 'device').catch(this.error);
+            this.log('Successfully remapped ON command to disable PEL (Normal solar production)');
+          } else {
+            // OFF -> Enable limit at 0 W to halt PV production safely
+            await this.api.setDpelSettings({
+              enable: true,
+              export_limit: false,
+              limit_value_W: 0,
+            });
+            await this.setCapabilityValue('target_power_mode', 'no_production').catch(this.error);
+            this.log('Successfully remapped OFF command to set PEL to No production (0 W)');
+          }
+        } else {
+          // Unmetered: Fallback to original powerForcedOff endpoint
+          // value = true -> Enable production -> powerForcedOff = false
+          // value = false -> Disable production -> powerForcedOff = true
+          const forceOff = !value;
+          await this.api.setPowerForcedOff(forceOff);
+          this.log(`Successfully sent power production control command: powerForcedOff = ${forceOff}`);
+        }
       } catch (err) {
         this.error('Failed to change power production state:', err.message);
         throw new Error(this.homey.__('driver.gateway.error.command_failed', { message: err.message }));
@@ -169,23 +186,293 @@ class GatewayDevice extends Homey.Device {
   }
 
   /**
+   * Register listeners for target_power and target_power_mode capabilities.
+   * This handles UI changes from Homey Pro, validating inputs, and calling the local Envoy client.
+   * Adds guard checks for role and metered status to prevent unauthorized writes.
+   */
+  registerPelListeners() {
+    if (this.pelListenersRegistered) {
+      return;
+    }
+
+    if (this.hasCapability('target_power')) {
+      this.log('Registering capability listener for: target_power');
+      this.registerCapabilityListener('target_power', async (value) => {
+        this.log(`Target power (production limit) changed in UI to: ${value} W`);
+        
+        if (!this.isMaintainer) {
+          throw new Error(this.homey.__('driver.gateway.error.no_maintainer'));
+        }
+        if (!this.isMetered) {
+          throw new Error(this.homey.__('driver.gateway.error.not_metered'));
+        }
+
+        const mode = this.getCapabilityValue('target_power_mode') || 'device';
+        if (mode === 'homey') {
+          try {
+            // Write the production limit directly to the dynamic PEL settings endpoint
+            await this.api.setDpelSettings({
+              enable: true,
+              export_limit: false,
+              limit_value_W: value,
+            });
+            this.log(`Successfully updated Envoy dynamic production limit to: ${value} W`);
+          } catch (err) {
+            this.error('Failed to set Envoy production limit:', err.message);
+            throw new Error(this.homey.__('driver.gateway.error.command_failed', { message: err.message }));
+          }
+        } else {
+          this.log(`Currently in mode: ${mode}. Discarding target_power update (only active in Custom solar production mode).`);
+        }
+      });
+    }
+
+    if (this.hasCapability('target_power_mode')) {
+      this.log('Registering capability listener for: target_power_mode');
+      this.registerCapabilityListener('target_power_mode', async (value) => {
+        this.log(`Target power mode changed in UI to: ${value}`);
+        
+        if (!this.isMaintainer) {
+          throw new Error(this.homey.__('driver.gateway.error.no_maintainer'));
+        }
+        if (!this.isMetered) {
+          throw new Error(this.homey.__('driver.gateway.error.not_metered'));
+        }
+
+        try {
+          if (value === 'homey') {
+            // Custom solar production: enable dynamic limit, target production (export_limit: false)
+            const targetPower = this.getCapabilityValue('target_power') || 0;
+            await this.api.setDpelSettings({
+              enable: true,
+              export_limit: false,
+              limit_value_W: targetPower,
+            });
+            await this.setCapabilityValue('onoff', true).catch(this.error);
+            this.log(`Successfully enabled dynamic production limit with target: ${targetPower} W`);
+          } else if (value === 'self_use') {
+            // Self-use only: enable dynamic limit, target grid export (export_limit: true)
+            // Reads the static offset from the user's advanced settings (pel_offset, defaults to 0)
+            const settings = this.getSettings();
+            const offset = typeof settings.pel_offset === 'number' ? settings.pel_offset : 0;
+            await this.api.setDpelSettings({
+              enable: true,
+              export_limit: true,
+              limit_value_W: offset,
+            });
+            await this.setCapabilityValue('onoff', true).catch(this.error);
+            this.log(`Successfully enabled self-use mode (zero export) with offset: ${offset} W`);
+          } else if (value === 'no_production') {
+            // No production: enable dynamic limit, target production (export_limit: false), limit to 0 W
+            // This is a safe alternative to setPowerForcedOff that keeps batteries functional
+            await this.api.setDpelSettings({
+              enable: true,
+              export_limit: false,
+              limit_value_W: 0,
+            });
+            await this.setCapabilityValue('onoff', false).catch(this.error);
+            this.log('Successfully enabled dynamic limit (No production: 0 W).');
+          } else {
+            // device mode (Normal solar production): disable dynamic PEL override
+            await this.api.setDpelSettings({
+              enable: false,
+              export_limit: true,
+              limit_value_W: 0,
+            });
+            await this.setCapabilityValue('onoff', true).catch(this.error);
+            this.log('Successfully disabled dynamic limit override (Normal production).');
+          }
+        } catch (err) {
+          this.error('Failed to update Envoy PEL mode:', err.message);
+          throw new Error(this.homey.__('driver.gateway.error.command_failed', { message: err.message }));
+        }
+      });
+    }
+
+    this.pelListenersRegistered = true;
+  }
+
+  /**
+   * Dynamically add or remove PEL capabilities (target_power, target_power_mode)
+   * and the onoff control switch depending on user role and metered status.
+   * This is called on device init, on central poll updates, and settings/role updates.
+   * Ensures that control capabilities are only exposed when they can physically function.
+   * 
+   * @returns {Promise<void>}
+   */
+  async ensurePelCapabilities() {
+    this.log(`ensurePelCapabilities check: isMaintainer = ${this.isMaintainer}, isMetered = ${this.isMetered}`);
+
+    if (this.isMaintainer) {
+      // 1. Maintainer: Always expose the standard onoff switch capability
+      if (!this.hasCapability('onoff')) {
+        this.log('Adding capability: onoff');
+        await this.addCapability('onoff').catch((err) => {
+          this.error('Failed to add capability onoff:', err.message);
+        });
+      }
+      this.registerOnoffListener();
+
+      // 2. Metered + Maintainer: Expose Production Export Limiting (PEL) capabilities
+      if (this.isMetered) {
+        let addedAny = false;
+        if (!this.hasCapability('target_power')) {
+          this.log('Adding capability: target_power');
+          await this.addCapability('target_power').catch((err) => {
+            this.error('Failed to add capability target_power:', err.message);
+          });
+          addedAny = true;
+        }
+        if (!this.hasCapability('target_power_mode')) {
+          this.log('Adding capability: target_power_mode');
+          await this.addCapability('target_power_mode').catch((err) => {
+            this.error('Failed to add capability target_power_mode:', err.message);
+          });
+          addedAny = true;
+        }
+        // Register listeners for target_power and target_power_mode capabilities
+        if (addedAny || !this.pelListenersRegistered) {
+          this.registerPelListeners();
+        }
+      } else {
+        // Unmetered Maintainer: Remove PEL capabilities since they require CT clamp metering
+        if (this.hasCapability('target_power')) {
+          this.log('Removing capability: target_power (unmetered gateway)');
+          await this.removeCapability('target_power').catch((err) => {
+            this.error('Failed to remove capability target_power:', err.message);
+          });
+        }
+        if (this.hasCapability('target_power_mode')) {
+          this.log('Removing capability: target_power_mode (unmetered gateway)');
+          await this.removeCapability('target_power_mode').catch((err) => {
+            this.error('Failed to remove capability target_power_mode:', err.message);
+          });
+        }
+        this.pelListenersRegistered = false;
+      }
+    } else {
+      // Non-Maintainer: Remove all control switch and limit capabilities (read-only mode)
+      if (this.hasCapability('onoff')) {
+        this.log('Removing capability: onoff (unauthorized role)');
+        await this.removeCapability('onoff').catch((err) => {
+          this.error('Failed to remove capability onoff:', err.message);
+        });
+        this.onoffListenerRegistered = false;
+      }
+      if (this.hasCapability('target_power')) {
+        this.log('Removing capability: target_power (unauthorized role)');
+        await this.removeCapability('target_power').catch((err) => {
+          this.error('Failed to remove capability target_power:', err.message);
+        });
+      }
+      if (this.hasCapability('target_power_mode')) {
+        this.log('Removing capability: target_power_mode (unauthorized role)');
+        await this.removeCapability('target_power_mode').catch((err) => {
+          this.error('Failed to remove capability target_power_mode:', err.message);
+        });
+      }
+      this.pelListenersRegistered = false;
+    }
+  }
+
+  /**
+   * Verify Envoy local PEL state matches the Homey target states.
+   * If a discrepancy is detected (e.g. Envoy reset via its hourly cloud sync), re-apply target settings.
+   * Only called on metered systems with active maintainer authentication.
+   * 
+   * @param {Object} pelSettings - Polled settings from GET /ivp/ss/dpel
+   * @returns {Promise<void>}
+   */
+  async checkForPelCloudOverride(pelSettings) {
+    if (!this.isMaintainer || !this.isMetered || !pelSettings) {
+      return;
+    }
+
+    const targetMode = this.hasCapability('target_power_mode') ? this.getCapabilityValue('target_power_mode') : null;
+    const targetPower = this.hasCapability('target_power') ? this.getCapabilityValue('target_power') : null;
+
+    if (!targetMode) {
+      return;
+    }
+
+    // Determine the expected configuration based on Homey capability state
+    let expectedEnable = false;
+    let expectedExportLimit = true;
+    let expectedLimit = 0;
+
+    if (targetMode === 'homey') {
+      expectedEnable = true;
+      expectedExportLimit = false;
+      expectedLimit = typeof targetPower === 'number' ? targetPower : 0;
+    } else if (targetMode === 'self_use') {
+      expectedEnable = true;
+      expectedExportLimit = true;
+      const settings = this.getSettings();
+      expectedLimit = typeof settings.pel_offset === 'number' ? settings.pel_offset : 0;
+    } else if (targetMode === 'no_production') {
+      expectedEnable = true;
+      expectedExportLimit = false;
+      expectedLimit = 0;
+    } else {
+      // Normal production (device) has PEL disabled
+      expectedEnable = false;
+    }
+
+    const currentEnable = !!(pelSettings.dynamic_pel_settings && pelSettings.dynamic_pel_settings.enable);
+    const currentExportLimit = !!(pelSettings.dynamic_pel_settings && pelSettings.dynamic_pel_settings.export_limit);
+    const currentLimit = pelSettings.dynamic_pel_settings && typeof pelSettings.dynamic_pel_settings.limit_value_W === 'number'
+      ? pelSettings.dynamic_pel_settings.limit_value_W
+      : 0;
+
+    // Detect discrepancy in enable state, limit target, or export vs production mapping
+    if (
+      expectedEnable !== currentEnable
+      || (expectedEnable && (expectedExportLimit !== currentExportLimit || expectedLimit !== currentLimit))
+    ) {
+      this.log(
+        `PEL discrepancy detected: Homey expected (enable: ${expectedEnable}, exportLimit: ${expectedExportLimit}, limit: ${expectedLimit}W), `
+        + `Envoy reported (enable: ${currentEnable}, exportLimit: ${currentExportLimit}, limit: ${currentLimit}W). `
+        + 'Envoy might have reset via cloud sync. Re-applying Homey configuration...',
+      );
+
+      try {
+        await this.api.setDpelSettings({
+          enable: expectedEnable,
+          export_limit: expectedExportLimit,
+          limit_value_W: expectedLimit,
+        });
+        this.log('Successfully re-applied PEL configuration to Envoy.');
+      } catch (err) {
+        this.error('Failed to re-apply PEL configuration:', err.message);
+      }
+    }
+  }
+
+  /**
    * Poll the Envoy gateway locally to fetch the current PowerForcedOff status
    * and update the capability state in Homey.
    */
   /**
    * Update production telemetry received from the App orchestrator.
+   * This is called by the central orchestrator poll loop.
+   *
    * @param {Object} prodData - Live production readings
-   * @param {boolean} powerForcedOff - True if production is disabled
+   * @param {boolean} powerForcedOff - True if production is disabled via setPowerForcedOff
+   * @param {Object} [pelSettings] - Live PEL configuration from Envoy
    */
-  async updateTelemetry(prodData, powerForcedOff) {
+  async updateTelemetry(prodData, powerForcedOff, pelSettings = null) {
     this.log('Updating telemetry with data received from central poll...');
 
-    let productionEnabled = !powerForcedOff;
-
-    // Step 1: Cloud Override Check
-    const overridden = await this.checkForCloudOverride(productionEnabled);
-    if (overridden) {
-      productionEnabled = false;
+    // Step 1: Cloud Override Check (only for unmetered systems)
+    if (!this.isMetered) {
+      let productionEnabled = !powerForcedOff;
+      const overridden = await this.checkForCloudOverride(productionEnabled);
+      if (overridden) {
+        productionEnabled = false;
+      }
+      if (this.hasCapability('onoff')) {
+        await this.setCapabilityValue('onoff', productionEnabled).catch(this.error);
+      }
     }
 
     // Format readingTime to HH:mm in local timezone with DST
@@ -195,11 +482,19 @@ class GatewayDevice extends Homey.Device {
     const currentDay = new Date().getDate();
     const energyToday = await this.calculateDailyEnergy(prodData, currentDay);
 
-    // Step 3: Update capabilities
-    await this.updateDeviceCapabilities(prodData, productionEnabled, energyToday, lastUpdateStr);
-
-    // Step 4: Update and save metered status if changed
+    // Step 3: Update and save metered status if changed
     await this.updateMeteredStatus(prodData);
+
+    // Step 4: Dynamically update PEL and onoff capabilities based on metered status
+    await this.ensurePelCapabilities();
+
+    // Step 5: Update device capability values
+    await this.updateDeviceCapabilities(prodData, powerForcedOff, energyToday, lastUpdateStr, pelSettings);
+
+    // Step 6: Verify and re-apply PEL settings if there's a cloud-sync discrepancy
+    if (this.isMetered && pelSettings) {
+      await this.checkForPelCloudOverride(pelSettings);
+    }
   }
 
   /**
@@ -261,12 +556,42 @@ class GatewayDevice extends Homey.Device {
 
   /**
    * Update device capabilities inside Homey UI.
-   * @param {Object} prodData
-   * @param {boolean} productionEnabled
-   * @param {number} energyToday
-   * @param {string} lastUpdateStr
+   * 
+   * @param {Object} prodData - Live production readings
+   * @param {boolean} powerForcedOff - True if unmetered contactor is forced off
+   * @param {number} energyToday - Calculated energy production today in kWh
+   * @param {string} lastUpdateStr - Formatted local time string (HH:mm)
+   * @param {Object} [pelSettings] - Live Dynamic PEL configuration
    */
-  async updateDeviceCapabilities(prodData, productionEnabled, energyToday, lastUpdateStr) {
+  async updateDeviceCapabilities(prodData, powerForcedOff, energyToday, lastUpdateStr, pelSettings = null) {
+    let productionEnabled = !powerForcedOff;
+
+    if (this.isMetered && pelSettings && pelSettings.dynamic_pel_settings) {
+      const isEnabled = !!pelSettings.dynamic_pel_settings.enable;
+      const isExport = !!pelSettings.dynamic_pel_settings.export_limit;
+      const limit = pelSettings.dynamic_pel_settings.limit_value_W || 0;
+
+      // Map dynamic PEL state back to our custom capability values
+      let mode = 'device';
+      if (isEnabled) {
+        if (isExport) {
+          mode = 'self_use';
+        } else {
+          mode = limit === 0 ? 'no_production' : 'homey';
+        }
+      }
+
+      productionEnabled = (mode !== 'no_production');
+
+      if (this.hasCapability('target_power_mode')) {
+        await this.setCapabilityValue('target_power_mode', mode).catch(this.error);
+      }
+
+      if (this.hasCapability('target_power') && mode === 'homey') {
+        await this.setCapabilityValue('target_power', limit).catch(this.error);
+      }
+    }
+
     this.log(
       `Telemetry updated: powerForcedOff = ${!productionEnabled}, `
       + `wattsNow = ${prodData.wattsNow} W, `
@@ -277,7 +602,7 @@ class GatewayDevice extends Homey.Device {
 
     if (this.hasCapability('onoff')) {
       this.log(`Setting capability 'onoff' to: ${productionEnabled}`);
-      await this.setCapabilityValue('onoff', productionEnabled);
+      await this.setCapabilityValue('onoff', productionEnabled).catch(this.error);
     }
     await this.setCapabilityValue('measure_power', prodData.wattsNow);
     await this.setCapabilityValue('meter_power', prodData.kwhLifetime);
@@ -351,18 +676,8 @@ class GatewayDevice extends Homey.Device {
 
         this.initApi(newSettings, token);
 
-        // Dynamically add/remove onoff capability based on the updated role
-        if (this.isMaintainer) {
-          if (!this.hasCapability('onoff')) {
-            this.log('Account upgraded to Maintainer: adding onoff capability');
-            await this.addCapability('onoff').catch(this.error);
-          }
-          this.registerOnoffListener();
-        } else if (this.hasCapability('onoff')) {
-          this.log('Account downgraded to Owner: removing onoff capability');
-          await this.removeCapability('onoff').catch(this.error);
-          this.onoffListenerRegistered = false;
-        }
+        // Dynamically update PEL and onoff capabilities based on the upgraded/downgraded role (see ADR 0003)
+        await this.ensurePelCapabilities();
 
         this.log('Settings validated successfully. Token and roles updated.');
 
@@ -387,21 +702,8 @@ class GatewayDevice extends Homey.Device {
     this.isMaintainer = isMaintainer;
     await this.setStoreValue('is_maintainer', isMaintainer).catch(this.error);
 
-    if (isMaintainer) {
-      if (!this.hasCapability('onoff')) {
-        this.log('Adding missing capability: onoff');
-        await this.addCapability('onoff').catch((err) => {
-          this.error('Failed to add capability onoff:', err.message);
-        });
-      }
-      this.registerOnoffListener();
-    } else if (this.hasCapability('onoff')) {
-      this.log('Removing unauthorized capability: onoff');
-      await this.removeCapability('onoff').catch((err) => {
-        this.error('Failed to remove capability onoff:', err.message);
-      });
-      this.onoffListenerRegistered = false;
-    }
+    // Dynamically update capabilities based on the new role (see ADR 0003)
+    await this.ensurePelCapabilities();
 
     await this.setCapabilityValue('control_state', isMaintainer).catch(this.error);
   }
