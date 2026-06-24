@@ -19,6 +19,7 @@
     "connected_inverters",
     "control_state",
     "metered_gateway",
+    "production_limiting",
     "target_power",
     "target_power_mode"
   ],
