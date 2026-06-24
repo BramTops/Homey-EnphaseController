@@ -50,5 +50,9 @@
   "1.5.0": {
     "en": "Adds solar production limiting. \nEnables net export limits.",
     "nl": "Voegt limieten voor zonneproductie toe. \nOndersteunt limieten voor teruglevering."
+  },
+  "1.5.1": {
+    "en": "Tests production limiting support. \nFalls back to standard control. \nFixes rapid control changes.",
+    "nl": "Test ondersteuning voor productielimieten. \nValt terug op standaardbesturing. \nHerstelt snelle besturingswijzigingen."
   }
 }
