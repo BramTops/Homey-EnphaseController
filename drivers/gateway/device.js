@@ -18,6 +18,7 @@ class GatewayDevice extends Homey.Device {
     const initialToken = this.getStoreValue('enphase_token');
     this.isMaintainer = !!this.getStoreValue('is_maintainer');
     this.isMetered = !!this.getStoreValue('is_metered');
+    this.productionLimiting = !!this.getStoreValue('production_limiting');
 
     this.log(`Initializing device: SN ${settings.envoy_serial}, IP ${settings.envoy_ip}`);
     this.log(`Initial role: ${this.isMaintainer ? 'Maintainer / Installer' : 'System Owner'}`);
@@ -88,6 +89,9 @@ class GatewayDevice extends Homey.Device {
     // Initialize API Client
     this.initApi(settings, initialToken);
 
+    // Initialize temporary cache for target power to resolve UI race conditions
+    this.tempTargetPower = this.getCapabilityValue('target_power') || null;
+
     // Dynamically update PEL and onoff capabilities based on current role and metered status (see ADR 0003)
     await this.ensurePelCapabilities();
 
@@ -146,8 +150,9 @@ class GatewayDevice extends Homey.Device {
       }
 
       try {
-        if (this.isMetered) {
-          // Remap switch for metered gateways to dynamic PEL (see ADR 0003)
+        const usePel = this.isMetered && this.isMaintainer && this.productionLimiting;
+        if (usePel) {
+          // Remap switch for metered gateways supporting dynamic limiting to dynamic PEL (see ADR 0003)
           // Shuts down PV generation safely via microinverter curtailment (no full contactor block)
           if (value) {
             // ON -> Disable limit override, restore Normal solar production
@@ -169,7 +174,7 @@ class GatewayDevice extends Homey.Device {
             this.log('Successfully remapped OFF command to set PEL to No production (0 W)');
           }
         } else {
-          // Unmetered: Fallback to original powerForcedOff endpoint
+          // Unmetered or unsupported PEL: Fallback to original powerForcedOff endpoint
           // value = true -> Enable production -> powerForcedOff = false
           // value = false -> Disable production -> powerForcedOff = true
           const forceOff = !value;
@@ -207,6 +212,9 @@ class GatewayDevice extends Homey.Device {
           throw new Error(this.homey.__('driver.gateway.error.not_metered'));
         }
 
+        // Cache the latest value in-memory to prevent UI race conditions
+        this.tempTargetPower = value;
+
         const mode = this.getCapabilityValue('target_power_mode') || 'device';
         if (mode === 'homey') {
           try {
@@ -242,7 +250,9 @@ class GatewayDevice extends Homey.Device {
         try {
           if (value === 'homey') {
             // Custom solar production: enable dynamic limit, target production (export_limit: false)
-            const targetPower = this.getCapabilityValue('target_power') || 0;
+            const targetPower = typeof this.tempTargetPower === 'number'
+              ? this.tempTargetPower
+              : (this.getCapabilityValue('target_power') || 0);
             await this.api.setDpelSettings({
               enable: true,
               export_limit: false,
@@ -301,7 +311,9 @@ class GatewayDevice extends Homey.Device {
    * @returns {Promise<void>}
    */
   async ensurePelCapabilities() {
-    this.log(`ensurePelCapabilities check: isMaintainer = ${this.isMaintainer}, isMetered = ${this.isMetered}`);
+    this.log(`ensurePelCapabilities check: isMaintainer = ${this.isMaintainer}, isMetered = ${this.isMetered}, productionLimiting = ${this.productionLimiting}`);
+
+    const currentProdLimiting = this.isMetered && this.isMaintainer && this.productionLimiting;
 
     if (this.isMaintainer) {
       // 1. Maintainer: Always expose the standard onoff switch capability
@@ -313,8 +325,26 @@ class GatewayDevice extends Homey.Device {
       }
       this.registerOnoffListener();
 
-      // 2. Metered + Maintainer: Expose Production Export Limiting (PEL) capabilities
+      // 2. Expose Production Limiting capability if both isMetered and isMaintainer are true
       if (this.isMetered) {
+        if (!this.hasCapability('production_limiting')) {
+          this.log('Adding capability: production_limiting');
+          await this.addCapability('production_limiting').catch((err) => {
+            this.error('Failed to add capability production_limiting:', err.message);
+          });
+        }
+        await this.setCapabilityValue('production_limiting', currentProdLimiting).catch(this.error);
+      } else {
+        if (this.hasCapability('production_limiting')) {
+          this.log('Removing capability: production_limiting');
+          await this.removeCapability('production_limiting').catch((err) => {
+            this.error('Failed to remove capability production_limiting:', err.message);
+          });
+        }
+      }
+
+      // 3. Expose dynamic PEL capabilities only if production limiting is supported and active
+      if (currentProdLimiting) {
         let addedAny = false;
         if (!this.hasCapability('target_power')) {
           this.log('Adding capability: target_power');
@@ -335,15 +365,15 @@ class GatewayDevice extends Homey.Device {
           this.registerPelListeners();
         }
       } else {
-        // Unmetered Maintainer: Remove PEL capabilities since they require CT clamp metering
+        // Remove PEL capabilities
         if (this.hasCapability('target_power')) {
-          this.log('Removing capability: target_power (unmetered gateway)');
+          this.log('Removing capability: target_power');
           await this.removeCapability('target_power').catch((err) => {
             this.error('Failed to remove capability target_power:', err.message);
           });
         }
         if (this.hasCapability('target_power_mode')) {
-          this.log('Removing capability: target_power_mode (unmetered gateway)');
+          this.log('Removing capability: target_power_mode');
           await this.removeCapability('target_power_mode').catch((err) => {
             this.error('Failed to remove capability target_power_mode:', err.message);
           });
@@ -351,13 +381,19 @@ class GatewayDevice extends Homey.Device {
         this.pelListenersRegistered = false;
       }
     } else {
-      // Non-Maintainer: Remove all control switch and limit capabilities (read-only mode)
+      // Non-Maintainer: Remove all control switch, production limiting and limit capabilities (read-only mode)
       if (this.hasCapability('onoff')) {
         this.log('Removing capability: onoff (unauthorized role)');
         await this.removeCapability('onoff').catch((err) => {
           this.error('Failed to remove capability onoff:', err.message);
         });
         this.onoffListenerRegistered = false;
+      }
+      if (this.hasCapability('production_limiting')) {
+        this.log('Removing capability: production_limiting (unauthorized role)');
+        await this.removeCapability('production_limiting').catch((err) => {
+          this.error('Failed to remove capability production_limiting:', err.message);
+        });
       }
       if (this.hasCapability('target_power')) {
         this.log('Removing capability: target_power (unauthorized role)');
@@ -384,7 +420,8 @@ class GatewayDevice extends Homey.Device {
    * @returns {Promise<void>}
    */
   async checkForPelCloudOverride(pelSettings) {
-    if (!this.isMaintainer || !this.isMetered || !pelSettings) {
+    const currentProdLimiting = this.isMetered && this.isMaintainer && this.productionLimiting;
+    if (!currentProdLimiting || !pelSettings) {
       return;
     }
 
@@ -463,8 +500,9 @@ class GatewayDevice extends Homey.Device {
   async updateTelemetry(prodData, powerForcedOff, pelSettings = null) {
     this.log('Updating telemetry with data received from central poll...');
 
-    // Step 1: Cloud Override Check (only for unmetered systems)
-    if (!this.isMetered) {
+    // Step 1: Cloud Override Check (only when not using dynamic production limiting)
+    const currentProdLimiting = this.isMetered && this.isMaintainer && this.productionLimiting;
+    if (!currentProdLimiting) {
       let productionEnabled = !powerForcedOff;
       const overridden = await this.checkForCloudOverride(productionEnabled);
       if (overridden) {
@@ -566,7 +604,9 @@ class GatewayDevice extends Homey.Device {
   async updateDeviceCapabilities(prodData, powerForcedOff, energyToday, lastUpdateStr, pelSettings = null) {
     let productionEnabled = !powerForcedOff;
 
-    if (this.isMetered && pelSettings && pelSettings.dynamic_pel_settings) {
+    const currentProdLimiting = this.isMetered && this.isMaintainer && this.productionLimiting;
+
+    if (currentProdLimiting && pelSettings && pelSettings.dynamic_pel_settings) {
       const isEnabled = !!pelSettings.dynamic_pel_settings.enable;
       const isExport = !!pelSettings.dynamic_pel_settings.export_limit;
       const limit = pelSettings.dynamic_pel_settings.limit_value_W || 0;
@@ -590,6 +630,10 @@ class GatewayDevice extends Homey.Device {
       if (this.hasCapability('target_power') && mode === 'homey') {
         await this.setCapabilityValue('target_power', limit).catch(this.error);
       }
+    }
+
+    if (this.hasCapability('production_limiting')) {
+      await this.setCapabilityValue('production_limiting', currentProdLimiting).catch(this.error);
     }
 
     this.log(
@@ -627,6 +671,14 @@ class GatewayDevice extends Homey.Device {
     if (this.isMetered !== prodData.isMetered) {
       this.isMetered = prodData.isMetered;
       await this.setStoreValue('is_metered', this.isMetered).catch(this.error);
+
+      // Re-evaluate production limiting support dynamically
+      if (this.isMetered) {
+        await this.testProductionLimitingSupport();
+      } else {
+        this.productionLimiting = false;
+        await this.setStoreValue('production_limiting', false).catch(this.error);
+      }
     }
   }
 
@@ -676,6 +728,9 @@ class GatewayDevice extends Homey.Device {
 
         this.initApi(newSettings, token);
 
+        // Perform test write for dynamic production limiting support
+        await this.testProductionLimitingSupport();
+
         // Dynamically update PEL and onoff capabilities based on the upgraded/downgraded role (see ADR 0003)
         await this.ensurePelCapabilities();
 
@@ -702,10 +757,84 @@ class GatewayDevice extends Homey.Device {
     this.isMaintainer = isMaintainer;
     await this.setStoreValue('is_maintainer', isMaintainer).catch(this.error);
 
+    // If role is upgraded to maintainer, check if production limiting is supported
+    if (isMaintainer) {
+      await this.testProductionLimitingSupport();
+    } else {
+      this.productionLimiting = false;
+      await this.setStoreValue('production_limiting', false).catch(this.error);
+    }
+
     // Dynamically update capabilities based on the new role (see ADR 0003)
     await this.ensurePelCapabilities();
 
     await this.setCapabilityValue('control_state', isMaintainer).catch(this.error);
+  }
+
+  /**
+   * Test the local gateway's Dynamic PEL support and update store value.
+   * Only run if both isMetered and isMaintainer are true.
+   * @returns {Promise<boolean>} Result of the check
+   */
+  async testProductionLimitingSupport() {
+    if (!this.isMetered || !this.isMaintainer) {
+      this.productionLimiting = false;
+      await this.setStoreValue('production_limiting', false).catch(this.error);
+      return false;
+    }
+
+    this.log('Testing local dynamic production limiting (DPEL) support on Gateway...');
+    try {
+      // 1. Fetch current settings
+      const originalSettings = await this.api.getDpelSettings();
+
+      // 2. Perform test write
+      await this.api.setDpelSettings({
+        enable: true,
+        export_limit: true,
+        limit_value_W: 10000,
+      });
+
+      this.productionLimiting = true;
+      this.log('Dynamic production limiting (DPEL) support verified successfully.');
+
+      // 3. Restore original settings immediately
+      const originalEnable = !!(originalSettings && originalSettings.dynamic_pel_settings && originalSettings.dynamic_pel_settings.enable);
+      const originalExportLimit = !(originalSettings && originalSettings.dynamic_pel_settings && originalSettings.dynamic_pel_settings.export_limit === false);
+      const originalLimit = originalSettings && originalSettings.dynamic_pel_settings && typeof originalSettings.dynamic_pel_settings.limit_value_W === 'number'
+        ? originalSettings.dynamic_pel_settings.limit_value_W
+        : 0;
+
+      await this.api.setDpelSettings({
+        enable: originalEnable,
+        export_limit: originalExportLimit,
+        limit_value_W: originalLimit,
+      });
+
+    } catch (err) {
+      this.error('DPEL test write failed. Dynamic production limiting is not supported:', err.message);
+      this.productionLimiting = false;
+
+      // Try to restore original settings if we can
+      try {
+        const originalSettings = await this.api.getDpelSettings();
+        if (originalSettings && originalSettings.dynamic_pel_settings) {
+          const originalEnable = !!originalSettings.dynamic_pel_settings.enable;
+          const originalExportLimit = originalSettings.dynamic_pel_settings.export_limit !== false;
+          const originalLimit = originalSettings.dynamic_pel_settings.limit_value_W || 0;
+          await this.api.setDpelSettings({
+            enable: originalEnable,
+            export_limit: originalExportLimit,
+            limit_value_W: originalLimit,
+          });
+        }
+      } catch (restoreErr) {
+        // ignore restore errors
+      }
+    }
+
+    await this.setStoreValue('production_limiting', this.productionLimiting).catch(this.error);
+    return this.productionLimiting;
   }
 
 }
