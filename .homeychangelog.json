@@ -54,5 +54,9 @@
   "1.5.1": {
     "en": "Tests production limiting support. \nFalls back to standard control. \nFixes rapid control changes.",
     "nl": "Test ondersteuning voor productielimieten. \nValt terug op standaardbesturing. \nHerstelt snelle besturingswijzigingen."
+  },
+  "1.5.2": {
+    "en": "Fixes production limit errors. \nImproves meter detection.",
+    "nl": "Herstelt fouten bij productielimieten. \nVerbetert meterdetectie."
   }
 }
