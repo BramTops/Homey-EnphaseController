@@ -204,7 +204,7 @@ class GatewayDevice extends Homey.Device {
       this.log('Registering capability listener for: target_power');
       this.registerCapabilityListener('target_power', async (value) => {
         this.log(`Target power (production limit) changed in UI to: ${value} W`);
-        
+
         if (!this.isMaintainer) {
           throw new Error(this.homey.__('driver.gateway.error.no_maintainer'));
         }
@@ -239,7 +239,7 @@ class GatewayDevice extends Homey.Device {
       this.log('Registering capability listener for: target_power_mode');
       this.registerCapabilityListener('target_power_mode', async (value) => {
         this.log(`Target power mode changed in UI to: ${value}`);
-        
+
         if (!this.isMaintainer) {
           throw new Error(this.homey.__('driver.gateway.error.no_maintainer'));
         }
@@ -307,7 +307,7 @@ class GatewayDevice extends Homey.Device {
    * and the onoff control switch depending on user role and metered status.
    * This is called on device init, on central poll updates, and settings/role updates.
    * Ensures that control capabilities are only exposed when they can physically function.
-   * 
+   *
    * @returns {Promise<void>}
    */
   async ensurePelCapabilities() {
@@ -334,13 +334,11 @@ class GatewayDevice extends Homey.Device {
           });
         }
         await this.setCapabilityValue('production_limiting', currentProdLimiting).catch(this.error);
-      } else {
-        if (this.hasCapability('production_limiting')) {
-          this.log('Removing capability: production_limiting');
-          await this.removeCapability('production_limiting').catch((err) => {
-            this.error('Failed to remove capability production_limiting:', err.message);
-          });
-        }
+      } else if (this.hasCapability('production_limiting')) {
+        this.log('Removing capability: production_limiting');
+        await this.removeCapability('production_limiting').catch((err) => {
+          this.error('Failed to remove capability production_limiting:', err.message);
+        });
       }
 
       // 3. Expose dynamic PEL capabilities only if production limiting is supported and active
@@ -415,7 +413,7 @@ class GatewayDevice extends Homey.Device {
    * Verify Envoy local PEL state matches the Homey target states.
    * If a discrepancy is detected (e.g. Envoy reset via its hourly cloud sync), re-apply target settings.
    * Only called on metered systems with active maintainer authentication.
-   * 
+   *
    * @param {Object} pelSettings - Polled settings from GET /ivp/ss/dpel
    * @returns {Promise<void>}
    */
@@ -594,7 +592,7 @@ class GatewayDevice extends Homey.Device {
 
   /**
    * Update device capabilities inside Homey UI.
-   * 
+   *
    * @param {Object} prodData - Live production readings
    * @param {boolean} powerForcedOff - True if unmetered contactor is forced off
    * @param {number} energyToday - Calculated energy production today in kWh
