@@ -1,8 +1,8 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "nl.creitive.enlighten",
-  "version": "1.4.0",
-  "compatibility": ">=12.0.0",
+  "version": "1.5.2",
+  "compatibility": ">=12.13.0",
   "sdk": 3,
   "runtime": "nodejs",
   "brandColor": "#f0b400",
@@ -14,8 +14,8 @@
     "nl": "Enphase Controller"
   },
   "description": {
-    "en": "Monitor power, daily/lifetime energy production, and active inverters. Turn power production on/off to handle negative energy prices.",
-    "nl": "Monitor vermogen, dagelijkse/totale energieproductie en actieve omvormers. Schakel stroomproductie aan/uit bij negatieve energieprijzen."
+    "en": "Monitor power and energy of your Enphase system. Control solar production, set custom limits, or restrict grid export.",
+    "nl": "Monitor vermogen en energie van uw Enphase-systeem. Bestuur zonneproductie, stel limieten in of beperk net-teruglevering."
   },
   "category": [
     "energy"
@@ -449,7 +449,10 @@
         "power_production",
         "connected_inverters",
         "control_state",
-        "metered_gateway"
+        "metered_gateway",
+        "production_limiting",
+        "target_power",
+        "target_power_mode"
       ],
       "capabilitiesOptions": {
         "onoff": {
@@ -475,6 +478,48 @@
             "en": "Solar energy today",
             "nl": "Zonne-energie vandaag"
           }
+        },
+        "target_power": {
+          "title": {
+            "en": "Production limit",
+            "nl": "Productielimiet"
+          }
+        },
+        "target_power_mode": {
+          "title": {
+            "en": "Production limit mode",
+            "nl": "Productielimiet modus"
+          },
+          "values": [
+            {
+              "id": "device",
+              "title": {
+                "en": "Normal solar production",
+                "nl": "Normale zonneproductie"
+              }
+            },
+            {
+              "id": "homey",
+              "title": {
+                "en": "Custom solar production",
+                "nl": "Aangepaste zonneproductie"
+              }
+            },
+            {
+              "id": "self_use",
+              "title": {
+                "en": "Self-use only",
+                "nl": "Alleen zelfverbruik"
+              }
+            },
+            {
+              "id": "no_production",
+              "title": {
+                "en": "No production",
+                "nl": "Geen productie"
+              }
+            }
+          ]
         }
       },
       "repair": [
@@ -557,6 +602,30 @@
               "placeholder": "10.0.0.123",
               "required": true,
               "value": ""
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Advanced settings",
+            "nl": "Geavanceerde instellingen"
+          },
+          "children": [
+            {
+              "id": "pel_offset",
+              "type": "number",
+              "label": {
+                "en": "Self-use offset",
+                "nl": "Zelfverbruik offset"
+              },
+              "description": {
+                "en": "The export limit value in Watts used when in Self-use only mode (defaults to 0).",
+                "nl": "De terugleverlimiet in Watt die wordt gebruikt in de modus Alleen zelfverbruik (standaard 0)."
+              },
+              "required": true,
+              "value": 0,
+              "min": 0
             }
           ]
         }
@@ -935,6 +1004,21 @@
       "setable": false,
       "uiComponent": "sensor",
       "icon": "/assets/bolt.svg"
+    },
+    "production_limiting": {
+      "type": "boolean",
+      "title": {
+        "en": "Production limiting",
+        "nl": "Productiebeperking"
+      },
+      "description": {
+        "en": "Indicates whether the gateway supports dynamic production export limiting (tested during pairing).",
+        "nl": "Geeft aan of de gateway dynamische exportbeperking ondersteunt (getest tijdens koppelen)."
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "icon": "/assets/production_limiting.svg"
     }
   },
   "discovery": {

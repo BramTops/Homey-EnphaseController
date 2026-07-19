@@ -18,7 +18,10 @@
     "power_production",
     "connected_inverters",
     "control_state",
-    "metered_gateway"
+    "metered_gateway",
+    "production_limiting",
+    "target_power",
+    "target_power_mode"
   ],
   "capabilitiesOptions": {
     "onoff": {
@@ -44,6 +47,48 @@
         "en": "Solar energy today",
         "nl": "Zonne-energie vandaag"
       }
+    },
+    "target_power": {
+      "title": {
+        "en": "Production limit",
+        "nl": "Productielimiet"
+      }
+    },
+    "target_power_mode": {
+      "title": {
+        "en": "Production limit mode",
+        "nl": "Productielimiet modus"
+      },
+      "values": [
+        {
+          "id": "device",
+          "title": {
+            "en": "Normal solar production",
+            "nl": "Normale zonneproductie"
+          }
+        },
+        {
+          "id": "homey",
+          "title": {
+            "en": "Custom solar production",
+            "nl": "Aangepaste zonneproductie"
+          }
+        },
+        {
+          "id": "self_use",
+          "title": {
+            "en": "Self-use only",
+            "nl": "Alleen zelfverbruik"
+          }
+        },
+        {
+          "id": "no_production",
+          "title": {
+            "en": "No production",
+            "nl": "Geen productie"
+          }
+        }
+      ]
     }
   },
   "repair": [
@@ -126,6 +171,30 @@
           "placeholder": "10.0.0.123",
           "required": true,
           "value": ""
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Advanced settings",
+        "nl": "Geavanceerde instellingen"
+      },
+      "children": [
+        {
+          "id": "pel_offset",
+          "type": "number",
+          "label": {
+            "en": "Self-use offset",
+            "nl": "Zelfverbruik offset"
+          },
+          "description": {
+            "en": "The export limit value in Watts used when in Self-use only mode (defaults to 0).",
+            "nl": "De terugleverlimiet in Watt die wordt gebruikt in de modus Alleen zelfverbruik (standaard 0)."
+          },
+          "required": true,
+          "value": 0,
+          "min": 0
         }
       ]
     }

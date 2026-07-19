@@ -1,7 +1,7 @@
 {
   "id": "nl.creitive.enlighten",
-  "version": "1.4.0",
-  "compatibility": ">=12.0.0",
+  "version": "1.5.2",
+  "compatibility": ">=12.13.0",
   "sdk": 3,
   "runtime": "nodejs",
   "brandColor": "#f0b400",
@@ -13,8 +13,8 @@
     "nl": "Enphase Controller"
   },
   "description": {
-    "en": "Monitor power, daily/lifetime energy production, and active inverters. Turn power production on/off to handle negative energy prices.",
-    "nl": "Monitor vermogen, dagelijkse/totale energieproductie en actieve omvormers. Schakel stroomproductie aan/uit bij negatieve energieprijzen."
+    "en": "Monitor power and energy of your Enphase system. Control solar production, set custom limits, or restrict grid export.",
+    "nl": "Monitor vermogen en energie van uw Enphase-systeem. Bestuur zonneproductie, stel limieten in of beperk net-teruglevering."
   },
   "category": [
     "energy"

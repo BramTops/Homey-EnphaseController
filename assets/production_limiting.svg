@@ -1,0 +1,9 @@
+<svg viewBox="90 90 332 332" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Inner square container boundary (now the outer boundary) -->
+    <rect x="96" y="96" width="320" height="320" rx="24" ry="24" stroke-width="12" />
+    
+    <!-- Continuous power smoothing graph line (jerky to smooth) -->
+    <path d="M 110 270 L 135 120 L 165 390 L 195 150 L 225 350 L 255 200 Q 275 300, 295 260 Q 320 215, 345 270 Q 365 310, 380 250 Q 391 210, 402 256" stroke-width="16" />
+  </g>
+</svg>

@@ -1,0 +1,15 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Production limiting",
+    "nl": "Productiebeperking"
+  },
+  "description": {
+    "en": "Indicates whether the gateway supports dynamic production export limiting (tested during pairing).",
+    "nl": "Geeft aan of de gateway dynamische exportbeperking ondersteunt (getest tijdens koppelen)."
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "icon": "/assets/production_limiting.svg"
+}
