@@ -34,7 +34,6 @@ Athom Homey Pro app (**nl.creitive.enlighten**), Homey SDK v3. Local monitor/con
   * `drivers/` — Composition helper templates and settings.
   * `flow/`, `locales/`, `screensavers/`, `signals/` — Flow cards, translations, and signals.
 * `drivers/` — Device drivers.
-  * `envoy/` — Legacy Envoy driver.
   * `gateway/` — Enphase Solar driver (telemetry, production control).
   * `homeload/` — Enphase Home driver (home consumption monitoring).
   * `inverters/` — Enphase Solar inverters driver (handles dynamic inverter telemetry, status, and alerts).

@@ -1,21 +1,5 @@
 {
   "driver": {
-    "envoy": {
-      "name": "Zonnepanelen (Enphase)",
-      "error": {
-        "fields_required": "Vul alstublieft alle verplichte velden in.",
-        "auth_failed": "Verbinding mislukt: __message__",
-        "no_maintainer": "U heeft een installateurs-/onderhoudsaccount nodig om stroomproductie in- of uit te schakelen.",
-        "command_failed": "Opdracht mislukt: __message__",
-        "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__"
-      },
-      "status": {
-        "on": "Aan",
-        "off": "Uit",
-        "read_only": "Alleen-lezen",
-        "read_write": "Lezen & schrijven"
-      }
-    },
     "gateway": {
       "name": "Enphase Solar",
       "error": {

@@ -201,7 +201,6 @@ EnvoyApi token updated (via onTokenUpdated callback)
     ↓
 App propagates to all devices with matching serial:
     ├─ Gateway devices → setStoreValue('enphase_token', newToken)
-    ├─ Envoy legacy devices → setStoreValue('enphase_token', newToken)
     ├─ Inverters devices → setStoreValue('enphase_token', newToken)
     └─ Homeload devices → setStoreValue('enphase_token', newToken)
     ↓
@@ -215,7 +214,6 @@ EnvoyApi IP updated (via discovery listener)
     ↓
 App propagates to all devices with matching serial:
     ├─ Gateway devices → setSettings({ envoy_ip: newIp })
-    ├─ Envoy legacy devices → setSettings({ envoy_ip: newIp })
     ├─ Inverters devices → setSettings({ envoy_ip: newIp })
     └─ Homeload devices → setSettings({ envoy_ip: newIp })
 ```

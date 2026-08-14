@@ -12,7 +12,7 @@ When a user manually disables power production in Homey (e.g. to avoid negative 
 However, Enphase Envoy gateways synchronize their local settings with the Enphase Enlighten Cloud on a scheduled basis—specifically at the top of every hour (HH:00). During this synchronization, the cloud settings (which default to production enabled) are pushed to the physical gateway. This overrides the local state, resetting `powerForcedOff` back to `false` and causing power production to automatically resume without user consent or notification.
 
 ## Decision
-We decided to implement a state discrepancy resolution pattern inside the Envoy driver's polling loop (`drivers/envoy/device.js`):
+We decided to implement a state discrepancy resolution pattern inside the Gateway driver's polling loop (`drivers/gateway/device.js`):
 1. **Desired State Tracking:** Homey maintains the user's desired state via the standard `onoff` capability value (`true` = production enabled / normal, `false` = production disabled / forced off).
 2. **Periodic Physical Polling:** Every 120 seconds (initially 60 seconds, updated via [ADR 6](0006-local-gateway-socket-recycling-and-polling-optimizations.md)), the driver polls the local Envoy for the current physical status (`powerForcedOff`) and active production metrics.
 3. **Discrepancy Detection:** If Homey's target state is `false` (user intends production to be OFF) but the Envoy returns `powerForcedOff === false` (indicating the physical device has been re-enabled), the driver detects a state conflict.

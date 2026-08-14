@@ -1,22 +1,5 @@
 {
   "driver": {
-    "envoy": {
-      "name": "Solar panels (Enphase)",
-      "error": {
-        "fields_required": "Please fill in all the required fields.",
-        "invalid_serial": "Serial number must be exactly 12 digits.",
-        "auth_failed": "Connection failed: __message__",
-        "no_maintainer": "You need an Installer/Maintainer account to enable or disable power production.",
-        "command_failed": "Command failed: __message__",
-        "save_settings_failed": "Failed to save settings: Connection error: __message__"
-      },
-      "status": {
-        "on": "On",
-        "off": "Off",
-        "read_only": "Read-only",
-        "read_write": "Read & Write"
-      }
-    },
     "gateway": {
       "name": "Enphase Solar",
       "error": {
