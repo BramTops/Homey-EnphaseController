@@ -7,6 +7,7 @@
         "invalid_serial": "Invalid Gateway Serial Number.",
         "auth_failed": "Connection failed: __message__",
         "no_maintainer": "You need an Installer/Maintainer account to enable or disable power production.",
+        "always_on": "This device is set to 'Always on' and cannot be turned off.",
         "command_failed": "Command failed: __message__",
         "save_settings_failed": "Failed to save settings: Connection error: __message__"
       },

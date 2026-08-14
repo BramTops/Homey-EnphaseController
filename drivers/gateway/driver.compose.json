@@ -182,6 +182,19 @@
       },
       "children": [
         {
+          "id": "always_on",
+          "type": "checkbox",
+          "label": {
+            "en": "Always on",
+            "nl": "Altijd aan"
+          },
+          "hint": {
+            "en": "Prevent this device from turning off, even when running 'Turn all devices off' flows.",
+            "nl": "Voorkom dat dit apparaat wordt uitgeschakeld, zelfs bij 'Schakel alle apparaten uit'-flows."
+          },
+          "value": false
+        },
+        {
           "id": "pel_offset",
           "type": "number",
           "label": {

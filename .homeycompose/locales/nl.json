@@ -7,6 +7,7 @@
         "invalid_serial": "Ongeldig gateway serienummer.",
         "auth_failed": "Verbinding mislukt: __message__",
         "no_maintainer": "U heeft een installateurs-/onderhoudsaccount nodig om stroomproductie in- of uit te schakelen.",
+        "always_on": "Dit apparaat staat ingesteld op 'Altijd aan' en kan niet worden uitgeschakeld.",
         "command_failed": "Opdracht mislukt: __message__",
         "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__"
       },

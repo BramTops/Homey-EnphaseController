@@ -143,6 +143,12 @@ class GatewayDevice extends Homey.Device {
     this.registerCapabilityListener('onoff', async (value) => {
       this.log(`Switch toggled to: ${value ? 'ON (Enable Production)' : 'OFF (Disable Production)'}`);
 
+      // Check Always on setting
+      if (!value && this.getSetting('always_on')) {
+        this.log('Cannot turn off device: "Always on" setting is enabled.');
+        throw new Error(this.homey.__('driver.gateway.error.always_on'));
+      }
+
       // Verify that this account is authorized to perform control actions
       if (!this.isMaintainer) {
         this.error('Permission denied: Account role is not Maintainer / Installer.');
@@ -239,6 +245,12 @@ class GatewayDevice extends Homey.Device {
       this.log('Registering capability listener for: target_power_mode');
       this.registerCapabilityListener('target_power_mode', async (value) => {
         this.log(`Target power mode changed in UI to: ${value}`);
+
+        // Check Always on setting when attempting to stop production via PEL mode
+        if (value === 'no_production' && this.getSetting('always_on')) {
+          this.log('Cannot set mode to "no_production": "Always on" setting is enabled.');
+          throw new Error(this.homey.__('driver.gateway.error.always_on'));
+        }
 
         if (!this.isMaintainer) {
           throw new Error(this.homey.__('driver.gateway.error.no_maintainer'));
@@ -685,6 +697,36 @@ class GatewayDevice extends Homey.Device {
    */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
     this.log('Device settings were modified:', JSON.stringify(changedKeys));
+
+    // Handle Always on setting change
+    if (changedKeys.includes('always_on')) {
+      this.log(`"Always on" setting changed to: ${newSettings.always_on}`);
+      if (newSettings.always_on && this.isMaintainer) {
+        const currentOnoff = this.hasCapability('onoff') ? this.getCapabilityValue('onoff') : null;
+        if (currentOnoff === false) {
+          this.log('"Always on" was enabled while device was OFF. Automatically turning device ON...');
+          const usePel = this.isMetered && this.productionLimiting;
+          try {
+            if (usePel) {
+              await this.api.setDpelSettings({
+                enable: false,
+                export_limit: true,
+                limit_value_W: 0,
+              });
+              if (this.hasCapability('target_power_mode')) {
+                await this.setCapabilityValue('target_power_mode', 'device');
+              }
+            } else {
+              await this.api.setPowerForcedOff(false);
+            }
+            await this.setCapabilityValue('onoff', true);
+          } catch (err) {
+            this.error('Failed to enable production for Always on:', err.message);
+            throw new Error(this.homey.__('driver.gateway.error.command_failed', { message: err.message }));
+          }
+        }
+      }
+    }
 
     // If credential-relevant keys are changed, re-instantiate the API client
     if (

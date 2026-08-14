@@ -9,7 +9,8 @@
         "no_maintainer": "You need an Installer/Maintainer account to enable or disable power production.",
         "command_failed": "Command failed: __message__",
         "save_settings_failed": "Failed to save settings: Connection error: __message__",
-        "not_metered": "This gateway does not appear to be metered (no solar production CT clamps detected). Production limit controls require a metered gateway."
+        "not_metered": "This gateway does not appear to be metered (no solar production CT clamps detected). Production limit controls require a metered gateway.",
+        "always_on": "This device is set to 'Always on' and cannot be turned off."
       },
       "status": {
         "on": "On",
