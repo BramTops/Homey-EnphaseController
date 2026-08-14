@@ -1,6 +1,6 @@
 {
   "name": "nl.creitive.enlighten",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "main": "app.js",
   "engines": {
     "node": ">=22.0.0"

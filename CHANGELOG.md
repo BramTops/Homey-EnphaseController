@@ -2,6 +2,11 @@
 
 All notable changes to the Enphase Controller application for Homey Pro will be documented in this file, grouped by work session (day) and described in a user-centric way.
 
+## 2026-08-15
+
+- Adds an "Always on" setting.
+- Removes unused legacy Envoy device driver.
+
 ## 2026-06-27
 
 - Fixes production limit errors.

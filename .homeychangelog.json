@@ -58,5 +58,9 @@
   "1.5.2": {
     "en": "Fixes production limit errors. \nImproves meter detection.",
     "nl": "Herstelt fouten bij productielimieten. \nVerbetert meterdetectie."
+  },
+  "1.5.3": {
+    "en": "Adds an \"Always on\" setting. \nRemoves unused legacy Envoy device driver.",
+    "nl": "Voegt instelling 'Altijd aan' toe. \nVerwijdert ongebruikte oude Envoy-apparaatdriver."
   }
 }
