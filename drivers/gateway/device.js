@@ -3,6 +3,9 @@
 const Homey = require('homey');
 const EnvoyApi = require('../../lib/EnvoyApi');
 
+// Sub-capability ids used for per-phase telemetry on 3-phase gateways
+const PHASE_IDS = ['l1', 'l2', 'l3'];
+
 class GatewayDevice extends Homey.Device {
 
   /**
@@ -536,10 +539,13 @@ class GatewayDevice extends Homey.Device {
     // Step 4: Dynamically update PEL and onoff capabilities based on metered status
     await this.ensurePelCapabilities();
 
-    // Step 5: Update device capability values
+    // Step 5: Dynamically expose per-phase capabilities (ADR 0011)
+    await this.ensurePhaseCapabilities(prodData);
+
+    // Step 6: Update device capability values
     await this.updateDeviceCapabilities(prodData, powerForcedOff, energyToday, lastUpdateStr, pelSettings);
 
-    // Step 6: Verify and re-apply PEL settings if there's a cloud-sync discrepancy
+    // Step 7: Verify and re-apply PEL settings if there's a cloud-sync discrepancy
     if (this.isMetered && pelSettings) {
       await this.checkForPelCloudOverride(pelSettings);
     }
@@ -671,6 +677,65 @@ class GatewayDevice extends Homey.Device {
     await this.setCapabilityValue('power_production', powerProductionStr);
     await this.setCapabilityValue('control_state', this.isMaintainer);
     await this.setCapabilityValue('metered_gateway', this.isMetered);
+
+    await this.updatePhaseValues(prodData);
+  }
+
+  /**
+   * Add or remove per-phase solar capabilities.
+   * Values come from the /ivp/meters/readings channels already fetched by the regular
+   * poll, so no additional gateway request is made (ADR 0011). Opt-in via device setting
+   * because most systems are single-phase and would only see empty tiles.
+   * @param {Object} prodData - Live production readings
+   */
+  async ensurePhaseCapabilities(prodData) {
+    const optedIn = !!this.getSetting('phase_capabilities');
+    const phases = Array.isArray(prodData.solarpowerPhases) ? prodData.solarpowerPhases : null;
+    const wanted = (optedIn && phases && phases.length > 1) ? Math.min(phases.length, PHASE_IDS.length) : 0;
+
+    for (let idx = 0; idx < PHASE_IDS.length; idx++) {
+      const label = PHASE_IDS[idx].toUpperCase();
+      const powerCap = `measure_power.${PHASE_IDS[idx]}`;
+
+      if (idx < wanted) {
+        if (!this.hasCapability(powerCap)) {
+          this.log(`Adding per-phase capability: ${powerCap}`);
+          await this.addCapability(powerCap).catch((err) => {
+            this.error(`Failed to add capability ${powerCap}:`, err.message);
+          });
+          await this.setCapabilityOptions(powerCap, {
+            title: {
+              en: `Solar power ${label}`,
+              nl: `Zonvermogen ${label}`,
+            },
+          }).catch((err) => {
+            this.error(`Failed to set options for ${powerCap}:`, err.message);
+          });
+        }
+      } else if (this.hasCapability(powerCap)) {
+        this.log(`Removing per-phase capability: ${powerCap}`);
+        await this.removeCapability(powerCap).catch((err) => {
+          this.error(`Failed to remove capability ${powerCap}:`, err.message);
+        });
+      }
+    }
+  }
+
+  /**
+   * Write per-phase solar power values, when the capabilities are present.
+   * @param {Object} prodData - Live production readings
+   */
+  async updatePhaseValues(prodData) {
+    const phases = Array.isArray(prodData.solarpowerPhases) ? prodData.solarpowerPhases : [];
+
+    for (let idx = 0; idx < PHASE_IDS.length; idx++) {
+      const powerCap = `measure_power.${PHASE_IDS[idx]}`;
+      const phase = phases[idx];
+
+      if (this.hasCapability(powerCap) && phase && typeof phase.activePower === 'number') {
+        await this.setCapabilityValue(powerCap, Math.round(phase.activePower * 10) / 10).catch(this.error);
+      }
+    }
   }
 
   /**

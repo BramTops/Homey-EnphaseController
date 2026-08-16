@@ -166,6 +166,28 @@
           "value": ""
         }
       ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Advanced settings",
+        "nl": "Geavanceerde instellingen"
+      },
+      "children": [
+        {
+          "id": "phase_capabilities",
+          "type": "checkbox",
+          "label": {
+            "en": "Per-phase values",
+            "nl": "Waarden per fase"
+          },
+          "hint": {
+            "en": "Show power per phase (L1/L2/L3) on 3-phase gateways. Uses meter data already retrieved, so it adds no extra load on the gateway. Has no effect on single-phase systems.",
+            "nl": "Toon vermogen per fase (L1/L2/L3) bij 3-fase gateways. Gebruikt metergegevens die al worden opgehaald en belast de gateway dus niet extra. Heeft geen effect op 1-fase systemen."
+          },
+          "value": false
+        }
+      ]
     }
   ]
 }

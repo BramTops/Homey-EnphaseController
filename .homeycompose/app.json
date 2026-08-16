@@ -1,6 +1,6 @@
 {
   "id": "nl.creitive.enlighten",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "compatibility": ">=12.13.0",
   "sdk": 3,
   "runtime": "nodejs",

@@ -62,5 +62,9 @@
   "1.5.3": {
     "en": "Adds an \"Always on\" setting. \nRemoves unused legacy Envoy device driver.",
     "nl": "Voegt instelling 'Altijd aan' toe. \nVerwijdert ongebruikte oude Envoy-apparaatdriver."
+  },
+  "1.6.0": {
+    "en": "Shows solar power per phase. \nShows grid and home power per phase. \nShows grid voltage per phase. \nOptional setting for 3-phase systems.",
+    "nl": "Toont zonvermogen per fase. \nToont net- en huisvermogen per fase. \nToont netspanning per fase. \nOptionele instelling voor 3-fase systemen."
   }
 }

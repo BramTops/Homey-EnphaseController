@@ -3,6 +3,9 @@
 const Homey = require('homey');
 const EnvoyApi = require('../../lib/EnvoyApi');
 
+// Sub-capability ids used for per-phase telemetry on 3-phase gateways
+const PHASE_IDS = ['l1', 'l2', 'l3'];
+
 class HomeLoadDevice extends Homey.Device {
 
   /**
@@ -136,6 +139,10 @@ class HomeLoadDevice extends Homey.Device {
     await this.setCapabilityValue('meter_power', prodData.gridpowerKwhImported);
     await this.setCapabilityValue('meter_power_today', gridpowerEnergyTodayImported);
     await this.setCapabilityValue('last_update', lastUpdateStr);
+
+    // Per-phase grid, home load and voltage (ADR 0011)
+    await this.ensurePhaseCapabilities(prodData);
+    await this.updatePhaseValues(prodData);
 
     if (this.hasCapability('meter_power.produced')) {
       await this.setCapabilityValue('meter_power.produced', prodData.gridpowerKwhExported);
@@ -315,6 +322,93 @@ class HomeLoadDevice extends Homey.Device {
       } catch (err) {
         this.error('Failed to validate new settings:', err.message);
         throw new Error(this.homey.__('driver.homeload.error.save_settings_failed', { message: err.message }));
+      }
+    }
+  }
+
+  /**
+   * Add or remove per-phase capabilities for grid, home load and voltage.
+   * Values come from the /ivp/meters/readings channels already fetched by the regular
+   * poll, so no additional gateway request is made (ADR 0011). Opt-in via device setting
+   * because most systems are single-phase.
+   * @param {Object} prodData - Live readings
+   */
+  async ensurePhaseCapabilities(prodData) {
+    const optedIn = !!this.getSetting('phase_capabilities');
+    const gridPhases = Array.isArray(prodData.gridpowerPhases) ? prodData.gridpowerPhases : null;
+    const homePhases = Array.isArray(prodData.homepowerPhases) ? prodData.homepowerPhases : null;
+
+    const wantedGrid = (optedIn && gridPhases && gridPhases.length > 1) ? Math.min(gridPhases.length, PHASE_IDS.length) : 0;
+    const wantedHome = (optedIn && homePhases && homePhases.length > 1) ? Math.min(homePhases.length, PHASE_IDS.length) : 0;
+
+    for (let idx = 0; idx < PHASE_IDS.length; idx++) {
+      const phaseId = PHASE_IDS[idx];
+      const label = phaseId.toUpperCase();
+
+      await this.togglePhaseCapability(`measure_power.${phaseId}`, idx < wantedGrid, {
+        en: `Grid power ${label}`,
+        nl: `Netvermogen ${label}`,
+      });
+      await this.togglePhaseCapability(`measure_voltage.${phaseId}`, idx < wantedGrid, {
+        en: `Grid voltage ${label}`,
+        nl: `Netspanning ${label}`,
+      });
+      await this.togglePhaseCapability(`measure_power.home_${phaseId}`, idx < wantedHome, {
+        en: `Home power ${label}`,
+        nl: `Huisvermogen ${label}`,
+      });
+    }
+  }
+
+  /**
+   * Add a capability with a localized title, or remove it when no longer wanted.
+   * @param {string} capabilityId
+   * @param {boolean} shouldExist
+   * @param {Object} title - Localized title object
+   */
+  async togglePhaseCapability(capabilityId, shouldExist, title) {
+    if (shouldExist) {
+      if (!this.hasCapability(capabilityId)) {
+        this.log(`Adding per-phase capability: ${capabilityId}`);
+        await this.addCapability(capabilityId).catch((err) => {
+          this.error(`Failed to add capability ${capabilityId}:`, err.message);
+        });
+        await this.setCapabilityOptions(capabilityId, { title }).catch((err) => {
+          this.error(`Failed to set options for ${capabilityId}:`, err.message);
+        });
+      }
+      return;
+    }
+
+    if (this.hasCapability(capabilityId)) {
+      this.log(`Removing per-phase capability: ${capabilityId}`);
+      await this.removeCapability(capabilityId).catch((err) => {
+        this.error(`Failed to remove capability ${capabilityId}:`, err.message);
+      });
+    }
+  }
+
+  /**
+   * Write per-phase values, when the capabilities are present.
+   * @param {Object} prodData - Live readings
+   */
+  async updatePhaseValues(prodData) {
+    const gridPhases = Array.isArray(prodData.gridpowerPhases) ? prodData.gridpowerPhases : [];
+    const homePhases = Array.isArray(prodData.homepowerPhases) ? prodData.homepowerPhases : [];
+
+    for (let idx = 0; idx < PHASE_IDS.length; idx++) {
+      const phaseId = PHASE_IDS[idx];
+      const grid = gridPhases[idx];
+      const home = homePhases[idx];
+
+      if (this.hasCapability(`measure_power.${phaseId}`) && grid && typeof grid.activePower === 'number') {
+        await this.setCapabilityValue(`measure_power.${phaseId}`, Math.round(grid.activePower * 10) / 10).catch(this.error);
+      }
+      if (this.hasCapability(`measure_voltage.${phaseId}`) && grid && typeof grid.voltage === 'number') {
+        await this.setCapabilityValue(`measure_voltage.${phaseId}`, Math.round(grid.voltage * 10) / 10).catch(this.error);
+      }
+      if (this.hasCapability(`measure_power.home_${phaseId}`) && home && typeof home.activePower === 'number') {
+        await this.setCapabilityValue(`measure_power.home_${phaseId}`, Math.round(home.activePower * 10) / 10).catch(this.error);
       }
     }
   }
