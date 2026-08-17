@@ -2,6 +2,13 @@
 
 All notable changes to the Enphase Controller application for Homey Pro will be documented in this file, grouped by work session (day) and described in a user-centric way.
 
+## 2026-08-16
+
+- Adds solar power per phase.
+- Adds grid and home power per phase.
+- Adds grid voltage per phase.
+- Optional setting for 3-phase systems.
+
 ## 2026-08-15
 
 - Adds an "Always on" setting.
