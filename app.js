@@ -16,8 +16,45 @@ class EnphaseController extends Homey.App {
     this.consecutiveMaintainerFailures = new Map();
     this.activePolls = new Set();
     this.pendingPolls = new Set();
+    this._deprecatedEnvoyNoticePromise = null;
     this._timezone = 'UTC';
     this.log('Enphase Controller has been initialized');
+  }
+
+  /**
+   * Notify users who still have a legacy Envoy device paired.
+   * The caller is the legacy device itself, so users without one are never notified.
+   * @returns {Promise<void>}
+   */
+  async notifyDeprecatedEnvoyDriver() {
+    const noticeSettingKey = 'deprecated_envoy_notice_sent';
+
+    if (this.homey.settings.get(noticeSettingKey)) {
+      return;
+    }
+
+    if (this._deprecatedEnvoyNoticePromise) {
+      await this._deprecatedEnvoyNoticePromise;
+      return;
+    }
+
+    this._deprecatedEnvoyNoticePromise = (async () => {
+      if (!this.homey.notifications || typeof this.homey.notifications.createNotification !== 'function') {
+        this.error('Timeline notification manager is unavailable; deprecated Envoy notice was not sent.');
+        return;
+      }
+
+      const excerpt = this.homey.__('timeline.deprecated_envoy');
+      await this.homey.notifications.createNotification({ excerpt });
+      await this.homey.settings.set(noticeSettingKey, true);
+      this.log('Posted deprecated Envoy driver notice to the user timeline.');
+    })();
+
+    try {
+      await this._deprecatedEnvoyNoticePromise;
+    } finally {
+      this._deprecatedEnvoyNoticePromise = null;
+    }
   }
 
   /**
@@ -122,6 +159,29 @@ class EnphaseController extends Homey.App {
           const isNewTokenMaintainer = roleResult.isMaintainer;
           this.log(`New token evaluated. Is Maintainer: ${isNewTokenMaintainer}`);
 
+          // Propagate new token to all envoy (legacy) devices with matching serial
+          try {
+            const envoyDriver = this.homey.drivers.getDriver('envoy');
+            if (envoyDriver) {
+              const devices = envoyDriver.getDevices();
+              for (const dev of devices) {
+                if (dev.getSettings().envoy_serial === serial) {
+                  this.log(`Saving new token and updating role for Envoy gateway (legacy) device: ${dev.getName()}`);
+                  await dev.setStoreValue('enphase_token', newToken).catch((err) => {
+                    this.error(`Failed to save token to Envoy device ${dev.getName()}:`, err.message);
+                  });
+                  if (typeof dev.updateRole === 'function') {
+                    await dev.updateRole(isNewTokenMaintainer).catch((err) => {
+                      this.error(`Failed to update role for Envoy device ${dev.getName()}:`, err.message);
+                    });
+                  }
+                }
+              }
+            }
+          } catch (err) {
+            this.log('Envoy driver not loaded or not resolved for token propagation.');
+          }
+
           // Propagate new token to all gateway devices with matching serial
           try {
             const gatewayDriver = this.homey.drivers.getDriver('gateway');
@@ -184,6 +244,26 @@ class EnphaseController extends Homey.App {
         },
         onIpUpdated: async (newIp) => {
           this.log(`IP updated for gateway serial: ${serial} to ${newIp}. Propagating to devices...`);
+
+          // Propagate new IP to all envoy (legacy) devices with matching serial
+          try {
+            const envoyDriver = this.homey.drivers.getDriver('envoy');
+            if (envoyDriver) {
+              const devices = envoyDriver.getDevices();
+              for (const dev of devices) {
+                if (dev.getSettings().envoy_serial === serial) {
+                  if (dev.getSettings().envoy_ip !== newIp) {
+                    this.log(`Updating IP setting for Envoy gateway (legacy) device: ${dev.getName()}`);
+                    await dev.setSettings({ envoy_ip: newIp }).catch((err) => {
+                      this.error(`Failed to update IP setting for Envoy device ${dev.getName()}:`, err.message);
+                    });
+                  }
+                }
+              }
+            }
+          } catch (err) {
+            this.log('Envoy driver not loaded or not resolved for IP propagation.');
+          }
 
           // Propagate new IP to all gateway devices with matching serial
           try {
@@ -272,7 +352,7 @@ class EnphaseController extends Homey.App {
   }
 
   /**
-   * Register a device for polling.
+   * Register a device (Gateway, Envoy legacy, or Inverters) for polling.
    * @param {string} serial - Gateway serial number
    * @param {Homey.Device} device - Device instance
    */
@@ -373,7 +453,7 @@ class EnphaseController extends Homey.App {
 
       const devices = [...deviceSet];
       // Find any gateway device first to get settings
-      const gatewayDev = devices.find((d) => d.driver.id === 'gateway');
+      const gatewayDev = devices.find((d) => d.driver.id === 'gateway' || d.driver.id === 'envoy');
       const representative = gatewayDev || devices[0];
       const settings = representative.getSettings();
       const token = representative.getStoreValue('enphase_token');
@@ -396,7 +476,7 @@ class EnphaseController extends Homey.App {
 
       for (const dev of devices) {
         const driverId = dev.driver.id;
-        if (driverId === 'gateway') {
+        if (driverId === 'gateway' || driverId === 'envoy') {
           hasGateway = true;
           if (dev.isMaintainer) {
             isMaintainer = true;
@@ -436,7 +516,7 @@ class EnphaseController extends Homey.App {
                 if (fails >= 3) {
                   this.log(`[Manager] Threshold reached. Automatically downgrading serial ${serial} to System Owner.`);
                   for (const dev of devices) {
-                    if (dev.driver.id === 'gateway') {
+                    if (dev.driver.id === 'gateway' || dev.driver.id === 'envoy') {
                       if (typeof dev.updateRole === 'function') {
                         await dev.updateRole(false).catch((e) => this.error(`[Manager] Failed to demote ${dev.getName()}:`, e.message));
                       }
@@ -467,8 +547,9 @@ class EnphaseController extends Homey.App {
         // 3. Dispatch telemetry to registered devices
         for (const dev of devices) {
           const driverId = dev.driver.id;
-          if (driverId === 'gateway') {
+          if (driverId === 'gateway' || driverId === 'envoy') {
             if (prodData) {
+              // Legacy envoy device signature will ignore pelSettings, gateway device will consume it
               await dev.updateTelemetry(prodData, powerForcedOff, pelSettings).catch((err) => {
                 this.error(`[Manager] Device ${dev.getName()} updateTelemetry failed:`, err.message);
               });

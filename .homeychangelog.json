@@ -62,5 +62,9 @@
   "1.5.3": {
     "en": "Adds an \"Always on\" setting. \nRemoves unused legacy Envoy device driver.",
     "nl": "Voegt instelling 'Altijd aan' toe. \nVerwijdert ongebruikte oude Envoy-apparaatdriver."
+  },
+  "1.5.4": {
+    "en": "Restores legacy Envoy device driver. \nAdds warning for deprecated driver.",
+    "nl": "Herstelt oude Envoy-apparaatdriver. \nWaarschuwt voor verouderde driver."
   }
 }

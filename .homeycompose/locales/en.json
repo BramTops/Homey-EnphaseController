@@ -1,5 +1,22 @@
 {
   "driver": {
+    "envoy": {
+      "name": "Solar panels (Enphase)",
+      "error": {
+        "fields_required": "Please fill in all the required fields.",
+        "invalid_serial": "Serial number must be exactly 12 digits.",
+        "auth_failed": "Connection failed: __message__",
+        "no_maintainer": "You need an Installer/Maintainer account to enable or disable power production.",
+        "command_failed": "Command failed: __message__",
+        "save_settings_failed": "Failed to save settings: Connection error: __message__"
+      },
+      "status": {
+        "on": "On",
+        "off": "Off",
+        "read_only": "Read-only",
+        "read_write": "Read & Write"
+      }
+    },
     "gateway": {
       "name": "Enphase Solar",
       "error": {
@@ -44,6 +61,9 @@
         "mismatch": "Inverter list mismatch: expected __expected__ panels but found __found__"
       }
     }
+  },
+  "timeline": {
+    "deprecated_envoy": "The deprecated Envoy Gateway device will be removed soon. Please start using the Enphase Controller Solar device."
   },
   "pair": {
     "start": {
