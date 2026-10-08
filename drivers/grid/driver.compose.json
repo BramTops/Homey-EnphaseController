@@ -1,0 +1,201 @@
+{
+  "name": {
+    "en": "Enphase Grid",
+    "nl": "Enphase Grid"
+  },
+  "images": {
+    "small": "/drivers/grid/assets/images/small.png",
+    "large": "/drivers/grid/assets/images/large.png"
+  },
+  "class": "sensor",
+  "discovery": "enphase-envoy",
+  "capabilities": [
+    "measure_power",
+    "meter_power",
+    "meter_power_today",
+    "meter_power.produced",
+    "meter_power_today.produced",
+    "measure_power.home",
+    "meter_power.home",
+    "meter_power_today.home",
+    "meter_power.home_produced",
+    "meter_power_today.home_produced",
+    "last_update"
+  ],
+  "capabilitiesOptions": {
+    "measure_power": {
+      "title": {
+        "en": "Grid power",
+        "nl": "Netstroom vermogen"
+      }
+    },
+    "meter_power": {
+      "title": {
+        "en": "Grid energy imported",
+        "nl": "Netstroom energie geïmporteerd"
+      }
+    },
+    "meter_power_today": {
+      "title": {
+        "en": "Grid energy imported today",
+        "nl": "Netstroom energie geïmporteerd vandaag"
+      }
+    },
+    "meter_power.produced": {
+      "title": {
+        "en": "Grid energy exported",
+        "nl": "Netstroom energie geëxporteerd"
+      }
+    },
+    "meter_power_today.produced": {
+      "title": {
+        "en": "Grid energy exported today",
+        "nl": "Netstroom energie geëxporteerd vandaag"
+      }
+    },
+    "measure_power.home": {
+      "title": {
+        "en": "Home consumption power",
+        "nl": "Huisverbruik vermogen"
+      }
+    },
+    "meter_power.home": {
+      "title": {
+        "en": "Home consumption energy",
+        "nl": "Huisverbruik energie"
+      }
+    },
+    "meter_power_today.home": {
+      "title": {
+        "en": "Home consumption energy today",
+        "nl": "Huisverbruik energie vandaag"
+      }
+    },
+    "meter_power.home_produced": {
+      "title": {
+        "en": "Home energy exported",
+        "nl": "Huisenergie geëxporteerd"
+      }
+    },
+    "meter_power_today.home_produced": {
+      "title": {
+        "en": "Home energy exported today",
+        "nl": "Huisenergie geëxporteerd vandaag"
+      }
+    }
+  },
+  "energy": {
+    "cumulative": true,
+    "cumulativeImportedCapability": "meter_power",
+    "cumulativeExportedCapability": "meter_power.produced"
+  },
+  "repair": [
+    {
+      "id": "repair"
+    }
+  ],
+  "pair": [
+    {
+      "id": "start"
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "Enphase account",
+        "nl": "Enphase-account"
+      },
+      "children": [
+        {
+          "id": "user_email",
+          "type": "text",
+          "label": {
+            "en": "Email address",
+            "nl": "E-mailadres"
+          },
+          "placeholder": "owner-or-installer@email.com",
+          "required": true,
+          "value": ""
+        },
+        {
+          "id": "password",
+          "type": "password",
+          "label": {
+            "en": "Password",
+            "nl": "Wachtwoord"
+          },
+          "required": true,
+          "value": ""
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Envoy gateway",
+        "nl": "Envoy-gateway"
+      },
+      "children": [
+        {
+          "id": "envoy_serial",
+          "type": "text",
+          "label": {
+            "en": "Serial number",
+            "nl": "Serienummer"
+          },
+          "placeholder": "122226012345",
+          "required": true,
+          "value": ""
+        },
+        {
+          "id": "envoy_ip",
+          "type": "text",
+          "label": {
+            "en": "Local IP address",
+            "nl": "Lokaal IP-adres"
+          },
+          "placeholder": "10.0.0.123",
+          "required": true,
+          "value": ""
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Advanced settings",
+        "nl": "Geavanceerde instellingen"
+      },
+      "children": [
+        {
+          "id": "poll_interval",
+          "type": "number",
+          "label": {
+            "en": "Update interval",
+            "nl": "Update-interval"
+          },
+          "hint": {
+            "en": "How often live grid and home power is read from the gateway, in seconds (5-120, default 15). Shorter intervals give faster updates but put more load on the Envoy.",
+            "nl": "Hoe vaak het actuele net- en huisvermogen van de gateway wordt uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer."
+          },
+          "value": 15,
+          "min": 5,
+          "max": 120,
+          "units": "s"
+        }
+      ]
+    }
+  ]
+}

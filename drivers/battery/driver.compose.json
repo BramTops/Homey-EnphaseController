@@ -1,0 +1,168 @@
+{
+  "name": {
+    "en": "Enphase Battery",
+    "nl": "Enphase Batterij"
+  },
+  "images": {
+    "small": "/drivers/battery/assets/images/small.png",
+    "large": "/drivers/battery/assets/images/large.png",
+    "xlarge": "/drivers/battery/assets/images/xlarge.png"
+  },
+  "class": "battery",
+  "discovery": "enphase-envoy",
+  "capabilities": [
+    "measure_power",
+    "measure_battery",
+    "meter_power.charged",
+    "meter_power.discharged",
+    "last_update"
+  ],
+  "capabilitiesOptions": {
+    "measure_power": {
+      "title": {
+        "en": "Battery power",
+        "nl": "Batterijvermogen"
+      }
+    },
+    "measure_battery": {
+      "title": {
+        "en": "Battery level",
+        "nl": "Batterijniveau"
+      }
+    },
+    "meter_power.charged": {
+      "title": {
+        "en": "Charged",
+        "nl": "Opgeladen"
+      }
+    },
+    "meter_power.discharged": {
+      "title": {
+        "en": "Discharged",
+        "nl": "Ontladen"
+      }
+    }
+  },
+  "energy": {
+    "homeBattery": true,
+    "meterPowerImportedCapability": "meter_power.charged",
+    "meterPowerExportedCapability": "meter_power.discharged"
+  },
+  "pair": [
+    {
+      "id": "start"
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "Enphase account",
+        "nl": "Enphase-account"
+      },
+      "children": [
+        {
+          "id": "user_email",
+          "type": "text",
+          "label": {
+            "en": "Email address",
+            "nl": "E-mailadres"
+          },
+          "placeholder": "owner-or-installer@email.com",
+          "required": true,
+          "value": ""
+        },
+        {
+          "id": "password",
+          "type": "password",
+          "label": {
+            "en": "Password",
+            "nl": "Wachtwoord"
+          },
+          "required": true,
+          "value": ""
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Envoy gateway",
+        "nl": "Envoy-gateway"
+      },
+      "children": [
+        {
+          "id": "envoy_serial",
+          "type": "text",
+          "label": {
+            "en": "Serial number",
+            "nl": "Serienummer"
+          },
+          "placeholder": "122226012345",
+          "required": true,
+          "value": ""
+        },
+        {
+          "id": "envoy_ip",
+          "type": "text",
+          "label": {
+            "en": "Local IP address",
+            "nl": "Lokaal IP-adres"
+          },
+          "placeholder": "10.0.0.123",
+          "required": true,
+          "value": ""
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Advanced settings",
+        "nl": "Geavanceerde instellingen"
+      },
+      "children": [
+        {
+          "id": "poll_interval",
+          "type": "number",
+          "label": {
+            "en": "Update interval",
+            "nl": "Update-interval"
+          },
+          "hint": {
+            "en": "How often live battery power and charge level are read from the gateway, in seconds (5-120, default 15). Shorter intervals give faster updates but put more load on the Envoy.",
+            "nl": "Hoe vaak het actuele batterijvermogen en laadniveau van de gateway worden uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer."
+          },
+          "value": 15,
+          "min": 5,
+          "max": 120,
+          "units": "s"
+        },
+        {
+          "id": "battery_totals_hint",
+          "type": "label",
+          "label": {
+            "en": "Charged and discharged energy",
+            "nl": "Opgeladen en ontladen energie"
+          },
+          "value": "",
+          "hint": {
+            "en": "Totals use the gateway's battery meter counters when available. Otherwise they are estimated from battery power over time and can differ slightly from the Enphase app. Totals are kept per gateway and survive removing and re-adding this device. This device only monitors the battery; it cannot control it.",
+            "nl": "Totalen gebruiken de tellers van de batterijmeter van de gateway als die beschikbaar zijn. Anders worden ze geschat op basis van het batterijvermogen in de tijd en kunnen ze licht afwijken van de Enphase-app. Totalen worden per gateway bijgehouden en blijven behouden als je dit apparaat verwijdert en opnieuw toevoegt. Dit apparaat bewaakt de batterij alleen; het kan de batterij niet aansturen."
+          }
+        }
+      ]
+    }
+  ]
+}

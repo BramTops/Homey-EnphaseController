@@ -1,0 +1,22 @@
+<svg viewBox="0 0 720 720" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Tall battery enclosure, viewed slightly from the right -->
+    <path d="M 190 76 L 480 60 L 530 70 V 650 L 480 660 L 190 646 Z" stroke-width="36" />
+
+    <!-- Ridge separating the front cover and side panel -->
+    <path d="M 480 60 V 660" stroke-width="20" />
+
+    <g stroke-width="12">
+      <!-- Recessed front control and power button -->
+      <rect x="214" y="296" width="66" height="24" rx="12" />
+      <path d="M 263 302 V 308 M 258 305 A 7 7 0 1 0 268 305" />
+
+      <!-- Enphase emblem, without a wordmark -->
+      <circle cx="350" cy="308" r="16" />
+      <path d="M 338 308 H 362" />
+
+      <!-- Recessed handle on the side panel -->
+      <path d="M 530 280 H 520 C 504 280 504 324 520 324 H 530" />
+    </g>
+  </g>
+</svg>

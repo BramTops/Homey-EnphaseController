@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Connect Enphase Solar</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --homey-su: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: transparent;
+      color: var(--homey-text-color);
+      margin: 0;
+      padding: 8px;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+      padding: 8px;
+    }
+
+    /* Logo Styling */
+    .logo-container {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);
+      border-radius: 12px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);
+    }
+
+    .logo-container svg {
+      width: 26px;
+      height: 26px;
+      fill: #ffffff;
+    }
+
+    /* Custom UI Component: Discovery Badge */
+    .discovery-badge {
+      display: none;
+      background: rgba(0, 129, 255, 0.06);
+      border: 1px solid rgba(0, 129, 255, 0.15);
+      color: #0066cc;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      text-align: center;
+      font-weight: 500;
+      animation: pulse 2.5s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 0.95;
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.01);
+      }
+
+      100% {
+        opacity: 0.95;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .discovery-badge {
+        background: rgba(59, 130, 246, 0.12);
+        border: 1px solid rgba(59, 130, 246, 0.25);
+        color: #93c5fd;
+      }
+    }
+
+    /* Custom UI Component: Error Message */
+    .error-msg {
+      display: none;
+      background: rgba(211, 47, 47, 0.04);
+      border: 1px solid rgba(211, 47, 47, 0.15);
+      color: var(--homey-text-color-error);
+      font-size: 13px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      line-height: 1.5;
+      text-align: left;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .error-msg {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.25);
+      }
+    }
+
+    /* Success state styling */
+    .success-container {
+      display: none;
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    .success-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(34, 197, 94, 0.12);
+      border: 2px solid #22c55e;
+      border-radius: 50%;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 16px;
+      color: #22c55e;
+    }
+
+    .role-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .role-maintainer {
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      color: #a855f7;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .role-maintainer {
+        color: #d8b4fe;
+      }
+    }
+
+    .role-owner {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #3b82f6;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .role-owner {
+        color: #93c5fd;
+      }
+    }
+
+    .role-desc {
+      font-size: 13px;
+      color: var(--homey-text-color-secondary);
+      margin-top: 10px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .field-note {
+      font-size: 12px;
+      margin-top: 6px;
+      color: var(--homey-text-color-secondary);
+      line-height: 1.4;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .field-note.detected {
+      color: #22c55e;
+    }
+
+    .field-note.not-found {
+      color: #ea580c;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .field-note.detected {
+        color: #4ade80;
+      }
+
+      .field-note.not-found {
+        color: #f97316;
+      }
+    }
+  
+    /* Reuse / migration panels */
+    .info-note {
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      background: rgba(0, 129, 255, 0.06);
+      border: 1px solid rgba(0, 129, 255, 0.15);
+      color: var(--homey-text-color);
+    }
+
+    .blocked-container {
+      display: none;
+      text-align: left;
+      padding: 8px 0;
+    }
+
+    .blocked-box {
+      background: rgba(234, 88, 12, 0.05);
+      border: 1px solid rgba(234, 88, 12, 0.2);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .blocked-box {
+        background: rgba(249, 115, 22, 0.1);
+        border: 1px solid rgba(249, 115, 22, 0.25);
+      }
+    }
+
+    .blocked-box h3 {
+      margin: 0 0 8px 0;
+      color: var(--homey-text-color-warning);
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .blocked-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--homey-text-color);
+      margin-bottom: 8px;
+    }
+
+    .step-item {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--homey-text-color) !important;
+      margin-bottom: 6px;
+    }
+
+    .status-line {
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 10px 0 14px 0;
+      color: var(--homey-text-color-secondary);
+    }
+
+    .button-gap {
+      height: 10px;
+    }
+
+    .chooser-group {
+      display: none;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="card">
+
+    <!-- Pairing Form -->
+    <div id="form-container">
+      <header class="homey-header">
+        <div class="logo-container">
+          <!-- Solar SVG -->
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5c.55 0 1 .45 1 1v2c0 .55-.45 1-1 1s-1-.45-1-1V3c0-.55.45-1 1-1zm0 14c.55 0 1 .45 1 1v2c0 .55-.45 1-1 1s-1-.45-1-1v-2c0-.55.45-1 1-1zM5.27 6.68c.39-.39 1.02-.39 1.41 0l1.41 1.41c.39.39.39 1.02 0 1.41s-1.02.39-1.41 0L5.27 8.09c-.39-.39-.39-1.03 0-1.41zm10.64 10.64c.39-.39 1.02-.39 1.41 0l1.41 1.41c.39.39.39 1.02 0 1.41s-1.02.39-1.41 0l-1.41-1.41c-.39-.39-.39-1.03 0-1.41zM2 12c0-.55.45-1 1-1h2c0 .55-.45 1-1 1s-1-.45-1-1zm14 0c0-.55.45-1 1-1h2c.55 0 1 .45 1 1s-.45 1-1 1h-2c-.55 0-1-.45-1-1zM6.68 18.73c-.39-.39-.39-1.02 0-1.41l1.41-1.41c.39-.39 1.02-.39 1.41 0s.39 1.02 0 1.41l-1.41 1.41c-.39.39-1.03.39-1.41 0zM17.32 5.27c.39.39.39 1.02 0 1.41l-1.41 1.41c-.39.39-1.02.39-1.41 0s-.39-1.02 0-1.41l1.41-1.41c.39-.39 1.03-.39 1.41 0z" />
+          </svg>
+        </div>
+        <h1 class="homey-title" data-i18n="pair.start.title_solar">Connect Enphase Solar</h1>
+        <p class="homey-subtitle" data-i18n="pair.start.subtitle">Connect to your gateway. Supports standard Owner
+          accounts (read-only) or Installer/DIY accounts for system control.</p>
+      </header>
+
+      <div class="error-msg" id="error-msg"></div>
+      <div class="info-note" id="reuse-note" style="display: none;"></div>
+
+      <form class="homey-form" onsubmit="event.preventDefault(); submitPairing();">
+        <div class="homey-form-group chooser-group" id="chooser-group">
+          <label class="homey-form-label" for="chooser" data-i18n="pair.start.chooser_label">Paired gateways</label>
+          <select class="homey-form-input" id="chooser" onchange="chooseGateway(this.value)"></select>
+        </div>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="email" data-i18n="pair.start.email_label">Enphase Email</label>
+          <input class="homey-form-input" type="text" id="email" placeholder="e.g. owner-or-installer@email.com"
+            data-i18n-placeholder="pair.start.email_placeholder" oninput="onEmailInput()" required>
+        </div>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="password" data-i18n="pair.start.password_label">Enphase Password</label>
+          <input class="homey-form-input" type="password" id="password" placeholder="Your password"
+            data-i18n-placeholder="pair.start.password_placeholder">
+        </div>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="ip" data-i18n="pair.start.ip_label">Gateway IP Address</label>
+          <input class="homey-form-input" type="text" id="ip" placeholder="e.g. 10.0.0.123"
+            data-i18n-placeholder="pair.start.ip_placeholder" onchange="onIpChanged()" required>
+          <div class="field-note" id="ip-note"></div>
+        </div>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="serial" data-i18n="pair.start.serial_label">Gateway Serial Number</label>
+          <input class="homey-form-input" type="text" id="serial" placeholder="e.g. 122226012345"
+            data-i18n-placeholder="pair.start.serial_placeholder" pattern="\d{12}" minlength="12" maxlength="12"
+            onchange="onSerialChanged()" required>
+          <div class="field-note" id="serial-note"></div>
+        </div>
+
+        <button class="homey-button-primary-shadow-full" id="btn-connect" type="submit"
+          data-i18n="pair.start.btn_authenticate">Authenticate</button>
+      </form>
+    </div>
+
+    <!-- Blocked: old Envoy/Solar device on the same gateway. Pairing resumes after it was removed. -->
+    <div id="blocked-container" class="blocked-container">
+      <div class="blocked-box">
+        <h3 data-i18n="pair.migration.blocked_title">Older Enphase device found</h3>
+        <div class="blocked-text" data-i18n="pair.migration.blocked_body">An older Enphase Envoy or Solar device already exists for this gateway. Only one solar device per gateway is supported.</div>
+        <div class="step-item" data-i18n="pair.migration.step_save">1. Save your settings below (optional, saves retyping).</div>
+        <div class="step-item" data-i18n="pair.migration.step_flows">2. Rebuild your Flows with the new Enphase Solar device.</div>
+        <div class="step-item" data-i18n="pair.migration.step_remove">3. Remove the old device in Homey.</div>
+        <div class="step-item" data-i18n="pair.migration.step_pair">4. Start pairing Enphase Solar again.</div>
+      </div>
+
+      <div class="status-line" id="migration-status"></div>
+
+      <button class="homey-button-primary-shadow-full" id="btn-save-migration" onclick="saveMigration()"
+        data-i18n="pair.migration.btn_save">Save settings for migration</button>
+      <div class="button-gap"></div>
+      <button class="homey-button-secondary" id="btn-discard-migration" onclick="discardMigration()"
+        style="display: none;" data-i18n="pair.migration.btn_discard">Discard saved settings</button>
+      <div class="button-gap"></div>
+      <button class="homey-button-secondary" onclick="showForm()" data-i18n="pair.start.btn_back">Go Back</button>
+    </div>
+
+    <!-- Success Screen -->
+    <div id="success-container" class="success-container">
+      <div class="success-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h1 class="homey-title" data-i18n="pair.start.success_title">Authentication Successful!</h1>
+      <p class="homey-subtitle" data-i18n="pair.start.success_subtitle">Your Enphase account was validated and the local
+        gateway was connected successfully.</p>
+
+      <div id="role-badge-container"></div>
+      <div id="role-desc-container" class="role-desc"></div>
+
+      <button class="homey-button-primary-shadow-full" onclick="finishPairing()"
+        data-i18n="pair.start.btn_add_gateway">Add Solar to Homey</button>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+    // Run translation immediately on load
+    function translateUI(titleKey) {
+      document.title = Homey.__(titleKey);
+
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        el.textContent = Homey.__(el.getAttribute('data-i18n'));
+      });
+
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+        el.placeholder = Homey.__(el.getAttribute('data-i18n-placeholder'));
+      });
+    }
+
+    // State shared by the helpers below. The view never holds a saved password: it only knows that one exists
+    // (reuse.hasPassword) and asks the backend to reuse it (reuse_saved) when the password field stays empty.
+    var reuse = null;          // last findPairedGateway reply for the current serial
+    var lastLookupSerial = ''; // avoids duplicate lookups
+    var serialFromGateway = false;
+
+    function setNote(id, key, cls, tokens) {
+      var el = document.getElementById(id);
+      el.textContent = key ? Homey.__(key, tokens) : '';
+      el.className = 'field-note' + (cls ? ' ' + cls : '');
+    }
+
+    function isValidSerial(value) {
+      return /^\d{12}$/.test(value);
+    }
+
+    function applyDiscovery(result, onlyIfEmpty) {
+      var ipInput = document.getElementById('ip');
+      var serialInput = document.getElementById('serial');
+
+      if (result.ip && (!onlyIfEmpty || !ipInput.value.trim())) {
+        ipInput.value = result.ip;
+        setNote('ip-note', 'pair.start.ip_auto_detected', 'detected');
+      }
+      if (result.serial && (!onlyIfEmpty || !serialInput.value.trim())) {
+        serialInput.value = result.serial;
+        setNote('serial-note', 'pair.start.serial_auto_detected', 'detected');
+      }
+    }
+
+    // Serial number is read from the gateway itself (cannot be a Site ID); manual input stays the fallback.
+    function readSerialFromIp(afterFn) {
+      var ip = document.getElementById('ip').value.trim();
+      if (!ip) {
+        if (afterFn) afterFn();
+        return;
+      }
+      Homey.emit('getSerial', { ip: ip }, function (err, result) {
+        var serialInput = document.getElementById('serial');
+        if (!err && result && result.serial) {
+          var typed = serialInput.value.trim();
+          if (typed && typed !== result.serial) {
+            setNote('serial-note', 'pair.start.serial_corrected', 'detected', { serial: result.serial });
+          } else {
+            setNote('serial-note', 'pair.start.serial_from_ip', 'detected');
+          }
+          serialInput.value = result.serial;
+          serialFromGateway = true;
+        } else if (!serialInput.value.trim()) {
+          setNote('serial-note', 'pair.start.serial_unreadable', 'not-found');
+        }
+        if (afterFn) afterFn();
+      });
+    }
+
+    function onIpChanged() {
+      readSerialFromIp(lookupSaved);
+    }
+
+    function onSerialChanged() {
+      serialFromGateway = false;
+      lookupSaved();
+    }
+
+    function onEmailInput() {
+      updatePasswordHint();
+    }
+
+    function updatePasswordHint() {
+      var passwordInput = document.getElementById('password');
+      var email = document.getElementById('email').value.trim().toLowerCase();
+      if (reuse && reuse.hasPassword && reuse.email && reuse.email.toLowerCase() === email) {
+        passwordInput.placeholder = Homey.__('pair.start.password_saved_placeholder');
+      } else {
+        passwordInput.placeholder = Homey.__('pair.start.password_placeholder');
+      }
+    }
+
+    function canReuseSaved() {
+      var email = document.getElementById('email').value.trim().toLowerCase();
+      return !!(reuse && reuse.hasPassword && reuse.email && reuse.email.toLowerCase() === email);
+    }
+
+    // Ask the backend what can be reused for this serial (non-secret info only).
+    function lookupSaved() {
+      var serial = document.getElementById('serial').value.trim();
+      if (!isValidSerial(serial) || serial === lastLookupSerial) return;
+      lastLookupSerial = serial;
+
+      Homey.emit('findPairedGateway', { serial: serial }, function (err, result) {
+        if (err || !result) return;
+        reuse = result;
+        var emailInput = document.getElementById('email');
+        var ipInput = document.getElementById('ip');
+
+        if (result.email && !emailInput.value.trim()) {
+          emailInput.value = result.email;
+        }
+        if (result.ip && !ipInput.value.trim()) {
+          ipInput.value = result.ip;
+          setNote('ip-note', 'pair.start.ip_auto_detected', 'detected');
+        }
+
+        var note = document.getElementById('reuse-note');
+        if (result.hasPassword) {
+          var key = result.source === 'snapshot' ? 'pair.start.reuse_snapshot'
+            : (result.source === 'device' ? 'pair.start.reuse_device' : 'pair.start.reuse_cache');
+          note.textContent = Homey.__(key);
+          note.style.display = 'block';
+        } else {
+          note.style.display = 'none';
+        }
+        updatePasswordHint();
+        onLookupResult(result);
+      });
+    }
+
+    function showError(msg) {
+      var errorMsg = document.getElementById('error-msg');
+      errorMsg.innerText = msg;
+      errorMsg.style.display = 'block';
+    }
+
+    function clearError() {
+      var errorMsg = document.getElementById('error-msg');
+      errorMsg.style.display = 'none';
+      errorMsg.innerText = '';
+    }
+
+    function collectForm() {
+      return {
+        user_email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value.trim(),
+        envoy_serial: document.getElementById('serial').value.trim(),
+        envoy_ip: document.getElementById('ip').value.trim()
+      };
+    }
+
+    // Validate the form. A saved password may stay empty when the backend can reuse it (reuse_saved).
+    function validateForm(data) {
+      var useSaved = !data.password && canReuseSaved();
+      if (!data.user_email || (!data.password && !useSaved) || !data.envoy_serial || !data.envoy_ip) {
+        showError(Homey.__('pair.start.error_required_fields'));
+        return null;
+      }
+      if (!isValidSerial(data.envoy_serial)) {
+        showError(Homey.__('pair.start.error_invalid_serial'));
+        return null;
+      }
+      if (useSaved) data.reuse_saved = true;
+      return data;
+    }
+
+    // Manual choice between several paired gateways (non-secret serial/IP pairs from the backend).
+    var candidateList = [];
+    function chooseGateway(serial) {
+      var picked = candidateList.filter(function (c) { return c.serial === serial; })[0];
+      if (!picked) return;
+      document.getElementById('serial').value = picked.serial;
+      if (picked.ip) document.getElementById('ip').value = picked.ip;
+      serialFromGateway = false;
+      lastLookupSerial = '';
+      lookupSaved();
+    }
+
+    function setupChooser(candidates) {
+      candidateList = candidates || [];
+      if (candidateList.length < 2) return;
+      var select = document.getElementById('chooser');
+      select.innerHTML = '';
+      candidateList.forEach(function (c) {
+        var option = document.createElement('option');
+        option.value = c.serial;
+        option.textContent = c.serial + (c.ip ? ' (' + c.ip + ')' : '');
+        select.appendChild(option);
+      });
+      document.getElementById('chooser-group').style.display = 'block';
+    }
+
+    // Auto-detect IP and serial from the driver when the view loads
+    function startDiscovery() {
+      Homey.emit('get_discovered_ip', {}, function (err, result) {
+        if (!err && result) {
+          setupChooser(result.candidates);
+          if (result.ip) {
+            document.getElementById('ip').value = result.ip;
+            setNote('ip-note', 'pair.start.ip_auto_detected', 'detected');
+          } else {
+            setNote('ip-note', 'pair.start.ip_not_found', 'not-found');
+          }
+          if (result.serial) {
+            document.getElementById('serial').value = result.serial;
+            setNote('serial-note', 'pair.start.serial_auto_detected', 'detected');
+            lookupSaved();
+          } else if (result.ip) {
+            readSerialFromIp(lookupSaved);
+          } else {
+            setNote('serial-note', 'pair.start.serial_not_found', 'not-found');
+          }
+        } else {
+          setNote('ip-note', 'pair.start.ip_not_found', 'not-found');
+          setNote('serial-note', 'pair.start.serial_not_found', 'not-found');
+        }
+      });
+
+      // Listen for dynamic discovery updates from the backend in real-time
+      Homey.on('discovery_update', function (result) {
+        if (!result) return;
+        applyDiscovery(result, true);
+        if (result.serial) lookupSaved();
+      });
+    }
+
+    translateUI('pair.start.title_solar');
+    startDiscovery();
+
+    // Called with every findPairedGateway reply: an old solar device on this serial blocks pairing.
+    function onLookupResult(result) {
+      if (result.blocked === 'legacy_solar') {
+        showBlocked(result.snapshotExists);
+      }
+    }
+
+    function showForm() {
+      document.getElementById('blocked-container').style.display = 'none';
+      document.getElementById('success-container').style.display = 'none';
+      document.getElementById('form-container').style.display = 'block';
+    }
+
+    function showBlocked(snapshotExists) {
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('success-container').style.display = 'none';
+      document.getElementById('blocked-container').style.display = 'block';
+      renderMigrationStatus(snapshotExists, null);
+    }
+
+    function renderMigrationStatus(exists, messageKey) {
+      var status = document.getElementById('migration-status');
+      status.textContent = messageKey ? Homey.__(messageKey)
+        : (exists ? Homey.__('pair.migration.status_saved') : '');
+      document.getElementById('btn-discard-migration').style.display = exists ? 'block' : 'none';
+      document.getElementById('btn-save-migration').style.display = exists ? 'none' : 'block';
+    }
+
+    function saveMigration() {
+      var serial = document.getElementById('serial').value.trim();
+      Homey.emit('migration', { action: 'prepare', serial: serial }, function (err, result) {
+        if (err || !result) {
+          renderMigrationStatus(false, 'pair.migration.save_failed');
+        } else if (result.saved) {
+          renderMigrationStatus(true, 'pair.migration.saved_ok');
+        } else if (result.reason === 'no_credentials') {
+          renderMigrationStatus(false, 'pair.migration.save_no_credentials');
+        } else {
+          renderMigrationStatus(false, 'pair.migration.save_failed');
+        }
+      });
+    }
+
+    function discardMigration() {
+      var serial = document.getElementById('serial').value.trim();
+      Homey.emit('migration', { action: 'discard', serial: serial }, function () {
+        renderMigrationStatus(false, 'pair.migration.discarded');
+      });
+    }
+
+    function submitPairing() {
+      clearError();
+
+      var data = validateForm(collectForm());
+      if (!data) return;
+
+      // Show loading overlay
+      Homey.showLoadingOverlay();
+
+      // Emit login credentials to driver.js
+      Homey.emit('login', data, function (err, result) {
+        Homey.hideLoadingOverlay();
+
+        if (err) {
+          showError(err.message || Homey.__('pair.start.error_auth_failed'));
+          return;
+        }
+
+        if (result && result.blocked === 'legacy_solar') {
+          showBlocked(false);
+          Homey.emit('migration', { action: 'status', serial: data.envoy_serial }, function (statusErr, status) {
+            if (!statusErr && status) renderMigrationStatus(!!status.exists, null);
+          });
+          return;
+        }
+
+        if (result && result.success) {
+          // Transition to success screen
+          document.getElementById('form-container').style.display = 'none';
+          document.getElementById('success-container').style.display = 'block';
+
+          var badgeContainer = document.getElementById('role-badge-container');
+          var descContainer = document.getElementById('role-desc-container');
+
+          if (result.isMaintainer) {
+            badgeContainer.innerHTML = '<span class="role-badge role-maintainer">' + Homey.__('pair.start.role_maintainer') + '</span>';
+            descContainer.innerText = Homey.__('pair.start.desc_maintainer');
+          } else {
+            badgeContainer.innerHTML = '<span class="role-badge role-owner">' + Homey.__('pair.start.role_owner') + '</span>';
+            descContainer.innerText = Homey.__('pair.start.desc_owner');
+          }
+        }
+      });
+    }
+
+    function finishPairing() {
+      // Trigger default list_devices page to register the device in Homey
+      Homey.nextView();
+    }
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+<svg viewBox="0 0 720 720" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Cell grid projected onto the same tilted plane as the frame -->
+    <g stroke-width="12">
+      <path d="M 156 396 L 364 524 M 256 296 L 464 424 M 356 196 L 564 324" />
+      <path d="M 125.333 538.667 L 525.333 138.667 M 194.667 581.333 L 594.667 181.333" />
+    </g>
+
+    <!-- Single foreshortened panel, with its long edges at 45 degrees -->
+    <path d="M 56 496 L 456 96 L 664 224 L 264 624 Z" stroke-width="36" />
+  </g>
+</svg>

@@ -1,0 +1,231 @@
+{
+  "name": {
+    "en": "Enphase Solar",
+    "nl": "Enphase Solar"
+  },
+  "images": {
+    "small": "/drivers/solar/assets/images/small.png",
+    "large": "/drivers/solar/assets/images/large.png"
+  },
+  "class": "solarpanel",
+  "discovery": "enphase-envoy",
+  "capabilities": [
+    "onoff",
+    "measure_power",
+    "last_update",
+    "meter_power",
+    "meter_power_today",
+    "power_production",
+    "connected_inverters",
+    "control_state",
+    "metered_gateway",
+    "production_limiting",
+    "target_power",
+    "target_power_mode"
+  ],
+  "capabilitiesOptions": {
+    "onoff": {
+      "title": {
+        "en": "Power production",
+        "nl": "Stroomproductie"
+      }
+    },
+    "measure_power": {
+      "title": {
+        "en": "Solar power",
+        "nl": "Zonnevermogen"
+      }
+    },
+    "meter_power": {
+      "title": {
+        "en": "Solar energy",
+        "nl": "Zonne-energie"
+      }
+    },
+    "meter_power_today": {
+      "title": {
+        "en": "Solar energy today",
+        "nl": "Zonne-energie vandaag"
+      }
+    },
+    "target_power": {
+      "title": {
+        "en": "Production limit",
+        "nl": "Productielimiet"
+      }
+    },
+    "target_power_mode": {
+      "title": {
+        "en": "Production limit mode",
+        "nl": "Productielimiet modus"
+      },
+      "values": [
+        {
+          "id": "device",
+          "title": {
+            "en": "Normal solar production",
+            "nl": "Normale zonneproductie"
+          }
+        },
+        {
+          "id": "homey",
+          "title": {
+            "en": "Custom solar production",
+            "nl": "Aangepaste zonneproductie"
+          }
+        },
+        {
+          "id": "self_use",
+          "title": {
+            "en": "Self-use only",
+            "nl": "Alleen zelfverbruik"
+          }
+        },
+        {
+          "id": "no_production",
+          "title": {
+            "en": "No production",
+            "nl": "Geen productie"
+          }
+        }
+      ]
+    }
+  },
+  "repair": [
+    {
+      "id": "repair"
+    }
+  ],
+  "pair": [
+    {
+      "id": "start"
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "type": "group",
+      "label": {
+        "en": "Enphase account",
+        "nl": "Enphase-account"
+      },
+      "children": [
+        {
+          "id": "user_email",
+          "type": "text",
+          "label": {
+            "en": "Email address",
+            "nl": "E-mailadres"
+          },
+          "placeholder": "owner-or-installer@email.com",
+          "required": true,
+          "value": ""
+        },
+        {
+          "id": "password",
+          "type": "password",
+          "label": {
+            "en": "Password",
+            "nl": "Wachtwoord"
+          },
+          "required": true,
+          "value": ""
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Envoy gateway",
+        "nl": "Envoy-gateway"
+      },
+      "children": [
+        {
+          "id": "envoy_serial",
+          "type": "text",
+          "label": {
+            "en": "Serial number",
+            "nl": "Serienummer"
+          },
+          "placeholder": "122226012345",
+          "required": true,
+          "value": ""
+        },
+        {
+          "id": "envoy_ip",
+          "type": "text",
+          "label": {
+            "en": "Local IP address",
+            "nl": "Lokaal IP-adres"
+          },
+          "placeholder": "10.0.0.123",
+          "required": true,
+          "value": ""
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "label": {
+        "en": "Advanced settings",
+        "nl": "Geavanceerde instellingen"
+      },
+      "children": [
+        {
+          "id": "always_on",
+          "type": "checkbox",
+          "label": {
+            "en": "Always on",
+            "nl": "Altijd aan"
+          },
+          "hint": {
+            "en": "Prevent this device from turning off, even when running 'Turn all devices off' flows.",
+            "nl": "Voorkom dat dit apparaat wordt uitgeschakeld, zelfs bij 'Schakel alle apparaten uit'-flows."
+          },
+          "value": false
+        },
+        {
+          "id": "pel_offset",
+          "type": "number",
+          "label": {
+            "en": "Self-use offset",
+            "nl": "Zelfverbruik offset"
+          },
+          "description": {
+            "en": "The export limit value in Watts used when in Self-use only mode (defaults to 0).",
+            "nl": "De terugleverlimiet in Watt die wordt gebruikt in de modus Alleen zelfverbruik (standaard 0)."
+          },
+          "required": true,
+          "value": 0,
+          "min": 0
+        },
+        {
+          "id": "poll_interval",
+          "type": "number",
+          "label": {
+            "en": "Update interval",
+            "nl": "Update-interval"
+          },
+          "hint": {
+            "en": "How often live power is read from the gateway, in seconds (5-120, default 15). Shorter intervals give faster updates but put more load on the Envoy.",
+            "nl": "Hoe vaak het actuele vermogen van de gateway wordt uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer."
+          },
+          "value": 15,
+          "min": 5,
+          "max": 120,
+          "units": "s"
+        }
+      ]
+    }
+  ]
+}

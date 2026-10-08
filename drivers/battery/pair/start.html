@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Connect Enphase Battery</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --homey-su: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: transparent;
+      color: var(--homey-text-color);
+      margin: 0;
+      padding: 8px;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+      padding: 8px;
+    }
+
+    /* Logo Styling (Battery themed gradient, brand colour) */
+    .logo-container {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #f7c92e 0%, #f0b400 100%);
+      border-radius: 12px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(240, 180, 0, 0.25);
+    }
+
+    .logo-container svg {
+      width: 26px;
+      height: 26px;
+      fill: #ffffff;
+    }
+
+    /* Custom UI Component: Discovery Badge */
+    .discovery-badge {
+      display: none;
+      background: rgba(0, 129, 255, 0.06);
+      border: 1px solid rgba(0, 129, 255, 0.15);
+      color: #0066cc;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      text-align: center;
+      font-weight: 500;
+      animation: pulse 2.5s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 0.95;
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.01);
+      }
+
+      100% {
+        opacity: 0.95;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .discovery-badge {
+        background: rgba(59, 130, 246, 0.12);
+        border: 1px solid rgba(59, 130, 246, 0.25);
+        color: #93c5fd;
+      }
+    }
+
+    /* Custom UI Component: Error Message */
+    .error-msg {
+      display: none;
+      background: rgba(211, 47, 47, 0.04);
+      border: 1px solid rgba(211, 47, 47, 0.15);
+      color: var(--homey-text-color-error);
+      font-size: 13px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      line-height: 1.5;
+      text-align: left;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .error-msg {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.25);
+      }
+    }
+
+    /* Warnings panel */
+    .warning-container {
+      display: none;
+      text-align: left;
+      padding: 8px 0;
+    }
+
+    .warning-box {
+      background: rgba(234, 88, 12, 0.05);
+      border: 1px solid rgba(234, 88, 12, 0.2);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .warning-box {
+        background: rgba(249, 115, 22, 0.1);
+        border: 1px solid rgba(249, 115, 22, 0.25);
+      }
+    }
+
+    .warning-box h3 {
+      margin: 0 0 8px 0;
+      color: var(--homey-text-color-warning);
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .warning-box h3 svg {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+      fill: currentColor;
+    }
+
+    .warning-list {
+      margin: 0;
+      color: var(--homey-text-color);
+      font-size: 13px;
+    }
+
+    .warning-item {
+      margin-bottom: 10px;
+      line-height: 1.5;
+      display: flex;
+      align-items: flex-start;
+      color: var(--homey-text-color) !important;
+    }
+
+    .warning-item::before {
+      content: "•";
+      margin-right: 8px;
+      color: var(--homey-text-color-warning);
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    /* Success state styling */
+    .success-container {
+      display: none;
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    .success-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(34, 197, 94, 0.12);
+      border: 2px solid #22c55e;
+      border-radius: 50%;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 16px;
+      color: #22c55e;
+    }
+
+    .field-note {
+      font-size: 12px;
+      margin-top: 6px;
+      color: var(--homey-text-color-secondary);
+      line-height: 1.4;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .field-note.detected {
+      color: #22c55e;
+    }
+
+    .field-note.not-found {
+      color: #ea580c;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .field-note.detected {
+        color: #4ade80;
+      }
+
+      .field-note.not-found {
+        color: #f97316;
+      }
+    }
+  
+    /* Reuse / migration panels */
+    .info-note {
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      background: rgba(0, 129, 255, 0.06);
+      border: 1px solid rgba(0, 129, 255, 0.15);
+      color: var(--homey-text-color);
+    }
+
+    .blocked-container {
+      display: none;
+      text-align: left;
+      padding: 8px 0;
+    }
+
+    .blocked-box {
+      background: rgba(234, 88, 12, 0.05);
+      border: 1px solid rgba(234, 88, 12, 0.2);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .blocked-box {
+        background: rgba(249, 115, 22, 0.1);
+        border: 1px solid rgba(249, 115, 22, 0.25);
+      }
+    }
+
+    .blocked-box h3 {
+      margin: 0 0 8px 0;
+      color: var(--homey-text-color-warning);
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .blocked-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--homey-text-color);
+      margin-bottom: 8px;
+    }
+
+    .step-item {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--homey-text-color) !important;
+      margin-bottom: 6px;
+    }
+
+    .status-line {
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 10px 0 14px 0;
+      color: var(--homey-text-color-secondary);
+    }
+
+    .button-gap {
+      height: 10px;
+    }
+
+    .chooser-group {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+
+    <!-- Pairing Form -->
+    <div id="form-container">
+      <header class="homey-header">
+        <div class="logo-container">
+          <!-- Battery SVG -->
+          <svg viewBox="0 0 24 24">
+            <path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4zM13 18h-2v-2h2v2zm0-4h-2V8h2v6z" />
+          </svg>
+        </div>
+        <h1 class="homey-title" data-i18n="pair.start.title_battery">Connect Enphase Battery</h1>
+        <p class="homey-subtitle" data-i18n="pair.start.subtitle_battery">Connect to your gateway to add battery power,
+          charge level and energy.</p>
+        <p class="field-note" data-i18n="driver.battery.pair.scope">Monitoring only: this device shows battery power, charge level and energy. It cannot control the battery.</p>
+      </header>
+
+      <div class="error-msg" id="error-msg"></div>
+      <div class="info-note" id="reuse-note" style="display: none;"></div>
+
+      <form class="homey-form" onsubmit="event.preventDefault(); submitPairing();">
+        <div class="homey-form-group chooser-group" id="chooser-group">
+          <label class="homey-form-label" for="chooser" data-i18n="pair.start.chooser_label">Paired gateways</label>
+          <select class="homey-form-input" id="chooser" onchange="chooseGateway(this.value)"></select>
+        </div>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="email" data-i18n="pair.start.email_label">Enphase Email</label>
+          <input class="homey-form-input" type="text" id="email" placeholder="e.g. owner-or-installer@email.com"
+            data-i18n-placeholder="pair.start.email_placeholder" oninput="onEmailInput()" required>
+        </div>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="password" data-i18n="pair.start.password_label">Enphase Password</label>
+          <input class="homey-form-input" type="password" id="password" placeholder="Your password"
+            data-i18n-placeholder="pair.start.password_placeholder">
+        </div>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="ip" data-i18n="pair.start.ip_label">Gateway IP Address</label>
+          <input class="homey-form-input" type="text" id="ip" placeholder="e.g. 10.0.0.123"
+            data-i18n-placeholder="pair.start.ip_placeholder" onchange="onIpChanged()" required>
+          <div class="field-note" id="ip-note"></div>
+        </div>
+
+        <div class="homey-form-group">
+          <label class="homey-form-label" for="serial" data-i18n="pair.start.serial_label">Gateway Serial Number</label>
+          <input class="homey-form-input" type="text" id="serial" placeholder="e.g. 122226012345"
+            data-i18n-placeholder="pair.start.serial_placeholder" pattern="\d{12}" minlength="12" maxlength="12"
+            onchange="onSerialChanged()" required>
+          <div class="field-note" id="serial-note"></div>
+        </div>
+
+        <button class="homey-button-primary-shadow-full" id="btn-connect" type="submit"
+          data-i18n="pair.start.btn_authenticate">Authenticate</button>
+      </form>
+    </div>
+
+    <!-- Warnings Screen -->
+    <div id="warning-container" class="warning-container">
+      <header class="homey-header">
+        <div class="logo-container"
+          style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+          </svg>
+        </div>
+        <h1 class="homey-title" data-i18n="pair.start.warning_title">Attention Required</h1>
+      </header>
+
+      <div class="warning-box">
+        <h3>
+          <svg viewBox="0 0 24 24">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+          </svg>
+          <span data-i18n="pair.start.warning_subtitle">Gateway Verification Warnings:</span>
+        </h3>
+        <div class="warning-list" id="warning-list">
+        </div>
+      </div>
+
+      <p class="homey-subtitle" style="text-align: center; margin-bottom: 24px;"
+        data-i18n="pair.start.warning_bypass_desc">You can ignore these warnings and continue adding the device, but
+        some features may not work.</p>
+
+      <button class="homey-button-primary-shadow-full" onclick="showSuccessScreen()"
+        data-i18n="pair.start.btn_ignore_continue">Ignore Warnings & Continue</button>
+      <button class="homey-button-secondary" onclick="showForm()" data-i18n="pair.start.btn_back">Go Back</button>
+    </div>
+
+    <!-- Success Screen -->
+    <div id="success-container" class="success-container">
+      <div class="success-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h1 class="homey-title" data-i18n="pair.start.success_title">Authentication Successful!</h1>
+      <p class="homey-subtitle" style="margin-bottom: 24px;" data-i18n="pair.start.success_subtitle_battery">Your Enphase
+        account was validated and the battery device is ready to be added.</p>
+
+      <button class="homey-button-primary-shadow-full" onclick="finishPairing()"
+        data-i18n="pair.start.btn_add_battery">Add Battery to Homey</button>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+    // Run translation immediately on load
+    function translateUI(titleKey) {
+      document.title = Homey.__(titleKey);
+
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        el.textContent = Homey.__(el.getAttribute('data-i18n'));
+      });
+
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+        el.placeholder = Homey.__(el.getAttribute('data-i18n-placeholder'));
+      });
+    }
+
+    // State shared by the helpers below. The view never holds a saved password: it only knows that one exists
+    // (reuse.hasPassword) and asks the backend to reuse it (reuse_saved) when the password field stays empty.
+    var reuse = null;          // last findPairedGateway reply for the current serial
+    var lastLookupSerial = ''; // avoids duplicate lookups
+    var serialFromGateway = false;
+
+    function setNote(id, key, cls, tokens) {
+      var el = document.getElementById(id);
+      el.textContent = key ? Homey.__(key, tokens) : '';
+      el.className = 'field-note' + (cls ? ' ' + cls : '');
+    }
+
+    function isValidSerial(value) {
+      return /^\d{12}$/.test(value);
+    }
+
+    function applyDiscovery(result, onlyIfEmpty) {
+      var ipInput = document.getElementById('ip');
+      var serialInput = document.getElementById('serial');
+
+      if (result.ip && (!onlyIfEmpty || !ipInput.value.trim())) {
+        ipInput.value = result.ip;
+        setNote('ip-note', 'pair.start.ip_auto_detected', 'detected');
+      }
+      if (result.serial && (!onlyIfEmpty || !serialInput.value.trim())) {
+        serialInput.value = result.serial;
+        setNote('serial-note', 'pair.start.serial_auto_detected', 'detected');
+      }
+    }
+
+    // Serial number is read from the gateway itself (cannot be a Site ID); manual input stays the fallback.
+    function readSerialFromIp(afterFn) {
+      var ip = document.getElementById('ip').value.trim();
+      if (!ip) {
+        if (afterFn) afterFn();
+        return;
+      }
+      Homey.emit('getSerial', { ip: ip }, function (err, result) {
+        var serialInput = document.getElementById('serial');
+        if (!err && result && result.serial) {
+          var typed = serialInput.value.trim();
+          if (typed && typed !== result.serial) {
+            setNote('serial-note', 'pair.start.serial_corrected', 'detected', { serial: result.serial });
+          } else {
+            setNote('serial-note', 'pair.start.serial_from_ip', 'detected');
+          }
+          serialInput.value = result.serial;
+          serialFromGateway = true;
+        } else if (!serialInput.value.trim()) {
+          setNote('serial-note', 'pair.start.serial_unreadable', 'not-found');
+        }
+        if (afterFn) afterFn();
+      });
+    }
+
+    function onIpChanged() {
+      readSerialFromIp(lookupSaved);
+    }
+
+    function onSerialChanged() {
+      serialFromGateway = false;
+      lookupSaved();
+    }
+
+    function onEmailInput() {
+      updatePasswordHint();
+    }
+
+    function updatePasswordHint() {
+      var passwordInput = document.getElementById('password');
+      var email = document.getElementById('email').value.trim().toLowerCase();
+      if (reuse && reuse.hasPassword && reuse.email && reuse.email.toLowerCase() === email) {
+        passwordInput.placeholder = Homey.__('pair.start.password_saved_placeholder');
+      } else {
+        passwordInput.placeholder = Homey.__('pair.start.password_placeholder');
+      }
+    }
+
+    function canReuseSaved() {
+      var email = document.getElementById('email').value.trim().toLowerCase();
+      return !!(reuse && reuse.hasPassword && reuse.email && reuse.email.toLowerCase() === email);
+    }
+
+    // Ask the backend what can be reused for this serial (non-secret info only).
+    function lookupSaved() {
+      var serial = document.getElementById('serial').value.trim();
+      if (!isValidSerial(serial) || serial === lastLookupSerial) return;
+      lastLookupSerial = serial;
+
+      Homey.emit('findPairedGateway', { serial: serial }, function (err, result) {
+        if (err || !result) return;
+        reuse = result;
+        var emailInput = document.getElementById('email');
+        var ipInput = document.getElementById('ip');
+
+        if (result.email && !emailInput.value.trim()) {
+          emailInput.value = result.email;
+        }
+        if (result.ip && !ipInput.value.trim()) {
+          ipInput.value = result.ip;
+          setNote('ip-note', 'pair.start.ip_auto_detected', 'detected');
+        }
+
+        var note = document.getElementById('reuse-note');
+        if (result.hasPassword) {
+          var key = result.source === 'snapshot' ? 'pair.start.reuse_snapshot'
+            : (result.source === 'device' ? 'pair.start.reuse_device' : 'pair.start.reuse_cache');
+          note.textContent = Homey.__(key);
+          note.style.display = 'block';
+        } else {
+          note.style.display = 'none';
+        }
+        updatePasswordHint();
+        onLookupResult(result);
+      });
+    }
+
+    function showError(msg) {
+      var errorMsg = document.getElementById('error-msg');
+      errorMsg.innerText = msg;
+      errorMsg.style.display = 'block';
+    }
+
+    function clearError() {
+      var errorMsg = document.getElementById('error-msg');
+      errorMsg.style.display = 'none';
+      errorMsg.innerText = '';
+    }
+
+    function collectForm() {
+      return {
+        user_email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value.trim(),
+        envoy_serial: document.getElementById('serial').value.trim(),
+        envoy_ip: document.getElementById('ip').value.trim()
+      };
+    }
+
+    // Validate the form. A saved password may stay empty when the backend can reuse it (reuse_saved).
+    function validateForm(data) {
+      var useSaved = !data.password && canReuseSaved();
+      if (!data.user_email || (!data.password && !useSaved) || !data.envoy_serial || !data.envoy_ip) {
+        showError(Homey.__('pair.start.error_required_fields'));
+        return null;
+      }
+      if (!isValidSerial(data.envoy_serial)) {
+        showError(Homey.__('pair.start.error_invalid_serial'));
+        return null;
+      }
+      if (useSaved) data.reuse_saved = true;
+      return data;
+    }
+
+    // Manual choice between several paired gateways (non-secret serial/IP pairs from the backend).
+    var candidateList = [];
+    function chooseGateway(serial) {
+      var picked = candidateList.filter(function (c) { return c.serial === serial; })[0];
+      if (!picked) return;
+      document.getElementById('serial').value = picked.serial;
+      if (picked.ip) document.getElementById('ip').value = picked.ip;
+      serialFromGateway = false;
+      lastLookupSerial = '';
+      lookupSaved();
+    }
+
+    function setupChooser(candidates) {
+      candidateList = candidates || [];
+      if (candidateList.length < 2) return;
+      var select = document.getElementById('chooser');
+      select.innerHTML = '';
+      candidateList.forEach(function (c) {
+        var option = document.createElement('option');
+        option.value = c.serial;
+        option.textContent = c.serial + (c.ip ? ' (' + c.ip + ')' : '');
+        select.appendChild(option);
+      });
+      document.getElementById('chooser-group').style.display = 'block';
+    }
+
+    // Auto-detect IP and serial from the driver when the view loads
+    function startDiscovery() {
+      Homey.emit('get_discovered_ip', {}, function (err, result) {
+        if (!err && result) {
+          setupChooser(result.candidates);
+          if (result.ip) {
+            document.getElementById('ip').value = result.ip;
+            setNote('ip-note', 'pair.start.ip_auto_detected', 'detected');
+          } else {
+            setNote('ip-note', 'pair.start.ip_not_found', 'not-found');
+          }
+          if (result.serial) {
+            document.getElementById('serial').value = result.serial;
+            setNote('serial-note', 'pair.start.serial_auto_detected', 'detected');
+            lookupSaved();
+          } else if (result.ip) {
+            readSerialFromIp(lookupSaved);
+          } else {
+            setNote('serial-note', 'pair.start.serial_not_found', 'not-found');
+          }
+        } else {
+          setNote('ip-note', 'pair.start.ip_not_found', 'not-found');
+          setNote('serial-note', 'pair.start.serial_not_found', 'not-found');
+        }
+      });
+
+      // Listen for dynamic discovery updates from the backend in real-time
+      Homey.on('discovery_update', function (result) {
+        if (!result) return;
+        applyDiscovery(result, true);
+        if (result.serial) lookupSaved();
+      });
+    }
+
+    translateUI('pair.start.title_battery');
+    startDiscovery();
+
+    // Nothing extra to track per gateway lookup for the battery driver (no legacy conflict rule).
+    function onLookupResult(result) {}
+
+    function submitPairing() {
+      clearError();
+
+      var data = validateForm(collectForm());
+      if (!data) return;
+
+      Homey.showLoadingOverlay();
+
+      Homey.emit('login', data, function (err, result) {
+        Homey.hideLoadingOverlay();
+
+        if (err) {
+          showError(err.message || Homey.__('pair.start.error_auth_failed'));
+          return;
+        }
+
+        if (result && result.success) {
+          var warnings = [];
+          // Battery detection (read-only). Neither warning blocks pairing.
+          var batteryWarning = result.battery ? result.battery.warning : 'unknown';
+          if (batteryWarning === 'none') {
+            warnings.push(Homey.__('pair.start.warning_no_battery'));
+          } else if (batteryWarning === 'unknown') {
+            warnings.push(Homey.__('pair.start.warning_battery_unknown'));
+          }
+
+          if (warnings.length > 0) {
+            // Show warnings screen
+            document.getElementById('form-container').style.display = 'none';
+            document.getElementById('success-container').style.display = 'none';
+            document.getElementById('warning-container').style.display = 'block';
+
+            var listEl = document.getElementById('warning-list');
+            listEl.innerHTML = '';
+            warnings.forEach(function (warn) {
+              var div = document.createElement('div');
+              div.className = 'warning-item';
+              div.textContent = warn;
+              listEl.appendChild(div);
+            });
+          } else {
+            // Directly show success screen
+            showSuccessScreen();
+          }
+        }
+      });
+    }
+
+    function showForm() {
+      document.getElementById('warning-container').style.display = 'none';
+      document.getElementById('success-container').style.display = 'none';
+      document.getElementById('form-container').style.display = 'block';
+    }
+
+    function showSuccessScreen() {
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('warning-container').style.display = 'none';
+      document.getElementById('success-container').style.display = 'block';
+    }
+
+    function finishPairing() {
+      // Trigger default list_devices page to register the device in Homey
+      Homey.nextView();
+    }
+  </script>
+
+</body>
+
+</html>

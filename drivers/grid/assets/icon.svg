@@ -1,0 +1,48 @@
+<svg viewBox="120 120 720 720" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Main Device Outer Silhouette (Thick Stroke) -->
+    <path d="M 140 290 L 680 270 L 820 280 L 820 680 L 680 690 L 140 670 Z" stroke-width="36" />
+    
+    <!-- Medium Stroke details -->
+    <g stroke-width="20">
+      <!-- Ridge line separating front and side -->
+      <path d="M 680 270 L 680 690" />
+      
+      <!-- Lower cover line -->
+      <path d="M 140 500 L 600 493 L 600 677" />
+    </g>
+    
+    <!-- Fine Stroke details -->
+    <g stroke-width="12">
+      <!-- Screw detail on lower cover panel -->
+      <circle cx="640" cy="620" r="10" />
+      <path d="M 633 620 H 647" />
+      
+      <!-- Enphase Logo (Circle with horizontal line) -->
+      <circle cx="250" cy="390" r="25" />
+      <path d="M 235 390 H 265" />
+      
+      <!-- ENPHASE Wordmark (Stylized simple text using lines) -->
+      <!-- E -->
+      <path d="M 300 378 H 315 M 300 378 V 402 M 300 390 H 312 M 300 402 H 315" />
+      <!-- N -->
+      <path d="M 327 402 V 378 L 342 402 V 378" />
+      <!-- P -->
+      <path d="M 354 402 V 378 H 369 V 390 H 354" />
+      <!-- H -->
+      <path d="M 381 378 V 402 M 381 390 H 396 M 396 378 V 402" />
+      <!-- A -->
+      <path d="M 408 402 L 417 378 L 426 402 M 411 394 H 423" />
+      <!-- S -->
+      <path d="M 438 402 H 450 V 390 H 438 V 378 H 450" />
+      <!-- E -->
+      <path d="M 462 378 H 477 M 462 378 V 402 M 462 390 H 474 M 462 402 H 477" />
+      
+      <!-- LEDs on the right side (Stylized down to 4 dots) -->
+      <circle cx="750" cy="370" r="10" fill="#000" stroke="none" />
+      <circle cx="750" cy="440" r="10" fill="#000" stroke="none" />
+      <circle cx="750" cy="510" r="10" fill="#000" stroke="none" />
+      <circle cx="750" cy="580" r="10" fill="#000" stroke="none" />
+    </g>
+  </g>
+</svg>
