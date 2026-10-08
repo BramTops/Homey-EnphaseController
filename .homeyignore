@@ -1,0 +1,10 @@
+.git/
+.devin/
+.agents/
+AGENTS.md
+skills-lock.json
+scratch/
+plan/
+node_modules/
+.homeybuild/
+env.json

@@ -1,3 +1,18 @@
 {
-  "extends": "athom/homey-app"
+  "extends": "athom/homey-app",
+  "overrides": [
+    {
+      "files": ["drivers/**/*.js"],
+      "rules": {
+        "no-restricted-modules": ["error", {
+          "paths": ["https", "node-fetch"],
+          "patterns": ["**/lib/EnvoyAuth"]
+        }],
+        "no-restricted-syntax": ["error", {
+          "selector": "MemberExpression[property.name=/^(sessionCookie|httpsAgent)$/]",
+          "message": "Credentials, TLS agents and session cookies stay in lib/."
+        }]
+      }
+    }
+  ]
 }
