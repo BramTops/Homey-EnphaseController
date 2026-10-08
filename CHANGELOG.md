@@ -1,6 +1,23 @@
 # Changelog
 
+<!--
+Store rules, for this file and .homeychangelog.json (JSON cannot hold comments, so they are kept here):
+- Non-technical and outcome-focused: no jargon, variables or config details.
+- 3-6 words per line.
+- .homeychangelog.json: no "- " prefixes, items separated by " \n", both `en` and `nl`.
+-->
+
 All notable changes to the Enphase Controller application for Homey Pro will be documented in this file, grouped by work session (day) and described in a user-centric way.
+
+## 2.0.0 (2026-10-07)
+
+- Adds read-only battery monitoring.
+- Shows grid and home readings.
+- Adds animated energy flow widget.
+- Requires a new device for widget.
+- Remove old solar before pairing.
+- Rebuild Flows; history may be lost.
+- Avoid duplicate grid energy totals.
 
 ## 2026-10-06
 

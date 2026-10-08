@@ -54,10 +54,58 @@
         "auth_failed": "Connection failed: __message__",
         "save_settings_failed": "Failed to save settings: Connection error: __message__"
       }
+    },
+    "solar": {
+      "name": "Enphase Solar",
+      "error": {
+        "fields_required": "Please fill in all the required fields.",
+        "invalid_serial": "Invalid gateway serial number.",
+        "auth_failed": "Connection failed: __message__",
+        "no_maintainer": "You need an Installer/Maintainer account to enable or disable power production.",
+        "always_on": "This device is set to 'Always on' and cannot be turned off.",
+        "command_failed": "Command failed: __message__",
+        "save_settings_failed": "Failed to save settings: Connection error: __message__",
+        "not_metered": "This gateway does not appear to be metered (no solar production CT clamps detected). Production limit controls require a metered gateway.",
+        "legacy_conflict": "Not active: an older Enphase Envoy or Solar device exists for this gateway. Rebuild your Flows, then remove the old device to enable this one.",
+        "invalid_ip": "Invalid IP address. Enter the gateway's IP address (for example 10.0.0.123), not a hostname."
+      },
+      "status": {
+        "on": "On",
+        "off": "Off"
+      }
+    },
+    "grid": {
+      "name": "Enphase Grid",
+      "error": {
+        "fields_required": "Please fill in all the required fields.",
+        "invalid_serial": "Invalid gateway serial number.",
+        "auth_failed": "Connection failed: __message__",
+        "save_settings_failed": "Failed to save settings: Connection error: __message__",
+        "invalid_ip": "Invalid IP address. Enter the gateway's IP address (for example 10.0.0.123), not a hostname."
+      }
+    },
+    "battery": {
+      "name": "Enphase Battery",
+      "error": {
+        "fields_required": "Please fill in all the required fields.",
+        "invalid_serial": "Invalid gateway serial number.",
+        "auth_failed": "Connection failed: __message__",
+        "save_settings_failed": "Failed to save settings: Connection error: __message__",
+        "invalid_ip": "Invalid IP address. Enter the gateway's IP address (for example 10.0.0.123), not a hostname."
+      },
+      "warning": {
+        "no_battery": "No battery detected on this gateway."
+      },
+      "pair": {
+        "scope": "Monitoring only: this device shows battery power, charge level and energy. It cannot control the battery."
+      }
     }
   },
   "timeline": {
-    "deprecated_envoy": "The deprecated Envoy Gateway device will be removed soon. Please start using the Enphase Controller Solar device."
+    "deprecated_envoy": "The deprecated Envoy Gateway device will be removed soon. Please start using the Enphase Controller Solar device.",
+    "migration_2_0_envoy": "Enphase Controller 2.0: this Envoy Gateway device is deprecated. It keeps working during the 2.0 migration window, but deprecated devices are planned for removal in 2.1.x (exact scope not decided yet). Please move to the new Enphase Solar device and rebuild your Flows; device history may be lost. Only one solar device per gateway is allowed: open the Enphase Solar pairing screen, save your settings for migration, then remove this device and pair Enphase Solar.",
+    "migration_2_0_gateway": "Enphase Controller 2.0: this older Enphase Solar device is deprecated. It keeps working during the 2.0 migration window, but deprecated devices are planned for removal in 2.1.x (exact scope not decided yet). Please move to the new Enphase Solar device and rebuild your Flows; device history may be lost. Only one solar device per gateway is allowed: open the Enphase Solar pairing screen, save your settings for migration, then remove this device and pair Enphase Solar.",
+    "migration_2_0_homeload": "Enphase Controller 2.0: this Enphase Home device is deprecated. It keeps working during the 2.0 migration window, but deprecated devices are planned for removal in 2.1.x (exact scope not decided yet). Please add the new Enphase Grid device, rebuild your Flows, then remove this device. Do not keep both for long: their energy totals would be counted twice in Homey Energy. Device history may be lost."
   },
   "pair": {
     "start": {
@@ -104,7 +152,45 @@
       "btn_back": "Go Back",
       "success_subtitle_homeload": "Your Enphase account was validated and the home device is ready to be added.",
       "btn_add_homeload": "Add Home to Homey",
-      "warning_no_consumption": "Consumption monitoring is disabled or consumption clamps are not installed on this gateway. Home load data will not be available."
+      "warning_no_consumption": "Consumption monitoring is disabled or consumption clamps are not installed on this gateway. Home load data will not be available.",
+      "title_solar": "Connect Enphase Solar",
+      "title_grid": "Connect Enphase Grid",
+      "subtitle_grid": "Connect to your gateway to add grid import/export and home consumption (P1 substitute).",
+      "success_subtitle_grid": "Your Enphase account was validated and the grid device is ready to be added.",
+      "btn_add_grid": "Add Grid to Homey",
+      "chooser_label": "Paired gateways",
+      "password_saved_placeholder": "Saved - leave empty to reuse",
+      "serial_from_ip": "Serial number read from the gateway at this IP address",
+      "serial_corrected": "Serial number corrected to match the gateway at this IP address (__serial__)",
+      "serial_unreadable": "Serial number could not be read from the gateway, please fill in manually.",
+      "reuse_device": "Account details of an existing Enphase device on this gateway were found. Leave the password empty to reuse them.",
+      "reuse_snapshot": "Saved settings from your previous device were found. Leave the password empty to reuse them.",
+      "reuse_cache": "Your previously used Enphase account was found. Leave the password empty to reuse it.",
+      "warning_legacy_grid": "An older Enphase Home device already exists for this gateway. Keeping both counts the same grid energy twice in Homey Energy. Rebuild your Flows with the new device, then remove the old Enphase Home device.",
+      "title_battery": "Connect Enphase Battery",
+      "subtitle_battery": "Connect to your gateway to add battery power, charge level and energy.",
+      "success_subtitle_battery": "Your Enphase account was validated and the battery device is ready to be added.",
+      "btn_add_battery": "Add Battery to Homey",
+      "warning_no_battery": "No battery was detected on this gateway. You can still add the device, but it will not show any data until a battery is available.",
+      "warning_battery_unknown": "Battery detection failed, so it is unknown whether a battery is installed. You can still add the device."
+    },
+    "error": {
+      "legacy_solar_conflict": "An older Enphase Envoy or Solar device already exists for this gateway. Rebuild your Flows with the new Enphase Solar device, remove the old device first, and then pair again."
+    },
+    "migration": {
+      "blocked_title": "Older Enphase device found",
+      "blocked_body": "An older Enphase Envoy or Solar device already exists for this gateway. Only one solar device per gateway is supported.",
+      "step_save": "1. Save your settings below (optional, saves retyping your account).",
+      "step_flows": "2. Rebuild your Flows with the new Enphase Solar device.",
+      "step_remove": "3. Remove the old device in Homey.",
+      "step_pair": "4. Start pairing Enphase Solar again.",
+      "btn_save": "Save settings for migration",
+      "btn_discard": "Discard saved settings",
+      "status_saved": "Settings saved. They are reused when you pair Enphase Solar after removing the old device.",
+      "saved_ok": "Settings saved. They are reused when you pair Enphase Solar after removing the old device.",
+      "save_no_credentials": "No saved account was found on the old device. You will need to enter your account details again.",
+      "save_failed": "Saving the settings failed. You can still continue and enter your account details again.",
+      "discarded": "Saved settings discarded."
     }
   },
   "inverters": {
@@ -119,6 +205,63 @@
         "stale": "Inverter has not reported in over __hours__ hour(s)",
         "mismatch": "Inverter list mismatch: expected __expected__ panels but found __found__",
         "underproducing": "Daily peak is __difference__% below the system median"
+      }
+    }
+  },
+  "widget": {
+    "energy_flow": {
+      "number_locale": "en-US",
+      "node": {
+        "solar": "Solar",
+        "grid": "Grid",
+        "home": "Home",
+        "battery": "Battery"
+      },
+      "state": {
+        "importing": "Importing",
+        "exporting": "Exporting",
+        "idle": "Idle",
+        "disconnected": "Disconnected",
+        "consuming": "Consuming",
+        "charging": "Charging",
+        "discharging": "Discharging",
+        "no_data": "No data",
+        "outdated": "Outdated"
+      },
+      "message": {
+        "loading": "Loading...",
+        "retry": "Try again",
+        "no_gateways": {
+          "title": "No gateway found",
+          "body": "Add an Enphase Solar, Grid or Battery device to show the energy flow."
+        },
+        "upgrade": {
+          "title": "Device update needed",
+          "body": "This gateway only has legacy devices. Add an Enphase Solar, Grid or Battery device to show the energy flow."
+        },
+        "missing": {
+          "title": "Gateway not found",
+          "body": "The selected gateway is no longer available. Choose another gateway."
+        },
+        "choose": {
+          "title": "Choose a gateway",
+          "body": "Select the gateway this widget should show."
+        },
+        "waiting": {
+          "title": "Waiting for data",
+          "body": "The first readings have not arrived yet."
+        },
+        "error": {
+          "title": "Could not load data",
+          "body": "The energy flow data is not available right now. Retrying automatically."
+        }
+      },
+      "chooser": {
+        "placeholder": "Choose a gateway...",
+        "label": "Gateway"
+      },
+      "aria": {
+        "summary": "Energy flow"
       }
     }
   }

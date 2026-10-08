@@ -1,4 +1,8 @@
 {
+  "2.0.0": {
+    "en": "Adds read-only battery monitoring. \nShows grid and home readings. \nAdds animated energy flow widget. \nRequires a new device for widget. \nRemove old solar before pairing. \nRebuild Flows; history may be lost. \nAvoid duplicate grid energy totals.",
+    "nl": "Voegt alleen-lezen batterijbewaking toe. \nToont net- en huisverbruik. \nVoegt een geanimeerde energiestroomwidget toe. \nWidget vereist een nieuw apparaat. \nVerwijder oude solar voor koppelen. \nBouw Flows opnieuw; historie kan verdwijnen. \nVoorkom dubbele energietotalen van net."
+  },
   "1.0.0": {
     "en": "Initial app release.",
     "nl": "Eerste release."

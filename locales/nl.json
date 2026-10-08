@@ -54,10 +54,58 @@
         "auth_failed": "Verbinding mislukt: __message__",
         "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__"
       }
+    },
+    "solar": {
+      "name": "Enphase Solar",
+      "error": {
+        "fields_required": "Vul alstublieft alle verplichte velden in.",
+        "invalid_serial": "Ongeldig gateway serienummer.",
+        "auth_failed": "Verbinding mislukt: __message__",
+        "no_maintainer": "U heeft een installateurs-/onderhoudsaccount nodig om stroomproductie in- of uit te schakelen.",
+        "always_on": "Dit apparaat staat ingesteld op 'Altijd aan' en kan niet worden uitgeschakeld.",
+        "command_failed": "Opdracht mislukt: __message__",
+        "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__",
+        "not_metered": "Deze gateway is niet gemeten (geen zonneproductie CT-klemmen gedetecteerd). Productielimiet opties vereisen een gemeten gateway.",
+        "legacy_conflict": "Niet actief: er bestaat een ouder Enphase Envoy- of Solar-apparaat voor deze gateway. Bouw je Flows opnieuw op en verwijder daarna het oude apparaat om dit apparaat in te schakelen.",
+        "invalid_ip": "Ongeldig IP-adres. Voer het IP-adres van de gateway in (bijvoorbeeld 10.0.0.123), geen hostnaam."
+      },
+      "status": {
+        "on": "Aan",
+        "off": "Uit"
+      }
+    },
+    "grid": {
+      "name": "Enphase Grid",
+      "error": {
+        "fields_required": "Vul alstublieft alle verplichte velden in.",
+        "invalid_serial": "Ongeldig gateway serienummer.",
+        "auth_failed": "Verbinding mislukt: __message__",
+        "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__",
+        "invalid_ip": "Ongeldig IP-adres. Voer het IP-adres van de gateway in (bijvoorbeeld 10.0.0.123), geen hostnaam."
+      }
+    },
+    "battery": {
+      "name": "Enphase Batterij",
+      "error": {
+        "fields_required": "Vul alstublieft alle verplichte velden in.",
+        "invalid_serial": "Ongeldig gateway serienummer.",
+        "auth_failed": "Verbinding mislukt: __message__",
+        "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__",
+        "invalid_ip": "Ongeldig IP-adres. Voer het IP-adres van de gateway in (bijvoorbeeld 10.0.0.123), geen hostnaam."
+      },
+      "warning": {
+        "no_battery": "Geen batterij gedetecteerd op deze gateway."
+      },
+      "pair": {
+        "scope": "Alleen bewaking: dit apparaat toont batterijvermogen, laadniveau en energie. Het kan de batterij niet aansturen."
+      }
     }
   },
   "timeline": {
-    "deprecated_envoy": "Het verouderde Envoy-gatewayapparaat wordt binnenkort verwijderd. Gebruik voortaan het Enphase Controller Solar-apparaat."
+    "deprecated_envoy": "Het verouderde Envoy-gatewayapparaat wordt binnenkort verwijderd. Gebruik voortaan het Enphase Controller Solar-apparaat.",
+    "migration_2_0_envoy": "Enphase Controller 2.0: dit Envoy-gatewayapparaat is verouderd. Het blijft werken tijdens de migratieperiode van 2.0, maar verouderde apparaten worden naar verwachting verwijderd in 2.1.x (de exacte omvang is nog niet bepaald). Stap over op het nieuwe Enphase Solar-apparaat en bouw je Flows opnieuw op; de apparaatgeschiedenis kan verloren gaan. Per gateway is maar één solar-apparaat toegestaan: open het koppelscherm van Enphase Solar, bewaar je instellingen voor migratie, verwijder dan dit apparaat en koppel Enphase Solar.",
+    "migration_2_0_gateway": "Enphase Controller 2.0: dit oudere Enphase Solar-apparaat is verouderd. Het blijft werken tijdens de migratieperiode van 2.0, maar verouderde apparaten worden naar verwachting verwijderd in 2.1.x (de exacte omvang is nog niet bepaald). Stap over op het nieuwe Enphase Solar-apparaat en bouw je Flows opnieuw op; de apparaatgeschiedenis kan verloren gaan. Per gateway is maar één solar-apparaat toegestaan: open het koppelscherm van Enphase Solar, bewaar je instellingen voor migratie, verwijder dan dit apparaat en koppel Enphase Solar.",
+    "migration_2_0_homeload": "Enphase Controller 2.0: dit Enphase Home-apparaat is verouderd. Het blijft werken tijdens de migratieperiode van 2.0, maar verouderde apparaten worden naar verwachting verwijderd in 2.1.x (de exacte omvang is nog niet bepaald). Voeg het nieuwe Enphase Grid-apparaat toe, bouw je Flows opnieuw op en verwijder daarna dit apparaat. Houd niet beide lang aan: hun energietellers worden dan dubbel meegeteld in Homey Energy. De apparaatgeschiedenis kan verloren gaan."
   },
   "pair": {
     "start": {
@@ -104,7 +152,45 @@
       "btn_back": "Ga terug",
       "success_subtitle_homeload": "Uw Enphase-account is gevalideerd en het Home-apparaat is klaar om te worden toegevoegd.",
       "btn_add_homeload": "Home toevoegen aan Homey",
-      "warning_no_consumption": "Verbruiksmonitoring is uitgeschakeld of er zijn geen verbruiksklemmen geïnstalleerd op deze gateway. Huisverbruikgegevens zullen niet beschikbaar zijn."
+      "warning_no_consumption": "Verbruiksmonitoring is uitgeschakeld of er zijn geen verbruiksklemmen geïnstalleerd op deze gateway. Huisverbruikgegevens zullen niet beschikbaar zijn.",
+      "title_solar": "Verbind Enphase Solar",
+      "title_grid": "Verbind Enphase Grid",
+      "subtitle_grid": "Verbind met je gateway om netimport/-export en huisverbruik (substituut P1-meter) toe te voegen.",
+      "success_subtitle_grid": "Je Enphase-account is gevalideerd en het Grid-apparaat is klaar om te worden toegevoegd.",
+      "btn_add_grid": "Grid toevoegen aan Homey",
+      "chooser_label": "Gekoppelde gateways",
+      "password_saved_placeholder": "Bewaard - leeg laten om te hergebruiken",
+      "serial_from_ip": "Serienummer uitgelezen van de gateway op dit IP-adres",
+      "serial_corrected": "Serienummer aangepast aan de gateway op dit IP-adres (__serial__)",
+      "serial_unreadable": "Serienummer kon niet van de gateway worden gelezen, vul dit handmatig in.",
+      "reuse_device": "Accountgegevens van een bestaand Enphase-apparaat op deze gateway gevonden. Laat het wachtwoord leeg om ze te hergebruiken.",
+      "reuse_snapshot": "Bewaarde instellingen van je vorige apparaat gevonden. Laat het wachtwoord leeg om ze te hergebruiken.",
+      "reuse_cache": "Je eerder gebruikte Enphase-account is gevonden. Laat het wachtwoord leeg om het te hergebruiken.",
+      "warning_legacy_grid": "Er bestaat al een ouder Enphase Home-apparaat voor deze gateway. Als je beide houdt, wordt dezelfde netenergie dubbel geteld in Homey Energy. Bouw je Flows opnieuw op met het nieuwe apparaat en verwijder daarna het oude Enphase Home-apparaat.",
+      "title_battery": "Verbind Enphase Batterij",
+      "subtitle_battery": "Verbind met je gateway om batterijvermogen, laadniveau en energie toe te voegen.",
+      "success_subtitle_battery": "Je Enphase-account is gevalideerd en het Batterij-apparaat is klaar om te worden toegevoegd.",
+      "btn_add_battery": "Batterij toevoegen aan Homey",
+      "warning_no_battery": "Er is geen batterij gedetecteerd op deze gateway. Je kunt het apparaat toch toevoegen, maar het toont geen gegevens totdat er een batterij beschikbaar is.",
+      "warning_battery_unknown": "Batterijdetectie is mislukt, dus het is onbekend of er een batterij is geïnstalleerd. Je kunt het apparaat toch toevoegen."
+    },
+    "error": {
+      "legacy_solar_conflict": "Er bestaat al een ouder Enphase Envoy- of Solar-apparaat voor deze gateway. Bouw je Flows opnieuw op met het nieuwe Enphase Solar-apparaat, verwijder eerst het oude apparaat en koppel daarna opnieuw."
+    },
+    "migration": {
+      "blocked_title": "Ouder Enphase-apparaat gevonden",
+      "blocked_body": "Er bestaat al een ouder Enphase Envoy- of Solar-apparaat voor deze gateway. Per gateway wordt maar één solar-apparaat ondersteund.",
+      "step_save": "1. Bewaar hieronder je instellingen (optioneel, scheelt opnieuw invoeren van je account).",
+      "step_flows": "2. Bouw je Flows opnieuw op met het nieuwe Enphase Solar-apparaat.",
+      "step_remove": "3. Verwijder het oude apparaat in Homey.",
+      "step_pair": "4. Start het koppelen van Enphase Solar opnieuw.",
+      "btn_save": "Instellingen bewaren voor migratie",
+      "btn_discard": "Bewaarde instellingen verwijderen",
+      "status_saved": "Instellingen bewaard. Ze worden hergebruikt als je Enphase Solar koppelt nadat het oude apparaat is verwijderd.",
+      "saved_ok": "Instellingen bewaard. Ze worden hergebruikt als je Enphase Solar koppelt nadat het oude apparaat is verwijderd.",
+      "save_no_credentials": "Op het oude apparaat is geen opgeslagen account gevonden. Je moet je accountgegevens opnieuw invoeren.",
+      "save_failed": "Bewaren van de instellingen is mislukt. Je kunt doorgaan en je accountgegevens opnieuw invoeren.",
+      "discarded": "Bewaarde instellingen verwijderd."
     }
   },
   "inverters": {
@@ -119,6 +205,63 @@
         "stale": "Omvormer heeft al meer dan __hours__ uur geen gegevens gerapporteerd",
         "mismatch": "Verschil in aantal omvormers: __expected__ panelen verwacht maar __found__ gevonden",
         "underproducing": "Dagpiek ligt __difference__% onder de systeemmediaan"
+      }
+    }
+  },
+  "widget": {
+    "energy_flow": {
+      "number_locale": "nl-NL",
+      "node": {
+        "solar": "Zon",
+        "grid": "Net",
+        "home": "Huis",
+        "battery": "Batterij"
+      },
+      "state": {
+        "importing": "Afname",
+        "exporting": "Teruglevering",
+        "idle": "Inactief",
+        "disconnected": "Losgekoppeld",
+        "consuming": "Verbruik",
+        "charging": "Laden",
+        "discharging": "Ontladen",
+        "no_data": "Geen data",
+        "outdated": "Verouderd"
+      },
+      "message": {
+        "loading": "Laden...",
+        "retry": "Opnieuw proberen",
+        "no_gateways": {
+          "title": "Geen gateway gevonden",
+          "body": "Voeg een Enphase Zon-, Net- of Batterij-apparaat toe om de energiestroom te tonen."
+        },
+        "upgrade": {
+          "title": "Apparaat bijwerken nodig",
+          "body": "Deze gateway heeft alleen oude apparaten. Voeg een Enphase Zon-, Net- of Batterij-apparaat toe om de energiestroom te tonen."
+        },
+        "missing": {
+          "title": "Gateway niet gevonden",
+          "body": "De gekozen gateway is niet meer beschikbaar. Kies een andere gateway."
+        },
+        "choose": {
+          "title": "Kies een gateway",
+          "body": "Selecteer de gateway die deze widget moet tonen."
+        },
+        "waiting": {
+          "title": "Wachten op gegevens",
+          "body": "De eerste metingen zijn nog niet binnen."
+        },
+        "error": {
+          "title": "Gegevens laden mislukt",
+          "body": "De energiestroomgegevens zijn nu niet beschikbaar. Er wordt automatisch opnieuw geprobeerd."
+        }
+      },
+      "chooser": {
+        "placeholder": "Kies een gateway...",
+        "label": "Gateway"
+      },
+      "aria": {
+        "summary": "Energiestroom"
       }
     }
   }

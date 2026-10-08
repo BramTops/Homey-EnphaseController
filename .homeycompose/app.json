@@ -1,6 +1,6 @@
 {
   "id": "nl.creitive.enlighten",
-  "version": "1.5.4",
+  "version": "2.0.0",
   "compatibility": ">=12.13.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -13,8 +13,8 @@
     "nl": "Enphase Controller"
   },
   "description": {
-    "en": "Monitor power and energy of your Enphase system. Control solar production, set custom limits, or restrict grid export.",
-    "nl": "Monitor vermogen en energie van uw Enphase-systeem. Bestuur zonneproductie, stel limieten in of beperk net-teruglevering."
+    "en": "Monitor solar production, grid import and export, home consumption, and Enphase battery power and charge level. Control solar production, set custom limits, and restrict grid export. View live energy flows in a dashboard widget. The widget requires a new Solar, Grid, or Battery device.",
+    "nl": "Monitor zonneproductie, netafname en teruglevering, huisverbruik en het vermogen en laadniveau van Enphase-batterijen. Bestuur zonneproductie, stel limieten in en beperk net-teruglevering. Bekijk energiestromen live in een dashboardwidget. De widget vereist een nieuw Solar-, Grid- of Batterij-apparaat."
   },
   "category": [
     "energy"
@@ -32,7 +32,10 @@
       "microinverter",
       "energy",
       "gateway",
-      "dynamic tariffs"
+      "dynamic tariffs",
+      "battery",
+      "grid",
+      "energy flow"
     ],
     "nl": [
       "enphase",
@@ -46,7 +49,10 @@
       "micro-omvormer",
       "energie",
       "gateway",
-      "dynamische tarieven"
+      "dynamische tarieven",
+      "batterij",
+      "net",
+      "energiestroom"
     ]
   },
   "permissions": [],

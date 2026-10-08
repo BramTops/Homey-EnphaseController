@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "nl.creitive.enlighten",
-  "version": "1.5.4",
+  "version": "2.0.0",
   "compatibility": ">=12.13.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -14,8 +14,8 @@
     "nl": "Enphase Controller"
   },
   "description": {
-    "en": "Monitor power and energy of your Enphase system. Control solar production, set custom limits, or restrict grid export.",
-    "nl": "Monitor vermogen en energie van uw Enphase-systeem. Bestuur zonneproductie, stel limieten in of beperk net-teruglevering."
+    "en": "Monitor solar production, grid import and export, home consumption, and Enphase battery power and charge level. Control solar production, set custom limits, and restrict grid export. View live energy flows in a dashboard widget. The widget requires a new Solar, Grid, or Battery device.",
+    "nl": "Monitor zonneproductie, netafname en teruglevering, huisverbruik en het vermogen en laadniveau van Enphase-batterijen. Bestuur zonneproductie, stel limieten in en beperk net-teruglevering. Bekijk energiestromen live in een dashboardwidget. De widget vereist een nieuw Solar-, Grid- of Batterij-apparaat."
   },
   "category": [
     "energy"
@@ -33,7 +33,10 @@
       "microinverter",
       "energy",
       "gateway",
-      "dynamic tariffs"
+      "dynamic tariffs",
+      "battery",
+      "grid",
+      "energy flow"
     ],
     "nl": [
       "enphase",
@@ -47,7 +50,10 @@
       "micro-omvormer",
       "energie",
       "gateway",
-      "dynamische tarieven"
+      "dynamische tarieven",
+      "batterij",
+      "net",
+      "energiestroom"
     ]
   },
   "permissions": [],
@@ -179,6 +185,90 @@
           }
         ],
         "id": "inverter_power_changed"
+      },
+      {
+        "id": "grid_home_power_changed",
+        "title": {
+          "en": "The home consumption power changed",
+          "nl": "Het huisverbruik vermogen is veranderd"
+        },
+        "titleFormatted": {
+          "en": "The home consumption power changed to [[value]] W",
+          "nl": "Het huisverbruik vermogen is veranderd naar [[value]] W"
+        },
+        "tokens": [
+          {
+            "name": "value",
+            "type": "number",
+            "title": {
+              "en": "Power (W)",
+              "nl": "Vermogen (W)"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=grid"
+          }
+        ]
+      },
+      {
+        "id": "grid_home_energy_changed",
+        "title": {
+          "en": "The home consumption energy changed",
+          "nl": "Het huisverbruik is veranderd"
+        },
+        "titleFormatted": {
+          "en": "The home consumption energy changed to [[value]] kWh",
+          "nl": "Het huisverbruik is veranderd naar [[value]] kWh"
+        },
+        "tokens": [
+          {
+            "name": "value",
+            "type": "number",
+            "title": {
+              "en": "Energy (kWh)",
+              "nl": "Energie (kWh)"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=grid"
+          }
+        ]
+      },
+      {
+        "id": "grid_home_energy_today_changed",
+        "title": {
+          "en": "The home consumption energy today changed",
+          "nl": "Het huisverbruik vandaag is veranderd"
+        },
+        "titleFormatted": {
+          "en": "The home consumption energy today changed to [[value]] kWh",
+          "nl": "Het huisverbruik vandaag is veranderd naar [[value]] kWh"
+        },
+        "tokens": [
+          {
+            "name": "value",
+            "type": "number",
+            "title": {
+              "en": "Energy (kWh)",
+              "nl": "Energie (kWh)"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=grid"
+          }
+        ]
       },
       {
         "id": "home_power_changed",
@@ -319,6 +409,174 @@
   "drivers": [
     {
       "name": {
+        "en": "Enphase Battery",
+        "nl": "Enphase Batterij"
+      },
+      "images": {
+        "small": "/drivers/battery/assets/images/small.png",
+        "large": "/drivers/battery/assets/images/large.png"
+      },
+      "class": "battery",
+      "discovery": "enphase-envoy",
+      "capabilities": [
+        "measure_power",
+        "measure_battery",
+        "meter_power.charged",
+        "meter_power.discharged",
+        "last_update"
+      ],
+      "capabilitiesOptions": {
+        "measure_power": {
+          "title": {
+            "en": "Battery power",
+            "nl": "Batterijvermogen"
+          }
+        },
+        "measure_battery": {
+          "title": {
+            "en": "Battery level",
+            "nl": "Batterijniveau"
+          }
+        },
+        "meter_power.charged": {
+          "title": {
+            "en": "Charged",
+            "nl": "Opgeladen"
+          }
+        },
+        "meter_power.discharged": {
+          "title": {
+            "en": "Discharged",
+            "nl": "Ontladen"
+          }
+        }
+      },
+      "energy": {
+        "homeBattery": true,
+        "meterPowerImportedCapability": "meter_power.charged",
+        "meterPowerExportedCapability": "meter_power.discharged"
+      },
+      "pair": [
+        {
+          "id": "start"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Enphase account",
+            "nl": "Enphase-account"
+          },
+          "children": [
+            {
+              "id": "user_email",
+              "type": "text",
+              "label": {
+                "en": "Email address",
+                "nl": "E-mailadres"
+              },
+              "placeholder": "owner-or-installer@email.com",
+              "required": true,
+              "value": ""
+            },
+            {
+              "id": "password",
+              "type": "password",
+              "label": {
+                "en": "Password",
+                "nl": "Wachtwoord"
+              },
+              "required": true,
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Envoy gateway",
+            "nl": "Envoy-gateway"
+          },
+          "children": [
+            {
+              "id": "envoy_serial",
+              "type": "text",
+              "label": {
+                "en": "Serial number",
+                "nl": "Serienummer"
+              },
+              "placeholder": "122226012345",
+              "required": true,
+              "value": ""
+            },
+            {
+              "id": "envoy_ip",
+              "type": "text",
+              "label": {
+                "en": "Local IP address",
+                "nl": "Lokaal IP-adres"
+              },
+              "placeholder": "10.0.0.123",
+              "required": true,
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Advanced settings",
+            "nl": "Geavanceerde instellingen"
+          },
+          "children": [
+            {
+              "id": "poll_interval",
+              "type": "number",
+              "label": {
+                "en": "Update interval",
+                "nl": "Update-interval"
+              },
+              "hint": {
+                "en": "How often live battery power and charge level are read from the gateway, in seconds (5-120, default 15). Shorter intervals give faster updates but put more load on the Envoy.",
+                "nl": "Hoe vaak het actuele batterijvermogen en laadniveau van de gateway worden uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer."
+              },
+              "value": 15,
+              "min": 5,
+              "max": 120,
+              "units": "s"
+            },
+            {
+              "id": "battery_totals_hint",
+              "type": "label",
+              "label": {
+                "en": "Charged and discharged energy",
+                "nl": "Opgeladen en ontladen energie"
+              },
+              "value": "",
+              "hint": {
+                "en": "Totals use the gateway's battery meter counters when available. Otherwise they are estimated from battery power over time and can differ slightly from the Enphase app. Totals are kept per gateway and survive removing and re-adding this device. This device only monitors the battery; it cannot control it.",
+                "nl": "Totalen gebruiken de tellers van de batterijmeter van de gateway als die beschikbaar zijn. Anders worden ze geschat op basis van het batterijvermogen in de tijd en kunnen ze licht afwijken van de Enphase-app. Totalen worden per gateway bijgehouden en blijven behouden als je dit apparaat verwijdert en opnieuw toevoegt. Dit apparaat bewaakt de batterij alleen; het kan de batterij niet aansturen."
+              }
+            }
+          ]
+        }
+      ],
+      "id": "battery"
+    },
+    {
+      "name": {
         "en": "Envoy Gateway (Legacy)",
         "nl": "Envoy-gateway (Verouderd)"
       },
@@ -434,6 +692,7 @@
         "en": "Enphase Solar",
         "nl": "Enphase Solar"
       },
+      "deprecated": true,
       "images": {
         "small": "/drivers/gateway/assets/images/small.png",
         "large": "/drivers/gateway/assets/images/large.png"
@@ -647,9 +906,212 @@
     },
     {
       "name": {
+        "en": "Enphase Grid",
+        "nl": "Enphase Grid"
+      },
+      "images": {
+        "small": "/drivers/grid/assets/images/small.png",
+        "large": "/drivers/grid/assets/images/large.png"
+      },
+      "class": "sensor",
+      "discovery": "enphase-envoy",
+      "capabilities": [
+        "measure_power",
+        "meter_power",
+        "meter_power_today",
+        "meter_power.produced",
+        "meter_power_today.produced",
+        "measure_power.home",
+        "meter_power.home",
+        "meter_power_today.home",
+        "meter_power.home_produced",
+        "meter_power_today.home_produced",
+        "last_update"
+      ],
+      "capabilitiesOptions": {
+        "measure_power": {
+          "title": {
+            "en": "Grid power",
+            "nl": "Netstroom vermogen"
+          }
+        },
+        "meter_power": {
+          "title": {
+            "en": "Grid energy imported",
+            "nl": "Netstroom energie geïmporteerd"
+          }
+        },
+        "meter_power_today": {
+          "title": {
+            "en": "Grid energy imported today",
+            "nl": "Netstroom energie geïmporteerd vandaag"
+          }
+        },
+        "meter_power.produced": {
+          "title": {
+            "en": "Grid energy exported",
+            "nl": "Netstroom energie geëxporteerd"
+          }
+        },
+        "meter_power_today.produced": {
+          "title": {
+            "en": "Grid energy exported today",
+            "nl": "Netstroom energie geëxporteerd vandaag"
+          }
+        },
+        "measure_power.home": {
+          "title": {
+            "en": "Home consumption power",
+            "nl": "Huisverbruik vermogen"
+          }
+        },
+        "meter_power.home": {
+          "title": {
+            "en": "Home consumption energy",
+            "nl": "Huisverbruik energie"
+          }
+        },
+        "meter_power_today.home": {
+          "title": {
+            "en": "Home consumption energy today",
+            "nl": "Huisverbruik energie vandaag"
+          }
+        },
+        "meter_power.home_produced": {
+          "title": {
+            "en": "Home energy exported",
+            "nl": "Huisenergie geëxporteerd"
+          }
+        },
+        "meter_power_today.home_produced": {
+          "title": {
+            "en": "Home energy exported today",
+            "nl": "Huisenergie geëxporteerd vandaag"
+          }
+        }
+      },
+      "energy": {
+        "cumulative": true,
+        "cumulativeImportedCapability": "meter_power",
+        "cumulativeExportedCapability": "meter_power.produced"
+      },
+      "repair": [
+        {
+          "id": "repair"
+        }
+      ],
+      "pair": [
+        {
+          "id": "start"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Enphase account",
+            "nl": "Enphase-account"
+          },
+          "children": [
+            {
+              "id": "user_email",
+              "type": "text",
+              "label": {
+                "en": "Email address",
+                "nl": "E-mailadres"
+              },
+              "placeholder": "owner-or-installer@email.com",
+              "required": true,
+              "value": ""
+            },
+            {
+              "id": "password",
+              "type": "password",
+              "label": {
+                "en": "Password",
+                "nl": "Wachtwoord"
+              },
+              "required": true,
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Envoy gateway",
+            "nl": "Envoy-gateway"
+          },
+          "children": [
+            {
+              "id": "envoy_serial",
+              "type": "text",
+              "label": {
+                "en": "Serial number",
+                "nl": "Serienummer"
+              },
+              "placeholder": "122226012345",
+              "required": true,
+              "value": ""
+            },
+            {
+              "id": "envoy_ip",
+              "type": "text",
+              "label": {
+                "en": "Local IP address",
+                "nl": "Lokaal IP-adres"
+              },
+              "placeholder": "10.0.0.123",
+              "required": true,
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Advanced settings",
+            "nl": "Geavanceerde instellingen"
+          },
+          "children": [
+            {
+              "id": "poll_interval",
+              "type": "number",
+              "label": {
+                "en": "Update interval",
+                "nl": "Update-interval"
+              },
+              "hint": {
+                "en": "How often live grid and home power is read from the gateway, in seconds (5-120, default 15). Shorter intervals give faster updates but put more load on the Envoy.",
+                "nl": "Hoe vaak het actuele net- en huisvermogen van de gateway wordt uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer."
+              },
+              "value": 15,
+              "min": 5,
+              "max": 120,
+              "units": "s"
+            }
+          ]
+        }
+      ],
+      "id": "grid"
+    },
+    {
+      "name": {
         "en": "Enphase Home",
         "nl": "Enphase Home"
       },
+      "deprecated": true,
       "images": {
         "small": "/drivers/homeload/assets/images/small.png",
         "large": "/drivers/homeload/assets/images/large.png"
@@ -889,8 +1351,322 @@
         }
       ],
       "id": "inverters"
+    },
+    {
+      "name": {
+        "en": "Enphase Solar",
+        "nl": "Enphase Solar"
+      },
+      "images": {
+        "small": "/drivers/solar/assets/images/small.png",
+        "large": "/drivers/solar/assets/images/large.png"
+      },
+      "class": "solarpanel",
+      "discovery": "enphase-envoy",
+      "capabilities": [
+        "onoff",
+        "measure_power",
+        "last_update",
+        "meter_power",
+        "meter_power_today",
+        "power_production",
+        "connected_inverters",
+        "control_state",
+        "metered_gateway",
+        "production_limiting",
+        "target_power",
+        "target_power_mode"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "title": {
+            "en": "Power production",
+            "nl": "Stroomproductie"
+          }
+        },
+        "measure_power": {
+          "title": {
+            "en": "Solar power",
+            "nl": "Zonnevermogen"
+          }
+        },
+        "meter_power": {
+          "title": {
+            "en": "Solar energy",
+            "nl": "Zonne-energie"
+          }
+        },
+        "meter_power_today": {
+          "title": {
+            "en": "Solar energy today",
+            "nl": "Zonne-energie vandaag"
+          }
+        },
+        "target_power": {
+          "title": {
+            "en": "Production limit",
+            "nl": "Productielimiet"
+          }
+        },
+        "target_power_mode": {
+          "title": {
+            "en": "Production limit mode",
+            "nl": "Productielimiet modus"
+          },
+          "values": [
+            {
+              "id": "device",
+              "title": {
+                "en": "Normal solar production",
+                "nl": "Normale zonneproductie"
+              }
+            },
+            {
+              "id": "homey",
+              "title": {
+                "en": "Custom solar production",
+                "nl": "Aangepaste zonneproductie"
+              }
+            },
+            {
+              "id": "self_use",
+              "title": {
+                "en": "Self-use only",
+                "nl": "Alleen zelfverbruik"
+              }
+            },
+            {
+              "id": "no_production",
+              "title": {
+                "en": "No production",
+                "nl": "Geen productie"
+              }
+            }
+          ]
+        }
+      },
+      "repair": [
+        {
+          "id": "repair"
+        }
+      ],
+      "pair": [
+        {
+          "id": "start"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Enphase account",
+            "nl": "Enphase-account"
+          },
+          "children": [
+            {
+              "id": "user_email",
+              "type": "text",
+              "label": {
+                "en": "Email address",
+                "nl": "E-mailadres"
+              },
+              "placeholder": "owner-or-installer@email.com",
+              "required": true,
+              "value": ""
+            },
+            {
+              "id": "password",
+              "type": "password",
+              "label": {
+                "en": "Password",
+                "nl": "Wachtwoord"
+              },
+              "required": true,
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Envoy gateway",
+            "nl": "Envoy-gateway"
+          },
+          "children": [
+            {
+              "id": "envoy_serial",
+              "type": "text",
+              "label": {
+                "en": "Serial number",
+                "nl": "Serienummer"
+              },
+              "placeholder": "122226012345",
+              "required": true,
+              "value": ""
+            },
+            {
+              "id": "envoy_ip",
+              "type": "text",
+              "label": {
+                "en": "Local IP address",
+                "nl": "Lokaal IP-adres"
+              },
+              "placeholder": "10.0.0.123",
+              "required": true,
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "label": {
+            "en": "Advanced settings",
+            "nl": "Geavanceerde instellingen"
+          },
+          "children": [
+            {
+              "id": "always_on",
+              "type": "checkbox",
+              "label": {
+                "en": "Always on",
+                "nl": "Altijd aan"
+              },
+              "hint": {
+                "en": "Prevent this device from turning off, even when running 'Turn all devices off' flows.",
+                "nl": "Voorkom dat dit apparaat wordt uitgeschakeld, zelfs bij 'Schakel alle apparaten uit'-flows."
+              },
+              "value": false
+            },
+            {
+              "id": "pel_offset",
+              "type": "number",
+              "label": {
+                "en": "Self-use offset",
+                "nl": "Zelfverbruik offset"
+              },
+              "description": {
+                "en": "The export limit value in Watts used when in Self-use only mode (defaults to 0).",
+                "nl": "De terugleverlimiet in Watt die wordt gebruikt in de modus Alleen zelfverbruik (standaard 0)."
+              },
+              "required": true,
+              "value": 0,
+              "min": 0
+            },
+            {
+              "id": "poll_interval",
+              "type": "number",
+              "label": {
+                "en": "Update interval",
+                "nl": "Update-interval"
+              },
+              "hint": {
+                "en": "How often live power is read from the gateway, in seconds (5-120, default 15). Shorter intervals give faster updates but put more load on the Envoy.",
+                "nl": "Hoe vaak het actuele vermogen van de gateway wordt uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer."
+              },
+              "value": 15,
+              "min": 5,
+              "max": 120,
+              "units": "s"
+            }
+          ]
+        }
+      ],
+      "id": "solar"
     }
   ],
+  "widgets": {
+    "energy-flow": {
+      "name": {
+        "en": "Energy flow",
+        "nl": "Energiestroom"
+      },
+      "height": 300,
+      "settings": [
+        {
+          "id": "trackOpacity",
+          "type": "number",
+          "title": {
+            "en": "Track opacity (%)",
+            "nl": "Dekking van het spoor (%)"
+          },
+          "hint": {
+            "en": "Brightness of the faint band shown behind the particles.",
+            "nl": "Helderheid van de vage band achter de deeltjes."
+          },
+          "value": 20,
+          "min": 0,
+          "max": 100
+        },
+        {
+          "id": "particleSpeed",
+          "type": "number",
+          "title": {
+            "en": "Particle speed (%)",
+            "nl": "Snelheid van deeltjes (%)"
+          },
+          "hint": {
+            "en": "Overall flow speed of the particles. 100 = default.",
+            "nl": "Algemene stroomsnelheid van de deeltjes. 100 = standaard."
+          },
+          "value": 100,
+          "min": 10,
+          "max": 400
+        },
+        {
+          "id": "trailLength",
+          "type": "number",
+          "title": {
+            "en": "Trail length",
+            "nl": "Lengte van de staart"
+          },
+          "hint": {
+            "en": "Length of each particle's fading tail (2 to 40).",
+            "nl": "Lengte van de vervagende staart van elk deeltje (2 tot 40)."
+          },
+          "value": 10,
+          "min": 2,
+          "max": 40
+        },
+        {
+          "id": "particleOpacity",
+          "type": "number",
+          "title": {
+            "en": "Particle opacity (%)",
+            "nl": "Dekking van deeltjes (%)"
+          },
+          "hint": {
+            "en": "Brightness of the moving particles. 100 = fully opaque.",
+            "nl": "Helderheid van de bewegende deeltjes. 100 = volledig dekkend."
+          },
+          "value": 90,
+          "min": 0,
+          "max": 100
+        }
+      ],
+      "api": {
+        "getGateways": {
+          "method": "GET",
+          "path": "/gateways"
+        },
+        "getState": {
+          "method": "GET",
+          "path": "/state/:serial"
+        }
+      },
+      "id": "energy-flow"
+    }
+  },
   "capabilities": {
     "connected_inverters": {
       "type": "number",
