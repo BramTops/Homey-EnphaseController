@@ -1,0 +1,79 @@
+{
+  "name": {
+    "en": "Energy flow",
+    "nl": "Energiestroom"
+  },
+  "height": 300,
+  "settings": [
+    {
+      "id": "trackOpacity",
+      "type": "number",
+      "title": {
+        "en": "Track opacity (%)",
+        "nl": "Dekking van het spoor (%)"
+      },
+      "hint": {
+        "en": "Brightness of the faint band shown behind the particles.",
+        "nl": "Helderheid van de vage band achter de deeltjes."
+      },
+      "value": 20,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "id": "particleSpeed",
+      "type": "number",
+      "title": {
+        "en": "Particle speed (%)",
+        "nl": "Snelheid van deeltjes (%)"
+      },
+      "hint": {
+        "en": "Overall flow speed of the particles. 100 = default.",
+        "nl": "Algemene stroomsnelheid van de deeltjes. 100 = standaard."
+      },
+      "value": 100,
+      "min": 10,
+      "max": 400
+    },
+    {
+      "id": "trailLength",
+      "type": "number",
+      "title": {
+        "en": "Trail length",
+        "nl": "Lengte van de staart"
+      },
+      "hint": {
+        "en": "Length of each particle's fading tail (2 to 40).",
+        "nl": "Lengte van de vervagende staart van elk deeltje (2 tot 40)."
+      },
+      "value": 10,
+      "min": 2,
+      "max": 40
+    },
+    {
+      "id": "particleOpacity",
+      "type": "number",
+      "title": {
+        "en": "Particle opacity (%)",
+        "nl": "Dekking van deeltjes (%)"
+      },
+      "hint": {
+        "en": "Brightness of the moving particles. 100 = fully opaque.",
+        "nl": "Helderheid van de bewegende deeltjes. 100 = volledig dekkend."
+      },
+      "value": 90,
+      "min": 0,
+      "max": 100
+    }
+  ],
+  "api": {
+    "getGateways": {
+      "method": "GET",
+      "path": "/gateways"
+    },
+    "getState": {
+      "method": "GET",
+      "path": "/state/:serial"
+    }
+  }
+}

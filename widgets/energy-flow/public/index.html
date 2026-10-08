@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="flow-canvas" role="img"></canvas>
+    <div id="chooser" class="chooser" hidden>
+      <select id="gateway-select"></select>
+    </div>
+    <div id="message" class="message" hidden>
+      <div id="message-title" class="message-title"></div>
+      <div id="message-body" class="message-body"></div>
+      <button id="message-retry" class="message-retry" type="button" hidden></button>
+    </div>
+    <div id="probe-sub" class="probe"></div>
+  </div>
+  <script src="index.js"></script>
+</body>
+</html>
