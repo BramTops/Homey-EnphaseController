@@ -21,6 +21,7 @@ class EnvoyDriver extends Homey.Driver {
     PairingHelper.setupPairingSession(this, session, {
       deviceNameKey: 'driver.envoy.name',
       errorPrefix: 'driver.envoy',
+      allowProductionLimitProbe: true,
     });
   }
 

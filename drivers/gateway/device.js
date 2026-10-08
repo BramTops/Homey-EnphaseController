@@ -11,6 +11,10 @@ class GatewayDevice extends Homey.Device {
   async onInit() {
     this.log('Gateway Device has been initialized');
 
+    this.homey.app.notifyDeprecatedDriver('gateway').catch((err) => {
+      this.error('Failed to post deprecated Gateway driver notice:', err.message);
+    });
+
     // Retrieve settings
     const settings = this.getSettings();
 
@@ -92,7 +96,7 @@ class GatewayDevice extends Homey.Device {
     // Initialize temporary cache for target power to resolve UI race conditions
     this.tempTargetPower = this.getCapabilityValue('target_power') || null;
 
-    // Dynamically update PEL and onoff capabilities based on current role and metered status (see ADR 0003)
+    // Dynamically update PEL and onoff capabilities based on current role and metered status
     await this.ensurePelCapabilities();
 
     // Initialize the failed poll timestamp tracker (kept for legacy support if needed)
@@ -124,11 +128,9 @@ class GatewayDevice extends Homey.Device {
   /**
    * Register the capability listener for the power switch (onoff).
    * Ensures the listener is registered at most once to prevent duplicate callback registration errors.
-   */
-  /**
-   * Register the capability listener for the power switch (onoff).
-   * Ensures the listener is registered at most once to prevent duplicate callback registration errors.
-   * Remaps ON/OFF toggles on metered gateways to dynamic PEL commands to avoid disabling battery/contactor communications (ADR 0003).
+   * Remaps ON/OFF toggles on metered gateways to dynamic PEL commands. Reason (earlier maintainer finding,
+   * not Enphase-documented): powerForcedOff also opens the production contactor, which is believed to cut
+   * battery/contactor communications; a 0 W DPEL limit curtails the microinverters without that side effect.
    */
   registerOnoffListener() {
     if (this.onoffListenerRegistered) {
@@ -158,7 +160,7 @@ class GatewayDevice extends Homey.Device {
       try {
         const usePel = this.isMetered && this.isMaintainer && this.productionLimiting;
         if (usePel) {
-          // Remap switch for metered gateways supporting dynamic limiting to dynamic PEL (see ADR 0003)
+          // Remap switch for metered gateways supporting dynamic limiting to dynamic PEL (see registerOnoffListener)
           // Shuts down PV generation safely via microinverter curtailment (no full contactor block)
           if (value) {
             // ON -> Disable limit override, restore Normal solar production
@@ -496,10 +498,6 @@ class GatewayDevice extends Homey.Device {
   }
 
   /**
-   * Poll the Envoy gateway locally to fetch the current PowerForcedOff status
-   * and update the capability state in Homey.
-   */
-  /**
    * Update production telemetry received from the App orchestrator.
    * This is called by the central orchestrator poll loop.
    *
@@ -547,6 +545,9 @@ class GatewayDevice extends Homey.Device {
 
   /**
    * Check if Homey is manual OFF but Envoy is ON, and re-apply OFF command if so.
+   * The gateway syncs with Enphase Cloud at the top of every hour (observed) and the cloud default
+   * (production enabled) overwrites local forced-off, so the state is re-checked on every poll instead of trusted.
+   * Production can therefore resume for up to one poll interval after each hour change.
    * @param {boolean} productionEnabled
    * @returns {Promise<boolean>} True if command was overridden to OFF
    */
@@ -771,7 +772,7 @@ class GatewayDevice extends Homey.Device {
         // Perform test write for dynamic production limiting support
         await this.testProductionLimitingSupport();
 
-        // Dynamically update PEL and onoff capabilities based on the upgraded/downgraded role (see ADR 0003)
+        // Dynamically update PEL and onoff capabilities based on the upgraded/downgraded role
         await this.ensurePelCapabilities();
 
         this.log('Settings validated successfully. Token and roles updated.');
@@ -805,7 +806,7 @@ class GatewayDevice extends Homey.Device {
       await this.setStoreValue('production_limiting', false).catch(this.error);
     }
 
-    // Dynamically update capabilities based on the new role (see ADR 0003)
+    // Dynamically update capabilities based on the new role
     await this.ensurePelCapabilities();
 
     await this.setCapabilityValue('control_state', isMaintainer).catch(this.error);

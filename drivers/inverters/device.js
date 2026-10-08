@@ -19,7 +19,8 @@ class InvertersDevice extends Homey.Device {
     serials.sort((a, b) => a.localeCompare(b));
     this.log('Discovered static inverter serials:', serials);
 
-    // Dynamic capability registration
+    // Dynamic capability registration: all microinverters live in this one device (per-serial capabilities)
+    // instead of one device each, which would flood the device list and Flows on systems with 10-40+ panels.
     for (let i = 0; i < serials.length; i++) {
       const serial = serials[i];
       const idx = i + 1;
@@ -63,8 +64,9 @@ class InvertersDevice extends Homey.Device {
     this.activeAlerts = this.getStoreValue('activeAlerts') || {};
     this.log(`Loaded active alerts: ${Object.keys(this.activeAlerts).length} items`);
 
-    // Register with App-level polling manager
-    this.homey.app.registerDevice(settings.envoy_serial, this);
+    // Register with App-level polling manager: slow tier only (individual microinverters update every ~5 minutes),
+    // no fast tier, no snapshot hook. Availability is owned by the core while registered.
+    this.homey.app.registerDevice(settings.envoy_serial, this, { telemetry: 'inverters', fast: false });
 
     // Mark device available
     await this.setAvailable();

@@ -11,7 +11,7 @@ class EnvoyDevice extends Homey.Device {
   async onInit() {
     this.log('Envoy Device has been initialized');
 
-    await this.homey.app.notifyDeprecatedEnvoyDriver().catch((err) => {
+    await this.homey.app.notifyDeprecatedDriver('envoy').catch((err) => {
       this.error('Failed to post deprecated Envoy driver notice:', err.message);
     });
 

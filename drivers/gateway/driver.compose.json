@@ -3,6 +3,7 @@
     "en": "Enphase Solar",
     "nl": "Enphase Solar"
   },
+  "deprecated": true,
   "images": {
     "small": "/drivers/gateway/assets/images/small.png",
     "large": "/drivers/gateway/assets/images/large.png"

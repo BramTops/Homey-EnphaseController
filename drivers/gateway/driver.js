@@ -22,6 +22,7 @@ class GatewayDriver extends Homey.Driver {
     PairingHelper.setupPairingSession(this, session, {
       deviceNameKey: 'driver.gateway.name',
       errorPrefix: 'driver.gateway',
+      allowProductionLimitProbe: true,
     });
   }
 

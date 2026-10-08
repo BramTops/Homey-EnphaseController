@@ -11,6 +11,10 @@ class HomeLoadDevice extends Homey.Device {
   async onInit() {
     this.log('Enphase Home Device has been initialized');
 
+    this.homey.app.notifyDeprecatedDriver('homeload').catch((err) => {
+      this.error('Failed to post deprecated Home driver notice:', err.message);
+    });
+
     // Retrieve settings
     const settings = this.getSettings();
 

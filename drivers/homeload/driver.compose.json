@@ -3,6 +3,7 @@
     "en": "Enphase Home",
     "nl": "Enphase Home"
   },
+  "deprecated": true,
   "images": {
     "small": "/drivers/homeload/assets/images/small.png",
     "large": "/drivers/homeload/assets/images/large.png"
