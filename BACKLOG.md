@@ -8,6 +8,22 @@ Track bugs, features, improvements, ideas for Enphase Controller app.
 ## Small changes / ToDo
 - Add 12-digit validation to Gateway SN login input. Prevent users entering Site ID.
 
+### Follow-ups from 2.0 review
+- Distinct artwork for the Solar, Grid and Battery drivers; new Solar and deprecated Gateway share the name "Enphase Solar".
+- Grid shows no home power when the system has no home consumption meter (same as Home load).
+- Battery absence is only proven by a definitive inventory answer; a 404 on `/ivp/ensemble/power` alone leaves "battery present?" unknown (home power stays empty without a consumption meter).
+- New drivers keep credential checks in device/driver code (copied from legacy); move into a single `lib/` helper, and stop returning the JWT/password to pairing views.
+- New drivers' settings forms require email/password; check whether `poll_interval` can be saved alone.
+- Prune `apiInstances` when the last device of a serial is removed; socket reuse on the fast tier; limiter slot is released at response headers (body streams after).
+- Dead code: `notifyDeprecatedEnvoyDriver` wrapper and its setting/timeline key; pre-existing unused locale keys (`pair.start.discovery_badge`, `pair.start.warning_no_consumption`, `driver.envoy.status.*`).
+- `scanMdnsDirect` can return link-local (fe80) addresses.
+- Solar device (`drivers/solar/device.js`) edge cases:
+  - Repair when the device never registered, the new serial conflicts and validation fails: restore picks the new serial; self-heals at the 5-minute recheck.
+  - Restore after a rejected settings edit may run the DPEL write probe on a gateway that was already working.
+  - Role change while `unverified` can leave PEL capabilities missing until the next role/metered change.
+  - Only one 15 s quick retry; `destroyed`/flag init in `onInit` happens after the capability-add awaits; an unverified device shows no message.
+  - `user_email`/`password` app settings are not rolled back on a rejected repair.
+
 
 ## Proposed Features
 
@@ -16,18 +32,18 @@ Track bugs, features, improvements, ideas for Enphase Controller app.
   - *Documentation*: [Enphase Developer Portal Docs](https://developer-v4.enphase.com/docs.html)
   - *Benefits*: Backup method to toggle production, bypass local network issues, remain stable across local IQ Gateway firmware updates.
 
-- **Enphase IQ Battery Monitoring & Control**
+- **Enphase IQ Battery Control and Compatibility**
   - *Current knowledge (July 2026)*:
     - **Local monitoring is feasible**: The authenticated IQ Gateway endpoints `/ivp/ensemble/inventory`, `/ivp/ensemble/status`, and `/ivp/ensemble/power` expose aggregate and per-battery state of charge, charge/discharge power, temperature, communication state, operating state, and last-report time. Exact fields vary by battery generation and Gateway firmware.
     - **Cloud monitoring is available**: Enphase API v4 exposes device inventory, latest telemetry, site-level battery telemetry, battery lifetime data, and supported device-level battery telemetry. Cloud monitoring requires a separate OAuth 2.0 access token and API key; the local Gateway JWT used by this app is not sufficient.
     - **Local control is no longer dependable**: Starting with IQ Gateway firmware `8.2.4225`, local REST writes for storage mode, reserve state of charge, and charge-from-grid are rejected or ignored. Keep local tariff and battery-setting endpoints as research references only; do not build user-facing control around them.
     - **Official cloud control exists**: Enphase added `GET`/`PUT /api/v4/activations/{activation_id}/battery_mode` in 2025 for battery mode and charge/discharge settings. Availability depends on account role, API product/access controls, region, and system configuration. It requires OAuth/API-key infrastructure that this app does not currently have.
     - **Regional restrictions apply**: Charge-from-grid and some storage profiles may be unavailable because of local regulation, tariff, installer configuration, or missing IQ System Controller hardware.
-  - *Implementation plan*:
-    1. **Local read-only device**: Add an IQ Battery driver with aggregate state of charge, available/capacity energy, charge/discharge power, storage mode, reserve level, grid state, and health/communication status. Add per-battery devices only where stable identifiers and telemetry are available.
-    2. **Homey capabilities and Flows**: Add battery-low, charging, discharging, communication-loss, and grid-state triggers. Treat sign conventions and stale-report timestamps explicitly.
-    3. **Fixture-led compatibility**: Collect anonymized endpoint fixtures for IQ Battery 3/3T, 5P, and newer generations across European and North American systems before finalizing parsing.
-    4. **Cloud control investigation**: Prototype OAuth 2.0, activation lookup, API-plan requirements, licensing, and Homey App Store suitability before offering storage-mode, reserve, or grid-charge actions.
+  - *Shipped in 2.0*: A local, aggregate, read-only Battery device reports charge level, signed power, and charged/discharged energy. Energy totals fall back to estimates when gateway counters are unavailable. The Energy Flow widget also visualizes battery readings.
+  - *Remaining work*:
+    1. Collect anonymized fixtures for IQ Battery 3/3T, 5P, and newer generations across European and North American systems; confirm optional fields, freshness, and sign conventions.
+    2. Add battery Flow triggers/conditions only where Homey does not already provide equivalent cards.
+    3. Investigate cloud control, OAuth 2.0, activation lookup, API-plan requirements, licensing, and App Store suitability before offering storage-mode, reserve, or grid-charge actions.
   - *References*: [Enphase API release notes](https://developer-v4.enphase.com/docs/release_notes), [Enphase API FAQ](https://developer-v4.enphase.com/docs/faq), [Home Assistant Enphase firmware limitation](https://www.home-assistant.io/integrations/enphase_envoy/#no-battery-controls)
 
 - **Enphase IQ EV Charger Monitoring & Control**

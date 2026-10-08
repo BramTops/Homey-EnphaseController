@@ -1,389 +1,173 @@
-# Enphase Gateway API Protocols & Endpoint Specifications
+# Enphase Gateway API Protocols
 
-This document outlines the local (LAN) and cloud API protocols for the Enphase IQ Gateway (formerly Envoy) and Ensemble energy management system (IQ Batteries, IQ System Controllers, and microinverters).
+Local (LAN) and cloud API notes for the Enphase IQ Gateway (Envoy), Ensemble storage (IQ Battery, IQ System Controller) and microinverters.
 
----
+## Evidence labels
 
-## 1. Network & Connection Guidelines
+* **Established**: implemented in `lib/` and used by this app (1.5.x), or stated in Enphase's technical brief ("Accessing IQ Gateway Local APIs or Local UI with Token-Based Authentication", January 2023, gateway software 7.0.x and later; cited as "Enphase brief").
+* **Observed**: seen in a third-party source on one system; not independently confirmed. Main source: `nklerk/nl.nielsdeklerk.enphase` @ `728201bf` (MIT, 2026-08-29), one D8 firmware system, 3-phase, production CT plus net-consumption CT, two IQ Batteries ("nklerk").
+* **(unverified)**: carried over from earlier notes or secondary reading; no evidence in this repo or a pinned source. Do not build on it without a fixture.
 
-To ensure stable communications with the local gateway and prevent resource starvation, follow these connection policies:
-
-### Transport & Security
-*   **Protocol:** HTTPS on Port 443.
-*   **Certificates:** Local gateways use self-signed TLS certificates. Clients must bypass certificate validation (e.g., node `rejectUnauthorized: false`).
-*   **IP-Only Connections:** Connect using raw IPv4/IPv6 addresses directly. Do not use unstable local mDNS `.local` hostnames or custom DNS resolvers. IPv6 addresses must be wrapped in square brackets (e.g. `[fe80::1]`).
-
-### Socket Stewardship
-*   **Socket Reuse:** Use a global static HTTPS agent with HTTP Keep-Alive enabled to reuse TCP/TLS sockets.
-*   **Idle Timeout:** Configure a short socket idle timeout (e.g., `4000ms` / 4s). The gateway has limited resources and will experience socket starvation (refusing connections with timeouts) if idle connections are not recycled promptly.
-*   **Request Timeouts:** Use `30000ms` (30s) for `/production.json` (to absorb internal database compilation delays) and `15000ms` (15s) for all other endpoints.
+Firmware naming used below (D5.x, D7.x, D8.x) comes from earlier notes.
 
 ---
 
-## 2. Authentication Protocols
+## 1. Connection
 
-Modern gateway firmware versions (D7.x, D8.x, and newer) require JWT (JSON Web Token) authentication to access local LAN endpoints.
+* **Established:** HTTPS on port 443, self-signed certificate (certificate validation is disabled). Connect to a raw IP (IPv6 in square brackets); never `envoy.local` or other hostnames. mDNS names proved unreliable (not resolvable on Homey Pro, blocked on VLAN/mesh networks).
+* **Established:** one shared keep-alive agent with a 4 s idle socket timeout. The gateway has few concurrent connection slots; idle sockets starve other clients and cause timeouts. The exact slot count (earlier notes say 4 to 8) is (unverified).
+* **Established:** request timeouts 30 s for `/production.json`, 15 s for other endpoints (10 s for the cached `/ivp/meters` config read).
+* **Observed (earlier maintainer measurements):** `/production.json` takes 1.6 to 9.3 s to compile on the gateway. It is the expensive call; `/ivp/meters/readings` and `/ivp/ensemble/power` are lighter (nklerk polls both every 2 s).
+* **Data freshness is unresolved.** The Enphase brief says meter readings, per-inverter data and the consumption report update every 5 minutes. nklerk polls readings every 2 s and treats them as live. Prefer per-source timestamps (`readingTime`, `timestamp`, `lastReportDate`) over arrival time, and do not assume a 5-minute cadence for every endpoint.
+* **Observed (nklerk):** `GET /info.xml` is unauthenticated and contains the gateway serial as `<sn>...</sn>`. Not used by this app yet.
 
-```mermaid
-sequenceDiagram
-    participant User as Client/Homey
-    participant Cloud as Enphase Cloud
-    participant Gateway as IQ Gateway (Local)
-    
-    rect rgb(30, 40, 50)
-        Note over User, Cloud: Cloud Authentication Phase
-        User->>Cloud: POST /login/login.json (email, password)
-        Cloud-->>User: session_id
-        alt API Path
-            User->>Cloud: POST /tokens (session_id, serial_num, username)
-            Cloud-->>User: JWT Token
-        else Portal Scraping Path
-            User->>Cloud: Login / Entrez Portal & GET /entrez_tokens
-            Cloud-->>User: JWT Token (Extracted from textarea)
-        end
-    end
-    
-    rect rgb(40, 50, 60)
-        Note over User, Gateway: Local Session Phase
-        User->>Gateway: GET /auth/check_jwt (Authorization: Bearer <JWT>)
-        Gateway-->>User: set-cookie: session=<cookie_val>
-        User->>Gateway: GET /production.json (Cookie + Bearer Header)
-        Gateway-->>User: Telemetry JSON
-    end
+---
+
+## 2. Authentication
+
+Gateway software 7.0.x and later requires a JWT for local endpoints (Enphase brief). Legacy gateways with an LCD do not.
+
+### 2.1 Cloud JWT (established)
+
+**Path A: Enlighten JSON API** (also the Enphase brief's programmatic flow)
+1. `POST https://enlighten.enphaseenergy.com/login/login.json`, form fields `user[email]`, `user[password]` -> JSON with `session_id`.
+2. `POST https://entrez.enphaseenergy.com/tokens`, JSON `{ "session_id", "serial_num", "username" }` -> plain-text JWT.
+
+**Path B: Entrez portal scraping** (this app only; used when path A returns no installer/maintainer role; fragile because it parses HTML)
+1. `GET https://entrez.enphaseenergy.com/login_main_page` -> cookies and CSRF token (`name="_csrf"`).
+2. `POST https://entrez.enphaseenergy.com/login` (no redirect following), form `username`, `password`, `_csrf`, `authFlow=entrezSession`. Take updated cookies and CSRF token from the response.
+3. `GET https://entrez.enphaseenergy.com/entrez_tokens` -> map the serial to its `Site` name in the dropdown; fall back to the serial itself (the GET can fail with 500 on plain owner accounts).
+4. `POST https://entrez.enphaseenergy.com/entrez_tokens`, form `serialNum`, `Site`, `_csrf` -> JWT inside the `<textarea id="*JWT*">`.
+
+The app tries A first and keeps that token when it carries a maintainer/installer role; otherwise it also tries B and prefers B only if B yields the higher role. Role comes from the JWT payload (`enphaseUser` or `roles` equal to `installer`/`maintainer`).
+
+Other Enphase-documented ways to get a token: the web UI at `https://entrez.enphaseenergy.com`, or, when logged in to Enlighten, a browser GET of `https://enlighten.enphaseenergy.com/entrez-auth-token?serial_num=<serial>`, which returns the token and its expiry as an epoch timestamp (Enphase brief). Neither is used by the app.
+
+**Token lifetime (Enphase brief):** System Owner tokens are valid for 1 year; Installer tokens for 12 hours. An installer who is also a system owner (self-installer) gets a 12-hour token from the web UI; the programmatic flow above is the alternative. The app relies only on the JWT `exp` claim.
+
+### 2.2 Local session (established)
+1. `GET https://<ip>/auth/check_jwt` with `Authorization: Bearer <JWT>` -> HTTP 200 and a `set-cookie` session cookie.
+2. Send the Bearer header and the cached cookie on every local request. Cache the cookie: the gateway keeps few sessions, so re-running `check_jwt` per request evicts others.
+3. On HTTP 401: drop the cached cookie, repeat step 1, retry the request once.
+4. Never discard the JWT because of a local failure (401, 503, timeout). Only a cloud login rejection invalidates the credentials.
+
+nklerk sends only the Bearer header (no cookie) and reads work (observed). Whether writes work without the cookie is (unverified).
+
+---
+
+## 3. Solar and meter telemetry (local)
+
+### 3.1 `GET /ivp/meters` - CT configuration (established)
+```json
+[
+  { "eid": 704643328, "state": "enabled", "measurementType": "production",
+    "phaseMode": "split", "phaseCount": 2, "meteringStatus": "normal", "statusFlags": [] },
+  { "eid": 704643584, "state": "enabled", "measurementType": "net-consumption",
+    "phaseMode": "split", "phaseCount": 2, "meteringStatus": "normal", "statusFlags": [] }
+]
 ```
+* `state` `"enabled"` means the CT is active; `"disabled"` means installed but inactive.
+* `measurementType`: `production`, `net-consumption`, `total-consumption`, or generic `consumption` (older firmware, D5.x and earlier per earlier notes). A generic `consumption` CT is ambiguous between grid and home; it needs configuration evidence.
+* Production and consumption CTs can be enabled together. A storage CT may also be listed (storage meter with lifetime counters) (unverified; mentioned in the Enphase brief only as "storage" readings, hardware dependent).
+* The config can change when an installer enables/disables a CT, so it should be refreshed rather than cached forever.
 
-### Cloud JWT Acquisition (Dual-Path)
+### 3.2 `GET /ivp/meters/readings` - CT measurements (established)
+Array of meters matched by `eid`; each has `activePower` (W, signed), `actEnergyDlvd` / `actEnergyRcvd` (cumulative Wh), `voltage`, `current`, `freq`, `timestamp`, plus a `channels` array with the same fields per phase/line (Enphase brief sample).
+* `actEnergyDlvd` = delivered (import for the net-consumption meter); `actEnergyRcvd` = received (export for the net-consumption meter).
+* Net-consumption `activePower`: **+ import, - export**. Used by this app. nklerk also uses + = import but its own source comment says it was never verified against a clear import/export event, so treat the sign as plausible, not proven.
+* Production meter `activePower` can be slightly negative at night; clamp to 0.
 
-Clients must attempt to fetch a token using the cloud API path, falling back to or upgrading via the portal scraping path if installer-level access is required but not yielded by the API.
+### 3.3 `GET /production.json` - aggregate (established)
+```json
+{
+  "production":  [ { "type": "inverters", "activeCount": 12, "wNow": 3450, "whLifetime": 4567890, "readingTime": 1718467200 },
+                   { "type": "eim", "wNow": 3452, "whLifetime": 4568100, "readingTime": 1718467200 } ],
+  "consumption": [ { "type": "total-consumption", "wNow": 850, "whLifetime": 9876540, "readingTime": 1718467200 },
+                   { "type": "net-consumption", "wNow": -2600, "whLifetime": 5308440, "readingTime": 1718467200 } ],
+  "storage":     [ { "type": "acb", "wNow": 0, "whLifetime": 0, "percentFull": 0 } ]
+}
+```
+Units: `wNow` W, `whLifetime` Wh.
+* **Metered** (production CT): `production` has an `eim` entry; prefer it when enabled and `whLifetime > 0`. **Unmetered**: only the `inverters` entry (sum of reporting microinverters); `consumption` is absent, zero or a placeholder.
+* **Consumption CT modes:** *total-consumption* (CT on the load side; always >= 0, net grid = load - solar) and *net-consumption* (CT on the mains; + import, - export, load = net + solar).
+* **Firmware variations (handled by checking both `measurementType` and `type`):** older firmware names the consumption entries by `type` (`total-consumption`, `net-consumption`); D7.x/D8.x entries may all use `type: "eim"` and be told apart by `measurementType`.
+* `storage` here is the legacy AC Battery shape. For IQ Battery use `/ivp/ensemble/*` (section 5).
 
-#### Path A: Enphase Cloud JSON API
-1.  **Authentication Login:**
-    *   **Endpoint:** `POST https://enlighten.enphaseenergy.com/login/login.json`
-    *   **Payload (form-url-encoded):**
-        *   `user[email]`: Enphase Account Email
-        *   `user[password]`: Enphase Account Password
-    *   **Response:** JSON object containing `session_id`.
-2.  **Token Retrieval:**
-    *   **Endpoint:** `POST https://entrez.enphaseenergy.com/tokens`
-    *   **Headers:** `Content-Type: application/json`
-    *   **Payload:**
-        ```json
-        {
-          "session_id": "<session_id>",
-          "serial_num": "<gateway_serial>",
-          "username": "<email>"
-        }
-        ```
-    *   **Response:** Plain text containing the JWT.
+### 3.4 `GET /api/v1/production/inverters` - microinverters (established)
+```json
+[ { "serialNumber": "121935144671", "lastReportDate": 1654171836, "devType": 1, "lastReportWatts": 15, "maxReportWatts": 38 } ]
+```
+Per-inverter last report and maximum reported watts; `lastReportDate` is epoch seconds. Updates every 5 minutes (Enphase brief).
 
-#### Path B: Entrez Portal HTML Scraping
-Used to fetch tokens with elevated (Maintainer/Installer) privileges if the API path only returns System Owner-tier tokens.
-1.  **Initialize Session:**
-    *   `GET https://entrez.enphaseenergy.com/login_main_page`
-    *   Extract initial cookies and the CSRF token from the input field `name="_csrf"`.
-2.  **Submit Credentials:**
-    *   `POST https://entrez.enphaseenergy.com/login` (manual redirect handling).
-    *   **Payload (form-url-encoded):** `username`, `password`, `_csrf`, `authFlow=entrezSession`.
-    *   Extract updated cookies and the updated CSRF token from the response body.
-3.  **Retrieve Site Name & Token Form:**
-    *   `GET https://entrez.enphaseenergy.com/entrez_tokens`
-    *   Parse the dropdown list to map the Gateway Serial Number to the correct `Site` name. If not found, fall back to the serial number.
-4.  **Request JWT:**
-    *   `POST https://entrez.enphaseenergy.com/entrez_tokens`
-    *   **Payload (form-url-encoded):** `serialNum=<serial>`, `Site=<site_name>`, `_csrf=<csrf_token>`.
-    *   **Response:** Extract the JWT from the HTML element `<textarea id="*JWT*">`.
-
-### Local Gateway Session Authentication
-Verify the JWT and generate a session cookie for local calls.
-*   **Endpoint:** `GET https://<gateway_ip>/auth/check_jwt`
-*   **Headers:** `Authorization: Bearer <JWT>`
-*   **Response:** HTTP 200 OK. Contains a `set-cookie` header.
-*   **Usage:** Cache this session cookie and send it alongside the `Authorization: Bearer <JWT>` header in all subsequent local requests.
-*   **Session Expiry Handling:** Local session cookies expire periodically or are invalidated on Gateway restarts. If the Gateway returns HTTP 401:
-    1.  Clear the cached session cookie.
-    2.  Perform the `/auth/check_jwt` handshake again to obtain a new cookie.
-    3.  Retry the original request once.
+### 3.5 Other local endpoints in the Enphase brief (not used by the app)
+* `GET /ivp/livedata/status` - live meter data in **milliwatts**: `meters.soc`, `enc_agg_soc`, `enc_agg_energy`, `acb_agg_soc`, `backup_soc`, `main_relay_state`, `gen_relay_state`, and `pv` / `storage` / `grid` / `load` / `generator` blocks with `agg_p_mw`, `agg_s_mva` (and per-phase `_ph_a/b/c_`). In the brief's sample, `pv` 329549 and `load` 108749 give `storage.agg_p_mw` = -220800: storage **negative while charging, positive while discharging**, which matches the raw `/ivp/ensemble/power` sign below. Also returns MQTT/connection state and counters.
+* `GET /ivp/meters/reports/consumption` - active/reactive/apparent power and cumulative energy of the load circuits (`cumulative` plus per-line `lines`, `reportType` `net-consumption`). Updates every 5 minutes.
 
 ---
 
-## 3. Solar Telemetry APIs (Local)
+## 4. Production control (local)
 
-### Meter & CT Configuration Status
-To check if CT clamps are physically present and software-enabled on the Gateway:
-*   **Endpoint:** `GET https://<gateway_ip>/ivp/meters`
-*   **Response Format:**
-    ```json
-    [
-      {
-        "eid": 704643072,
-        "measurementType": "production",
-        "phaseMode": "split",
-        "phaseCount": 2,
-        "meteringStatus": "normal",
-        "statusFlags": [],
-        "state": "enabled"
-      },
-      {
-        "eid": 704643328,
-        "measurementType": "consumption",
-        "phaseMode": "split",
-        "phaseCount": 2,
-        "meteringStatus": "normal",
-        "statusFlags": [],
-        "state": "enabled"
-      }
-    ]
-    ```
-*   **Parsing Details:**
-    *   `state`: A value of `"enabled"` indicates that the CT measurements are active and configured. A value of `"disabled"` indicates that the meter/clamp is inactive.
-    *   `measurementType`: Identifies the target of the CT clamp. `"production"` represents the solar production CT. `"consumption"`, `"net-consumption"`, or `"total-consumption"` represents the home/mains consumption CT.
-    *   **Simultaneous Clamp Support:** The Gateway natively supports having clamps installed and enabled on **both** the solar array (Production CT) and the home mains (Consumption CT) at the same time for complete, high-resolution metering.
+### 4.1 Power toggle (established)
+* `GET` / `PUT https://<ip>/ivp/mod/603980032/mode/power`. GET returns `{ "powerForcedOff": false }`.
+* PUT, `Content-Type: application/x-www-form-urlencoded`, JSON-text body: force off `{"length":1,"arr":[1]}`, normal `{"length":1,"arr":[0]}`.
+* The app only reads or writes it with an installer/maintainer token.
+* **Hourly re-enable (observed by earlier maintainers; not Enphase-documented):** the gateway syncs with Enphase Cloud at the top of each hour and the cloud default (production enabled) overwrites the local forced-off state. Poll the state and re-apply when the target is OFF.
 
-### Detailed Meter Energy Readings (Import/Export Registers)
-To retrieve precise, cumulative imported (delivered) and exported (received) active energy from physical CT meters:
-*   **Endpoint:** `GET https://<gateway_ip>/ivp/meters/readings`
-*   **Response Format:**
-    ```json
-    [
-      {
-        "eid": 704643584,
-        "timestamp": 1718467200,
-        "actEnergyDlvd": 14069173.236,
-        "actEnergyRcvd": 693190.807,
-        "activePower": -65.589,
-        "voltage": 226.87,
-        "current": -1.853
-      }
-    ]
-    ```
-*   **Parsing Details:**
-    *   `eid`: Matches the meter's `eid` returned in `/ivp/meters`.
-    *   `actEnergyDlvd`: Cumulative Active Energy Delivered (Wh) - representing imported energy (energy consumed from the grid on the gridpower meter, or energy consumed by the home on the homepower meter).
-    *   `actEnergyRcvd`: Cumulative Active Energy Received (Wh) - representing exported energy (energy returned to the grid on the gridpower meter, or energy exported past the home clamp on the homepower meter).
-    *   `activePower`: Real-time net active power (W). Matches `wNow` from `production.json`.
-
-### System Production & Consumption
-Provides aggregate telemetry for production, grid export/import, and load consumption.
-*   **Endpoint:** `GET https://<gateway_ip>/production.json`
-*   **Response Format:**
-    ```json
-    {
-      "production": [
-        {
-          "type": "inverters",
-          "activeCount": 12,
-          "wNow": 3450,
-          "whLifetime": 4567890,
-          "readingTime": 1718467200
-        },
-        {
-          "type": "eim",
-          "wNow": 3452,
-          "whLifetime": 4568100,
-          "readingTime": 1718467200
-        }
-      ],
-      "consumption": [
-        {
-          "type": "total-consumption",
-          "wNow": 850,
-          "whLifetime": 9876540,
-          "readingTime": 1718467200
-        },
-        {
-          "type": "net-consumption",
-          "wNow": -2600,
-          "whLifetime": 5308440,
-          "readingTime": 1718467200
-        }
-      ],
-      "storage": [
-        {
-          "type": "acb",
-          "wNow": 0,
-          "whLifetime": 0,
-          "percentFull": 0
-        }
-      ]
-    }
-    ```
-*   **Parsing & CT Clamp Configurations:**
-    *   **Metered Systems (Envoy-S Metered / IQ Gateway Metered):**
-        *   Uses physical **Current Transformer (CT) Clamps** to capture current flow on mains and solar production conductors.
-        *   **Production CT:** Measures solar generation directly. In the JSON payload, this maps to `production` of type `"eim"` (Electrical Infrastructure Meter). If present and reporting a non-zero `whLifetime`, this is preferred over the `"inverters"` reading.
-        *   **Consumption CT:** Measures home load. Depending on how the CT clamps were physically installed, they must be configured in one of two modes:
-            1.  **Total Consumption (Load Only):** The CTs are physically placed on the main lines *before* or *separate from* the solar generation lines. They measure the pure house consumption directly. In this mode, the Envoy calculates the net grid flow mathematically: `Net Grid = Total Consumption - Solar Production`.
-            2.  **Net Consumption (Load with Solar):** The CTs are placed on the grid mains in a position where they capture the combined solar export and grid import. They measure the net flow to/from the grid. In this mode, the Envoy calculates the home load mathematically: `Total Consumption = Net Consumption + Solar Production`.
-        *   **JSON Fields mapping:**
-            *   Depending on the firmware version, elements inside the `consumption` array are either identified directly by `type` (e.g. `"type": "total-consumption"` / `"type": "net-consumption"`) or they all use `"type": "eim"` and are distinguished by the `measurementType` property (e.g. `"measurementType": "total-consumption"` / `"measurementType": "net-consumption"`).
-            *   `total-consumption` / `"total-consumption"`: The absolute power consumed by home loads (appliances, heating, etc.). This value is always positive.
-            *   `net-consumption` / `"net-consumption"`: The net power flow to/from the grid. A **positive** value indicates import from the grid; a **negative** value indicates export/surplus solar power injected into the grid.
-        *   **Firmware Variations & Naming Arrays**:
-            *   **Firmware D5.x and older**: Uses generic `"consumption"` in `/ivp/meters` endpoint to identify physical mains CT clamps. In `production.json`, keys `"total-consumption"` and `"net-consumption"` are accessed via the elements' `type` property.
-            *   **Firmware D7.x, D8.x and newer**: Differentiates between `"net-consumption"` and `"total-consumption"` in `/ivp/meters` if configured explicitly. In `production.json`, elements inside `consumption` use generic `"type": "eim"` and use `measurementType` property to distinguish them.
-            *   **Internal Mapping Arrays**:
-                *   `GRIDPOWER_METER_TYPES`: `['net-consumption', 'consumption']`
-                *   `HOMEPOWER_METER_TYPES`: `['total-consumption', 'consumption']`
-    *   **Non-Metered Systems:**
-        *   Has no CT clamps installed.
-        *   Reports solar production only, by aggregating reported telemetry from all active microinverters.
-        *   In the JSON payload, fall back to `production` of type `"inverters"`.
-        *   The `consumption` array will either be absent, show zero values, or show static placeholders.
-    *   **Units:** `wNow` is in Watts (W); `whLifetime` is in Watt-hours (Wh).
-
-### Microinverter Telemetry
-Returns granular telemetry for individual microinverters.
-*   **Endpoint:** `GET https://<gateway_ip>/api/v1/production/inverters`
-*   **Response Format:**
-    ```json
-    [
-      {
-        "serialNumber": "122345678901",
-        "lastReportWatts": 280,
-        "lastReportDate": 1718467210,
-        "devType": 1
-      },
-      {
-        "serialNumber": "122345678902",
-        "lastReportWatts": 275,
-        "lastReportDate": 1718467208,
-        "devType": 1
-      }
-    ]
-    ```
+### 4.2 Dynamic production/export limit, DPEL (established, undocumented by Enphase)
+* `GET` / `POST https://<ip>/ivp/ss/dpel`. Requires an installer/maintainer token and a metered gateway; not functional on unmetered systems.
+* POST JSON body: `{ "dynamic_pel_settings": { "enable", "export_limit", "limit_value_W", "slew_rate", "enable_dynamic_limiting": false }, "filename": "site_settings", "version": "00.00.01" }`. `export_limit` true limits net grid export; false limits absolute solar production. `limit_value_W` and `slew_rate` are sent as decimal numbers.
+* The app uses a 0 W production limit as "off" on metered gateways instead of `powerForcedOff`. The reason (forced-off also opens the production contactor and is believed to cut battery/contactor communications) is an earlier maintainer finding, (unverified).
+* Stability on firmware 7.x/8.x is (unverified); the app test-writes DPEL at pairing and restores the previous values.
+* `/ivp/ss/der_settings` and `/ivp/ss/pcs_settings` (grid-profile limits) are listed in earlier notes but never called by the app: (unverified).
 
 ---
 
-## 4. Power Control & Production Limitation
+## 5. Storage: IQ Battery and Ensemble (local read)
 
-### Production Enable / Disable (Power Toggle)
-Completely shuts off or re-enables solar power generation.
-*   **Endpoint:** `GET` / `PUT` `https://<gateway_ip>/ivp/mod/603980032/mode/power`
-*   **GET Response:**
-    ```json
-    {
-      "powerForcedOff": false
-    }
-    ```
-*   **PUT Request (to change state):**
-    *   **Headers:** `Content-Type: application/x-www-form-urlencoded`
-    *   **Payload (JSON-encoded body):**
-        *   Disable Production (Forced Off): `{"length":1,"arr":[1]}`
-        *   Enable Production (Normal): `{"length":1,"arr":[0]}`
-*   **Hourly Re-enable Behavior:** The IQ Gateway syncs with Enphase Cloud hourly, which overrides local changes and automatically re-enables production if it was forced off. Integrations must poll the state and re-apply the forced off command if the target state is OFF.
+Source for the two endpoints below: **observed in nklerk/nl.nielsdeklerk.enphase @728201bf on one D8 system** (two batteries, one IQ System Controller). Field lists are what that source reads or what its fixtures contain; other batteries, generations and firmware may differ.
 
-### Dynamic Power Export Limiting (DPEL)
-Configures export wattage limits dynamically (undocumented and unstable on firmware 7.x/8.x).
-*   **Endpoints:**
-    *   `https://<gateway_ip>/ivp/ss/dpel`
-    *   `https://<gateway_ip>/ivp/ss/der_settings`
-    *   `https://<gateway_ip>/ivp/ss/pcs_settings` (Power Control System grid profile limits)
+### 5.1 `GET /ivp/ensemble/power` - live battery power (observed)
+* Per-device list under the key `devices`, or the literal key **`devices:`** (with the colon) on the observed firmware. Handle both.
+* Fixture keys per device: `serial_num`, `real_power_mw`, `apparent_power_mva`, `soc` (percent).
+* **Unit:** `real_power_mw` is **milliwatts** (`-469000` = -469 W). Divide by 1000 for W.
+* **Sign (raw): positive = discharging, negative = charging.** Confirmed by nklerk against the Enlighten live view once (raw -842 W = "charging 0.9 kW"); consistent with the Enphase brief's `livedata` sample (section 3.5).
+* Not established: a watts-only field for older firmware. nklerk falls back to `realPower` and assumes watts (a guess, no real fixture). Earlier notes also list `real_power_w` under the *inventory* endpoint with the same sign, but no source shows it: (unverified).
+* Aggregation: nklerk sums power over devices and averages `soc` unweighted. No per-battery capacity is read from this endpoint.
 
----
+### 5.2 `GET /ivp/ensemble/inventory` - device inventory (observed)
+Array of groups `{ "type": "...", "devices": [...] }`.
+* `type: "ENCHARGE"` (IQ Battery) devices: `serial_num`, `percentFull` (state of charge, percent), `reported_enc_grid_state` (seen: `grid-tied`).
+* `type: "ENPOWER"` (IQ System Controller) devices: `mains_oper_state` (seen: `closed`; `open` means off-grid), `Enpwr_grid_mode` (seen: `multimode-ongrid`).
+* nklerk derives grid-tie status from ENPOWER first, then ENCHARGE; the off-grid values it tests for (`open`, `off-grid`/`island`) were not seen live.
+* **`percentFull` vs `soc` disagree in nklerk's own fixtures** (power `soc` 58 / 55 vs inventory `percentFull` 41 / 38 for the same two serials). Either they were captured at different times or the sources differ. Which is authoritative is unproven; do not mix them inside one aggregate.
+* `part_num` (battery model, e.g. `830-00001-r01`; wanted to tell battery models apart) and `encharge_capacity` (per-unit capacity): not read by nklerk; (unverified on our hardware; used by pyenphase). Handle them as optional until a real fixture confirms them.
+* Other fields from earlier notes, not read by nklerk (unverified): `installed`, `temperature`, `operating`, `communicating`, `device_status`, `last_rpt_date`.
 
-## 5. Storage (IQ Batteries & Ensemble) APIs
+### 5.3 Other storage endpoints (all unverified: listed in earlier notes, never called by the app)
+* `GET /ivp/ensemble/status` - aggregate state: `agg_soc`, operating and grid state.
+* `GET` / `POST /ivp/ensemble/dry_contacts` and `/ivp/ss/dry_contact_settings` - relays on the System Controller.
+* `GET` / `PUT /admin/lib/tariff.json` - storage `mode` (`self-consumption`, `savings`, `backup`), `charge_from_grid`, `reserve_soc`.
+* `GET` / `PUT` / `DELETE /admin/lib/acb_config.json` - legacy AC Battery (ACB) sleep/config.
 
-Storage configurations belong to the Ensemble architecture. Telemetry is available locally via the Gateway, while profile modifications require either cloud control or local tariff/AC Battery write endpoints.
-
-### Battery Inventory & Individual Telemetry
-Obtain lists of storage devices and battery management system (BMS) details.
-*   **Endpoint:** `GET https://<gateway_ip>/ivp/ensemble/inventory`
-*   **Response Format:**
-    ```json
-    [
-      {
-        "type": "ENCHARGE",
-        "devices": [
-          {
-            "serial_num": "122398765432",
-            "part_num": "830-00001-r01",
-            "installed": 1609459200,
-            "percentFull": 85,
-            "temperature": 24,
-            "operating": true,
-            "communicating": true,
-            "real_power_w": -450,
-            "device_status": [
-              "envoy.global.ok",
-              "prop.done"
-            ],
-            "last_rpt_date": 1718467200
-          }
-        ]
-      },
-      {
-        "type": "ENPOWER",
-        "devices": [
-          {
-            "serial_num": "122376543210",
-            "operating": true,
-            "communicating": true,
-            "device_status": ["envoy.global.ok"]
-          }
-        ]
-      }
-    ]
-    ```
-*   **BMS Diagnostics:** `real_power_w` reports positive values during battery discharge (exporting energy) and negative values during charging (importing energy). `percentFull` corresponds to state of charge (SoC %).
-
-### Energy System Power Flow
-Alternative endpoint to query BMS-level power readings bypassing CT current measurements.
-*   **Endpoint:** `GET https://<gateway_ip>/ivp/ensemble/power`
-
-### Overall Energy System Status
-Provides high-level micrgrid status and battery metrics.
-*   **Endpoint:** `GET https://<gateway_ip>/ivp/ensemble/status`
-*   **Key Fields:** Includes aggregated state of charge (`agg_soc`), battery operation status, and grid connection status.
-
-### Relays & Dry Contact Control
-Control external relay switches connected to the Enphase System Controller.
-*   **Endpoint:** `GET` / `POST` `https://<gateway_ip>/ivp/ensemble/dry_contacts`
-*   **Endpoint Settings:** `https://<gateway_ip>/ivp/ss/dry_contact_settings`
-
-### Local Battery Storage Configuration (Tariff & Profiles)
-Configure storage behaviour and charge scheduling locally.
-*   **Endpoint:** `GET` / `PUT` `https://<gateway_ip>/admin/lib/tariff.json`
-*   **Key Storage Configurations:**
-    *   `mode`: `"self-consumption"`, `"savings"` (Time-of-Use), or `"backup"` (Full Backup).
-    *   `charge_from_grid`: `true` / `false`
-    *   `reserve_soc`: Minimum SoC percentage preserved for backup during normal operation (0-100).
-*   **Firmware Note:** On v8.2.42+ firmware, local PUT modifications to this file may be rejected or ignored. Cloud API v4 must be used as the primary alternative.
-
-### Legacy AC Battery (ACB) Sleep & Configuration
-*   **Endpoint:** `GET` / `PUT` / `DELETE` `https://<gateway_ip>/admin/lib/acb_config.json`
-*   Used to override sleep modes and configure legacy AC Batteries.
+### 5.4 Firmware limit on local battery writes
+From IQ Gateway firmware 8.2.4225, local writes for storage mode, reserve SoC and charge-from-grid are rejected or ignored (BACKLOG research, July 2026, citing Home Assistant's `enphase_envoy` documentation). Treat local tariff/battery-setting endpoints as research references only; control goes through the cloud API (section 7).
 
 ---
 
-## 6. Smart Chargers (IQ EV Charger)
+## 6. IQ EV Charger
 
-### Local Specifications
-*   **Local REST API:** The local IQ Gateway does not expose EV Charger status or control variables over REST.
-*   **Modbus/TCP & OCPP:** IQ EV Chargers can be configured to support OCPP 1.6 or Modbus/TCP interfaces for direct LAN control by compatible Energy Management Systems (EMS).
-
-### Cloud Control (Enlighten Cloud API v4)
-*   **Base URL:** `https://api.enphaseenergy.com/api/v4`
-*   **Rate Limits:** Standard developer plans restrict API throughput.
-*   **Endpoints:**
-    *   `GET /api/v4/activations/{activation_id}/ev_charger/status`
-    *   `PUT /api/v4/activations/{activation_id}/ev_charger/control` (to pause/resume charging sessions or set charging current limits).
+Summary of the July 2026 research recorded in `BACKLOG.md`; none of it is verified against a real charger.
+* **No local gateway REST API** for EV charger status or control is established. Do not assume it appears under `/ivp/ensemble/*`.
+* **Cloud monitoring (Enphase API v4):** `GET /api/v4/systems/{system_id}/devices`, `GET /api/v4/systems/{system_id}/latest_telemetry`, `GET /api/v4/systems/{system_id}/{serial_no}/evse_telemetry` and `.../evse_lifetime`. Included in the Watt developer plan, subject to rate limits.
+* **Control is partner-restricted** (EV Charger Control / VPP control are not a general homeowner API).
+* **IQ EV Charger 2:** OCPP 1.6J/2.0.1 and local Modbus/TCP exist but need Enphase partner onboarding, owner authorization and charger configuration.
+* Earlier notes listed `activations/{activation_id}/ev_charger/status|control` endpoints; no source supports them and BACKLOG does not repeat them. Disproven/unsupported, dropped.
 
 ---
 
-## 7. Enphase Cloud API v4 (Official Control API)
+## 7. Enphase Cloud API v4
 
-For operations that are restricted locally on newer firmware (such as modifying storage profiles or toggling battery charging), developers must fallback to the official Cloud API v4.
-
-*   **Auth Token Requirement:** Cloud API calls require an API key and OAuth 2.0 user credentials.
-*   **Plan Levels:** Read operations are supported on the Watt plan. Write/control operations (like changing battery profiles) require Kilowatt or Megawatt plans.
-
-### Battery Storage Profile Control
-*   **Endpoint:** `PUT https://api.enphaseenergy.com/api/v4/activations/{activation_id}/battery_mode`
-*   **Payload Format:**
-    ```json
-    {
-      "battery_mode": "self-consumption",
-      "reserve_soc": 20
-    }
-    ```
-    *(Allowed `battery_mode` values: `self-consumption`, `savings`, `backup`)*
+Separate from the gateway JWT: needs an API key and OAuth 2.0 user authorization. Base URL `https://api.enphaseenergy.com/api/v4`.
+* Monitoring: device inventory, latest and lifetime telemetry, site-level battery telemetry.
+* Battery mode: `GET` / `PUT /api/v4/activations/{activation_id}/battery_mode` (added 2025). Earlier notes show a body `{ "battery_mode": "self-consumption" | "savings" | "backup", "reserve_soc": 20 }`; the exact schema is (unverified).
+* Availability of reads and writes depends on the developer plan (earlier notes: reads on the Watt plan, writes on higher plans: unverified), account role, region and system configuration. Charge-from-grid and some profiles may be blocked by regulation, tariff or missing System Controller hardware.
