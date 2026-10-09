@@ -1,7 +1,7 @@
 {
   "2.0.0": {
-    "en": "Adds read-only battery monitoring. \nShows grid and home readings. \nAdds animated energy flow widget. \nRequires a new device for widget. \nRemove old solar before pairing. \nRebuild Flows; history may be lost. \nAvoid duplicate grid energy totals.",
-    "nl": "Voegt alleen-lezen batterijbewaking toe. \nToont net- en huisverbruik. \nVoegt een geanimeerde energiestroomwidget toe. \nWidget vereist een nieuw apparaat. \nVerwijder oude solar voor koppelen. \nBouw Flows opnieuw; historie kan verdwijnen. \nVoorkom dubbele energietotalen van net."
+    "en": "This release reworks several internal systems for more reliability and future updates. Unfortunately some devices will have to be re-added. \nAdds Enphase battery monitoring. \nAdds animated energy flow widget (only for metered systems). \nHomey alarm support for inverter problems. \nAdds deprecation notices to timeline for older drivers.",
+    "nl": "Deze release herstructureert verschillende interne systemen voor meer betrouwbaarheid en toekomstige updates. Helaas moeten sommige apparaten opnieuw worden toegevoegd. \nVoegt Enphase-batterijbewaking toe. \nVoegt een geanimeerde energiestroomwidget toe (alleen voor gemeten systemen). \nOndersteuning voor Homey-alarm bij omvormerproblemen. \nVoegt verouderingsmeldingen toe aan de tijdlijn voor oudere drivers."
   },
   "1.0.0": {
     "en": "Initial app release.",
