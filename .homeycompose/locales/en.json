@@ -182,15 +182,15 @@
       "warning_no_gridpower": "Grid power monitoring (net-consumption) is not active or clamps are not installed on this gateway. Homey will not be able to track main grid import/export."
     },
     "error": {
-      "legacy_solar_conflict": "An older Enphase Envoy or Solar device already exists for this gateway. Rebuild your Flows with the new Enphase Solar device, remove the old device first, and then pair again."
+      "legacy_solar_conflict": "An older Enphase Envoy or Solar device already exists for this gateway. Remove the old device first, pair again, and then rebuild your Flows with the new Enphase Solar device."
     },
     "migration": {
       "blocked_title": "Older Enphase device found",
       "blocked_body": "An older Enphase Envoy or Solar device already exists for this gateway. Only one solar device per gateway is supported.",
       "step_save": "1. Save your settings below (optional, saves retyping your account).",
-      "step_flows": "2. Rebuild your Flows with the new Enphase Solar device.",
-      "step_remove": "3. Remove the old device in Homey.",
-      "step_pair": "4. Start pairing Enphase Solar again.",
+      "step_remove": "2. Remove the old device in Homey.",
+      "step_pair": "3. Start pairing Enphase Solar again.",
+      "step_flows": "4. Rebuild your Flows with the new Enphase Solar device.",
       "btn_save": "Save settings for migration",
       "btn_discard": "Discard saved settings",
       "status_saved": "Settings saved. They are reused when you pair Enphase Solar after removing the old device.",

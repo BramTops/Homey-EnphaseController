@@ -8,3 +8,4 @@ plan/
 node_modules/
 .homeybuild/
 env.json
+test/

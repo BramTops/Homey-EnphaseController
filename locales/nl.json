@@ -175,15 +175,15 @@
       "warning_battery_unknown": "Batterijdetectie is mislukt, dus het is onbekend of er een batterij is geïnstalleerd. Je kunt het apparaat toch toevoegen."
     },
     "error": {
-      "legacy_solar_conflict": "Er bestaat al een ouder Enphase Envoy- of Solar-apparaat voor deze gateway. Bouw je Flows opnieuw op met het nieuwe Enphase Solar-apparaat, verwijder eerst het oude apparaat en koppel daarna opnieuw."
+      "legacy_solar_conflict": "Er bestaat al een ouder Enphase Envoy- of Solar-apparaat voor deze gateway. Verwijder eerst het oude apparaat, koppel daarna opnieuw en bouw dan je Flows opnieuw op met het nieuwe Enphase Solar-apparaat."
     },
     "migration": {
       "blocked_title": "Ouder Enphase-apparaat gevonden",
       "blocked_body": "Er bestaat al een ouder Enphase Envoy- of Solar-apparaat voor deze gateway. Per gateway wordt maar één solar-apparaat ondersteund.",
       "step_save": "1. Bewaar hieronder je instellingen (optioneel, scheelt opnieuw invoeren van je account).",
-      "step_flows": "2. Bouw je Flows opnieuw op met het nieuwe Enphase Solar-apparaat.",
-      "step_remove": "3. Verwijder het oude apparaat in Homey.",
-      "step_pair": "4. Start het koppelen van Enphase Solar opnieuw.",
+      "step_flows": "4. Bouw je Flows opnieuw op met het nieuwe Enphase Solar-apparaat.",
+      "step_remove": "2. Verwijder het oude apparaat in Homey.",
+      "step_pair": "3. Start het koppelen van Enphase Solar opnieuw.",
       "btn_save": "Instellingen bewaren voor migratie",
       "btn_discard": "Bewaarde instellingen verwijderen",
       "status_saved": "Instellingen bewaard. Ze worden hergebruikt als je Enphase Solar koppelt nadat het oude apparaat is verwijderd.",

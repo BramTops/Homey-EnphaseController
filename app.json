@@ -414,7 +414,8 @@
       },
       "images": {
         "small": "/drivers/battery/assets/images/small.png",
-        "large": "/drivers/battery/assets/images/large.png"
+        "large": "/drivers/battery/assets/images/large.png",
+        "xlarge": "/drivers/battery/assets/images/xlarge.png"
       },
       "class": "battery",
       "discovery": "enphase-envoy",
