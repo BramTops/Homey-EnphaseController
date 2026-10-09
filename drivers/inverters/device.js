@@ -58,6 +58,31 @@ class InvertersDevice extends Homey.Device {
           this.error(`Failed to set options for ${statusCap}:`, err.message);
         });
       }
+
+      // 3. alarm_inverter.<serial> (on whenever inverter_status is anything other than OK). Custom alarm_ capability
+      // with uiComponent null: hidden from the device panel, but still counted by the "Any Alarm" status indicator.
+      // Drop the alarm_generic.<serial> capabilities an earlier build added to the panel.
+      const legacyAlarmCap = `alarm_generic.${serial}`;
+      if (this.hasCapability(legacyAlarmCap)) {
+        await this.removeCapability(legacyAlarmCap).catch((err) => {
+          this.error(`Failed to remove capability ${legacyAlarmCap}:`, err.message);
+        });
+      }
+      const alarmCap = `alarm_inverter.${serial}`;
+      if (!this.hasCapability(alarmCap)) {
+        this.log(`Dynamically adding capability: ${alarmCap} (Inverter ${idx})`);
+        await this.addCapability(alarmCap).catch((err) => {
+          this.error(`Failed to add capability ${alarmCap}:`, err.message);
+        });
+        await this.setCapabilityOptions(alarmCap, {
+          title: {
+            en: `Inverter ${idx} Alarm`,
+            nl: `Omvormer ${idx} Alarm`,
+          },
+        }).catch((err) => {
+          this.error(`Failed to set options for ${alarmCap}:`, err.message);
+        });
+      }
     }
 
     // Load active alerts state
@@ -146,7 +171,7 @@ class InvertersDevice extends Homey.Device {
       });
       // Set status of all dynamically registered panels to Error
       for (const s of serials) {
-        await this.setCapabilityValue(`inverter_status.${s}`, 'Error').catch(this.error);
+        await this.setInverterStatus(s, 'Error');
       }
       return false;
     }
@@ -486,7 +511,7 @@ class InvertersDevice extends Homey.Device {
 
     const serials = this.getStoreValue('inverters') || [];
     for (const serial of serials) {
-      await this.setCapabilityValue(`inverter_status.${serial}`, 'OK').catch(this.error);
+      await this.setInverterStatus(serial, 'OK');
     }
   }
 
@@ -519,10 +544,20 @@ class InvertersDevice extends Homey.Device {
       } else if (types.includes('underperformance')) {
         statusText = 'Underperforming';
       }
-      await this.setCapabilityValue(`inverter_status.${serial}`, statusText).catch(this.error);
+      await this.setInverterStatus(serial, statusText);
     } else {
-      await this.setCapabilityValue(`inverter_status.${serial}`, 'OK').catch(this.error);
+      await this.setInverterStatus(serial, 'OK');
     }
+  }
+
+  /**
+   * Set the status text of an inverter and its alarm flag (on whenever the status is not OK).
+   * @param {string} serial - Inverter serial number
+   * @param {string} statusText - OK, Error, Offline or Underperforming
+   */
+  async setInverterStatus(serial, statusText) {
+    await this.setCapabilityValue(`inverter_status.${serial}`, statusText).catch(this.error);
+    await this.setCapabilityValue(`alarm_inverter.${serial}`, statusText !== 'OK').catch(this.error);
   }
 
   /**

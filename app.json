@@ -1669,6 +1669,17 @@
     }
   },
   "capabilities": {
+    "alarm_inverter": {
+      "type": "boolean",
+      "title": {
+        "en": "Inverter Alarm",
+        "nl": "Omvormer-alarm"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": null,
+      "icon": "/assets/inverter.svg"
+    },
     "connected_inverters": {
       "type": "number",
       "title": {
