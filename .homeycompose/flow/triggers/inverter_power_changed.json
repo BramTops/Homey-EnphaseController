@@ -1,15 +1,21 @@
 {
   "title": {
     "en": "Inverter power changed",
-    "nl": "Vermogen van omvormer gewijzigd"
+    "nl": "Vermogen van omvormer gewijzigd",
+    "fr": "Puissance de l'onduleur modifiée",
+    "de": "Leistung des Wechselrichters geändert"
   },
   "titleFormatted": {
     "en": "Inverter [[inverter_index]] power output changed",
-    "nl": "Vermogen van omvormer [[inverter_index]] gewijzigd"
+    "nl": "Vermogen van omvormer [[inverter_index]] gewijzigd",
+    "fr": "La puissance de sortie de l'onduleur [[inverter_index]] a changé",
+    "de": "Leistungsabgabe von Wechselrichter [[inverter_index]] hat sich geändert"
   },
   "description": {
     "en": "Fired when an inverter reports a change in power output.",
-    "nl": "Wordt geactiveerd wanneer een omvormer een wijziging in vermogen rapporteert."
+    "nl": "Wordt geactiveerd wanneer een omvormer een wijziging in vermogen rapporteert.",
+    "fr": "Déclenché lorsqu'un onduleur signale une variation de sa puissance de sortie.",
+    "de": "Wird ausgelöst, wenn ein Wechselrichter eine Änderung der Leistungsabgabe meldet."
   },
   "args": [
     {
@@ -22,7 +28,9 @@
       "type": "autocomplete",
       "title": {
         "en": "Select Inverter",
-        "nl": "Selecteer omvormer"
+        "nl": "Selecteer omvormer",
+        "fr": "Sélectionner l'onduleur",
+        "de": "Wechselrichter auswählen"
       }
     }
   ],
@@ -32,7 +40,9 @@
       "type": "string",
       "title": {
         "en": "Inverter Serial",
-        "nl": "Serienummer omvormer"
+        "nl": "Serienummer omvormer",
+        "fr": "Numéro de série de l'onduleur",
+        "de": "Seriennummer des Wechselrichters"
       }
     },
     {
@@ -40,7 +50,9 @@
       "type": "number",
       "title": {
         "en": "Inverter Index",
-        "nl": "Index omvormer"
+        "nl": "Index omvormer",
+        "fr": "Index de l'onduleur",
+        "de": "Index des Wechselrichters"
       }
     },
     {
@@ -48,7 +60,9 @@
       "type": "number",
       "title": {
         "en": "Power (W)",
-        "nl": "Vermogen (W)"
+        "nl": "Vermogen (W)",
+        "fr": "Puissance (W)",
+        "de": "Leistung (W)"
       }
     }
   ]

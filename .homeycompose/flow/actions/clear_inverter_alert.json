@@ -1,15 +1,21 @@
 {
   "title": {
     "en": "Clear active alert for inverter",
-    "nl": "Wis actief alarm voor omvormer"
+    "nl": "Wis actief alarm voor omvormer",
+    "fr": "Effacer l'alerte active d'un onduleur",
+    "de": "Aktiven Alarm eines Wechselrichters löschen"
   },
   "titleFormatted": {
     "en": "Clear active alert for inverter [[inverter_index]]",
-    "nl": "Wis actief alarm voor omvormer [[inverter_index]]"
+    "nl": "Wis actief alarm voor omvormer [[inverter_index]]",
+    "fr": "Effacer l'alerte active de l'onduleur [[inverter_index]]",
+    "de": "Aktiven Alarm von Wechselrichter [[inverter_index]] löschen"
   },
   "description": {
     "en": "Resets the alert state for a specific inverter.",
-    "nl": "Reset de alarmstatus voor een specifieke omvormer."
+    "nl": "Reset de alarmstatus voor een specifieke omvormer.",
+    "fr": "Réinitialise l'état d'alerte d'un onduleur spécifique.",
+    "de": "Setzt den Alarmstatus für einen bestimmten Wechselrichter zurück."
   },
   "args": [
     {
@@ -22,7 +28,9 @@
       "type": "autocomplete",
       "title": {
         "en": "Select Inverter",
-        "nl": "Selecteer omvormer"
+        "nl": "Selecteer omvormer",
+        "fr": "Sélectionner l'onduleur",
+        "de": "Wechselrichter auswählen"
       }
     }
   ]

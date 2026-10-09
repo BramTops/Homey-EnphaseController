@@ -2,11 +2,15 @@
   "type": "number",
   "title": {
     "en": "Energy today",
-    "nl": "Energie vandaag"
+    "nl": "Energie vandaag",
+    "fr": "Énergie aujourd'hui",
+    "de": "Energie heute"
   },
   "description": {
     "en": "Energy produced today.",
-    "nl": "Geproduceerde energie vandaag."
+    "nl": "Geproduceerde energie vandaag.",
+    "fr": "Énergie produite aujourd'hui.",
+    "de": "Heute erzeugte Energie."
   },
   "getable": true,
   "setable": false,

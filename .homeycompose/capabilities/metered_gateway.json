@@ -2,11 +2,15 @@
   "type": "boolean",
   "title": {
     "en": "Metered gateway",
-    "nl": "Metered gateway"
+    "nl": "Metered gateway",
+    "fr": "Passerelle mesurée",
+    "de": "Gateway mit Messung"
   },
   "description": {
     "en": "Metered gateways respond much faster to on/off commands, and allow for power export limiting. Determined by the presence of active CT-clamps.",
-    "nl": "Metered gateways reageren veel sneller op aan/uit commando’s, en laten exportbegrenzing toe. Dit word bepaald door de aanwezigheid van actieve CT-klemmen."
+    "nl": "Metered gateways reageren veel sneller op aan/uit commando’s, en laten exportbegrenzing toe. Dit word bepaald door de aanwezigheid van actieve CT-klemmen.",
+    "fr": "Les passerelles mesurées réagissent beaucoup plus vite aux commandes marche/arrêt et permettent de limiter l'export d'énergie. Déterminé par la présence de pinces CT actives.",
+    "de": "Gateways mit Messung reagieren deutlich schneller auf Ein-/Aus-Befehle und ermöglichen die Begrenzung der Einspeisung. Wird durch das Vorhandensein aktiver Stromwandler bestimmt."
   },
   "getable": true,
   "setable": false,

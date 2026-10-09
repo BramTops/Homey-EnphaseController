@@ -1,7 +1,9 @@
 {
   "name": {
     "en": "Enphase Grid",
-    "nl": "Enphase Grid"
+    "nl": "Enphase Grid",
+    "fr": "Enphase Grid",
+    "de": "Enphase Grid"
   },
   "images": {
     "small": "/drivers/grid/assets/images/small.png",
@@ -26,61 +28,81 @@
     "measure_power": {
       "title": {
         "en": "Grid power",
-        "nl": "Netstroom vermogen"
+        "nl": "Netstroom vermogen",
+        "fr": "Puissance réseau",
+        "de": "Netzleistung"
       }
     },
     "meter_power": {
       "title": {
         "en": "Grid energy imported",
-        "nl": "Netstroom energie geïmporteerd"
+        "nl": "Netstroom energie geïmporteerd",
+        "fr": "Énergie réseau importée",
+        "de": "Netzbezug (Energie)"
       }
     },
     "meter_power_today": {
       "title": {
         "en": "Grid energy imported today",
-        "nl": "Netstroom energie geïmporteerd vandaag"
+        "nl": "Netstroom energie geïmporteerd vandaag",
+        "fr": "Énergie réseau importée aujourd'hui",
+        "de": "Netzbezug heute"
       }
     },
     "meter_power.produced": {
       "title": {
         "en": "Grid energy exported",
-        "nl": "Netstroom energie geëxporteerd"
+        "nl": "Netstroom energie geëxporteerd",
+        "fr": "Énergie réseau exportée",
+        "de": "Netzeinspeisung (Energie)"
       }
     },
     "meter_power_today.produced": {
       "title": {
         "en": "Grid energy exported today",
-        "nl": "Netstroom energie geëxporteerd vandaag"
+        "nl": "Netstroom energie geëxporteerd vandaag",
+        "fr": "Énergie réseau exportée aujourd'hui",
+        "de": "Netzeinspeisung heute"
       }
     },
     "measure_power.home": {
       "title": {
         "en": "Home consumption power",
-        "nl": "Huisverbruik vermogen"
+        "nl": "Huisverbruik vermogen",
+        "fr": "Puissance de consommation domestique",
+        "de": "Leistung Hausverbrauch"
       }
     },
     "meter_power.home": {
       "title": {
         "en": "Home consumption energy",
-        "nl": "Huisverbruik energie"
+        "nl": "Huisverbruik energie",
+        "fr": "Énergie de consommation domestique",
+        "de": "Energie Hausverbrauch"
       }
     },
     "meter_power_today.home": {
       "title": {
         "en": "Home consumption energy today",
-        "nl": "Huisverbruik energie vandaag"
+        "nl": "Huisverbruik energie vandaag",
+        "fr": "Énergie de consommation domestique aujourd'hui",
+        "de": "Energie Hausverbrauch heute"
       }
     },
     "meter_power.home_produced": {
       "title": {
         "en": "Home energy exported",
-        "nl": "Huisenergie geëxporteerd"
+        "nl": "Huisenergie geëxporteerd",
+        "fr": "Énergie domestique exportée",
+        "de": "Energie Haus eingespeist"
       }
     },
     "meter_power_today.home_produced": {
       "title": {
         "en": "Home energy exported today",
-        "nl": "Huisenergie geëxporteerd vandaag"
+        "nl": "Huisenergie geëxporteerd vandaag",
+        "fr": "Énergie domestique exportée aujourd'hui",
+        "de": "Energie Haus heute eingespeist"
       }
     }
   },
@@ -115,7 +137,9 @@
       "type": "group",
       "label": {
         "en": "Enphase account",
-        "nl": "Enphase-account"
+        "nl": "Enphase-account",
+        "fr": "Compte Enphase",
+        "de": "Enphase-Konto"
       },
       "children": [
         {
@@ -123,7 +147,9 @@
           "type": "text",
           "label": {
             "en": "Email address",
-            "nl": "E-mailadres"
+            "nl": "E-mailadres",
+            "fr": "Adresse e-mail",
+            "de": "E-Mail-Adresse"
           },
           "placeholder": "owner-or-installer@email.com",
           "required": true,
@@ -134,7 +160,9 @@
           "type": "password",
           "label": {
             "en": "Password",
-            "nl": "Wachtwoord"
+            "nl": "Wachtwoord",
+            "fr": "Mot de passe",
+            "de": "Passwort"
           },
           "required": true,
           "value": ""
@@ -145,7 +173,9 @@
       "type": "group",
       "label": {
         "en": "Envoy gateway",
-        "nl": "Envoy-gateway"
+        "nl": "Envoy-gateway",
+        "fr": "Passerelle Envoy",
+        "de": "Envoy-Gateway"
       },
       "children": [
         {
@@ -153,7 +183,9 @@
           "type": "text",
           "label": {
             "en": "Serial number",
-            "nl": "Serienummer"
+            "nl": "Serienummer",
+            "fr": "Numéro de série",
+            "de": "Seriennummer"
           },
           "placeholder": "122226012345",
           "required": true,
@@ -164,7 +196,9 @@
           "type": "text",
           "label": {
             "en": "Local IP address",
-            "nl": "Lokaal IP-adres"
+            "nl": "Lokaal IP-adres",
+            "fr": "Adresse IP locale",
+            "de": "Lokale IP-Adresse"
           },
           "placeholder": "10.0.0.123",
           "required": true,
@@ -176,7 +210,9 @@
       "type": "group",
       "label": {
         "en": "Advanced settings",
-        "nl": "Geavanceerde instellingen"
+        "nl": "Geavanceerde instellingen",
+        "fr": "Paramètres avancés",
+        "de": "Erweiterte Einstellungen"
       },
       "children": [
         {
@@ -184,11 +220,15 @@
           "type": "number",
           "label": {
             "en": "Update interval",
-            "nl": "Update-interval"
+            "nl": "Update-interval",
+            "fr": "Intervalle de mise à jour",
+            "de": "Aktualisierungsintervall"
           },
           "hint": {
             "en": "How often live grid and home power is read from the gateway, in seconds (5-120, default 15). Shorter intervals give faster updates but put more load on the Envoy.",
-            "nl": "Hoe vaak het actuele net- en huisvermogen van de gateway wordt uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer."
+            "nl": "Hoe vaak het actuele net- en huisvermogen van de gateway wordt uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer.",
+            "fr": "Fréquence de lecture de la puissance réseau et domestique sur la passerelle, en secondes (5 à 120, 15 par défaut). Des intervalles plus courts donnent des mises à jour plus rapides, mais sollicitent davantage l'Envoy.",
+            "de": "Wie oft Netz- und Hausleistung vom Gateway abgerufen werden, in Sekunden (5 bis 120, Standard 15). Kürzere Intervalle liefern schnellere Aktualisierungen, belasten den Envoy aber stärker."
           },
           "value": 15,
           "min": 5,

@@ -1,3 +1,5 @@
-Monitor zonneproductie, netafname en teruglevering, huisverbruik, individuele micro-omvormers en het vermogen en laadniveau van Enphase-batterijen. De Energiestroom-widget toont live energiestromen tussen zonnepanelen, net, huis en batterij. Voeg op een gateway een nieuw Enphase Solar-, Grid- of Batterij-apparaat toe om de widget te gebruiken. Batterijmonitoring is alleen-lezen; zonneproductie kan met ondersteunde hardware en accounttoegang nog steeds worden bestuurd.
+Monitor zonneproductie, netafname en teruglevering, huisverbruik, individuele micro-omvormers en het vermogen en laadniveau van de batterij van uw Enphase-systemen. De Energiestroom-widget toont het live vermogen tussen zon, net, huis en batterij. Batterijmonitoring is alleen-lezen; zonneproductie kan worden bestuurd.
 
-Bewaar voor de overstap naar Solar de instellingen in het nieuwe Solar-koppelscherm, verwijder daarna het oude solar-apparaat en koppel vervolgens het nieuwe apparaat. Bouw Flows opnieuw op na het overstappen; apparaathistorie kan verloren gaan. Houd oude en nieuwe Grid-apparaten niet samen aan, omdat Homey Energy hun totalen dubbel kan tellen. Monitoring en besturing hangen af van gatewayhardware, accounttoegang en aanwezige stroomklemmen.
+Deze app integreert goed in het Energie-tabblad van Homey en maakt gebruik van de nieuwste energiefuncties.
+
+Monitoring- en besturingsfuncties zijn afhankelijk van de gateway-hardware, accounttoegang en geïnstalleerde verbruiksklemmen; de app detecteert dit automatisch. Zie de community-link "Bezoek forum" hieronder.

@@ -1,7 +1,9 @@
 {
   "name": {
     "en": "Enphase Battery",
-    "nl": "Enphase Batterij"
+    "nl": "Enphase Batterij",
+    "fr": "Batterie Enphase",
+    "de": "Enphase Batterie"
   },
   "images": {
     "small": "/drivers/battery/assets/images/small.png",
@@ -21,25 +23,33 @@
     "measure_power": {
       "title": {
         "en": "Battery power",
-        "nl": "Batterijvermogen"
+        "nl": "Batterijvermogen",
+        "fr": "Puissance de la batterie",
+        "de": "Batterieleistung"
       }
     },
     "measure_battery": {
       "title": {
         "en": "Battery level",
-        "nl": "Batterijniveau"
+        "nl": "Batterijniveau",
+        "fr": "Niveau de la batterie",
+        "de": "Ladestand"
       }
     },
     "meter_power.charged": {
       "title": {
         "en": "Charged",
-        "nl": "Opgeladen"
+        "nl": "Opgeladen",
+        "fr": "Chargée",
+        "de": "Geladen"
       }
     },
     "meter_power.discharged": {
       "title": {
         "en": "Discharged",
-        "nl": "Ontladen"
+        "nl": "Ontladen",
+        "fr": "Déchargée",
+        "de": "Entladen"
       }
     }
   },
@@ -69,7 +79,9 @@
       "type": "group",
       "label": {
         "en": "Enphase account",
-        "nl": "Enphase-account"
+        "nl": "Enphase-account",
+        "fr": "Compte Enphase",
+        "de": "Enphase-Konto"
       },
       "children": [
         {
@@ -77,7 +89,9 @@
           "type": "text",
           "label": {
             "en": "Email address",
-            "nl": "E-mailadres"
+            "nl": "E-mailadres",
+            "fr": "Adresse e-mail",
+            "de": "E-Mail-Adresse"
           },
           "placeholder": "owner-or-installer@email.com",
           "required": true,
@@ -88,7 +102,9 @@
           "type": "password",
           "label": {
             "en": "Password",
-            "nl": "Wachtwoord"
+            "nl": "Wachtwoord",
+            "fr": "Mot de passe",
+            "de": "Passwort"
           },
           "required": true,
           "value": ""
@@ -99,7 +115,9 @@
       "type": "group",
       "label": {
         "en": "Envoy gateway",
-        "nl": "Envoy-gateway"
+        "nl": "Envoy-gateway",
+        "fr": "Passerelle Envoy",
+        "de": "Envoy-Gateway"
       },
       "children": [
         {
@@ -107,7 +125,9 @@
           "type": "text",
           "label": {
             "en": "Serial number",
-            "nl": "Serienummer"
+            "nl": "Serienummer",
+            "fr": "Numéro de série",
+            "de": "Seriennummer"
           },
           "placeholder": "122226012345",
           "required": true,
@@ -118,7 +138,9 @@
           "type": "text",
           "label": {
             "en": "Local IP address",
-            "nl": "Lokaal IP-adres"
+            "nl": "Lokaal IP-adres",
+            "fr": "Adresse IP locale",
+            "de": "Lokale IP-Adresse"
           },
           "placeholder": "10.0.0.123",
           "required": true,
@@ -130,7 +152,9 @@
       "type": "group",
       "label": {
         "en": "Advanced settings",
-        "nl": "Geavanceerde instellingen"
+        "nl": "Geavanceerde instellingen",
+        "fr": "Paramètres avancés",
+        "de": "Erweiterte Einstellungen"
       },
       "children": [
         {
@@ -138,11 +162,15 @@
           "type": "number",
           "label": {
             "en": "Update interval",
-            "nl": "Update-interval"
+            "nl": "Update-interval",
+            "fr": "Intervalle de mise à jour",
+            "de": "Aktualisierungsintervall"
           },
           "hint": {
             "en": "How often live battery power and charge level are read from the gateway, in seconds (5-120, default 15). Shorter intervals give faster updates but put more load on the Envoy.",
-            "nl": "Hoe vaak het actuele batterijvermogen en laadniveau van de gateway worden uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer."
+            "nl": "Hoe vaak het actuele batterijvermogen en laadniveau van de gateway worden uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer.",
+            "fr": "Fréquence de lecture de la puissance et du niveau de charge de la batterie sur la passerelle, en secondes (5 à 120, 15 par défaut). Des intervalles plus courts donnent des mises à jour plus rapides, mais sollicitent davantage l'Envoy.",
+            "de": "Wie oft Batterieleistung und Ladestand live vom Gateway abgerufen werden, in Sekunden (5 bis 120, Standard 15). Kürzere Intervalle liefern schnellere Aktualisierungen, belasten den Envoy aber stärker."
           },
           "value": 15,
           "min": 5,
@@ -154,12 +182,16 @@
           "type": "label",
           "label": {
             "en": "Charged and discharged energy",
-            "nl": "Opgeladen en ontladen energie"
+            "nl": "Opgeladen en ontladen energie",
+            "fr": "Énergie chargée et déchargée",
+            "de": "Geladene und entladene Energie"
           },
           "value": "",
           "hint": {
             "en": "Totals use the gateway's battery meter counters when available. Otherwise they are estimated from battery power over time and can differ slightly from the Enphase app. Totals are kept per gateway and survive removing and re-adding this device. This device only monitors the battery; it cannot control it.",
-            "nl": "Totalen gebruiken de tellers van de batterijmeter van de gateway als die beschikbaar zijn. Anders worden ze geschat op basis van het batterijvermogen in de tijd en kunnen ze licht afwijken van de Enphase-app. Totalen worden per gateway bijgehouden en blijven behouden als je dit apparaat verwijdert en opnieuw toevoegt. Dit apparaat bewaakt de batterij alleen; het kan de batterij niet aansturen."
+            "nl": "Totalen gebruiken de tellers van de batterijmeter van de gateway als die beschikbaar zijn. Anders worden ze geschat op basis van het batterijvermogen in de tijd en kunnen ze licht afwijken van de Enphase-app. Totalen worden per gateway bijgehouden en blijven behouden als je dit apparaat verwijdert en opnieuw toevoegt. Dit apparaat bewaakt de batterij alleen; het kan de batterij niet aansturen.",
+            "fr": "Les totaux utilisent les compteurs du compteur de batterie de la passerelle lorsqu'ils sont disponibles. Sinon, ils sont estimés à partir de la puissance de la batterie au fil du temps et peuvent légèrement différer de l'application Enphase. Les totaux sont conservés par passerelle et restent en place si vous supprimez puis rajoutez cet appareil. Cet appareil ne fait que surveiller la batterie ; il ne peut pas la commander.",
+            "de": "Die Summen verwenden die Zählerstände des Batteriemessgeräts am Gateway, sofern verfügbar. Andernfalls werden sie aus der Batterieleistung über die Zeit geschätzt und können geringfügig von der Enphase-App abweichen. Die Summen werden pro Gateway gespeichert und bleiben erhalten, wenn Sie dieses Gerät entfernen und erneut hinzufügen. Dieses Gerät überwacht nur die Batterie; es kann sie nicht steuern."
           }
         }
       ]

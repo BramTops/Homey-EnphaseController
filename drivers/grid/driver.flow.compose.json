@@ -4,11 +4,15 @@
       "id": "grid_home_power_changed",
       "title": {
         "en": "The home consumption power changed",
-        "nl": "Het huisverbruik vermogen is veranderd"
+        "nl": "Het huisverbruik vermogen is veranderd",
+        "fr": "La puissance de consommation domestique a changé",
+        "de": "Die Leistung des Hausverbrauchs hat sich geändert"
       },
       "titleFormatted": {
         "en": "The home consumption power changed to [[value]] W",
-        "nl": "Het huisverbruik vermogen is veranderd naar [[value]] W"
+        "nl": "Het huisverbruik vermogen is veranderd naar [[value]] W",
+        "fr": "La puissance de consommation domestique est passée à [[value]] W",
+        "de": "Die Leistung des Hausverbrauchs hat sich auf [[value]] W geändert"
       },
       "tokens": [
         {
@@ -16,7 +20,9 @@
           "type": "number",
           "title": {
             "en": "Power (W)",
-            "nl": "Vermogen (W)"
+            "nl": "Vermogen (W)",
+            "fr": "Puissance (W)",
+            "de": "Leistung (W)"
           }
         }
       ]
@@ -25,11 +31,15 @@
       "id": "grid_home_energy_changed",
       "title": {
         "en": "The home consumption energy changed",
-        "nl": "Het huisverbruik is veranderd"
+        "nl": "Het huisverbruik is veranderd",
+        "fr": "L'énergie de consommation domestique a changé",
+        "de": "Die Energie des Hausverbrauchs hat sich geändert"
       },
       "titleFormatted": {
         "en": "The home consumption energy changed to [[value]] kWh",
-        "nl": "Het huisverbruik is veranderd naar [[value]] kWh"
+        "nl": "Het huisverbruik is veranderd naar [[value]] kWh",
+        "fr": "L'énergie de consommation domestique est passée à [[value]] kWh",
+        "de": "Die Energie des Hausverbrauchs hat sich auf [[value]] kWh geändert"
       },
       "tokens": [
         {
@@ -37,7 +47,9 @@
           "type": "number",
           "title": {
             "en": "Energy (kWh)",
-            "nl": "Energie (kWh)"
+            "nl": "Energie (kWh)",
+            "fr": "Énergie (kWh)",
+            "de": "Energie (kWh)"
           }
         }
       ]
@@ -46,11 +58,15 @@
       "id": "grid_home_energy_today_changed",
       "title": {
         "en": "The home consumption energy today changed",
-        "nl": "Het huisverbruik vandaag is veranderd"
+        "nl": "Het huisverbruik vandaag is veranderd",
+        "fr": "L'énergie de consommation domestique d'aujourd'hui a changé",
+        "de": "Die Energie des Hausverbrauchs heute hat sich geändert"
       },
       "titleFormatted": {
         "en": "The home consumption energy today changed to [[value]] kWh",
-        "nl": "Het huisverbruik vandaag is veranderd naar [[value]] kWh"
+        "nl": "Het huisverbruik vandaag is veranderd naar [[value]] kWh",
+        "fr": "L'énergie de consommation domestique d'aujourd'hui est passée à [[value]] kWh",
+        "de": "Die Energie des Hausverbrauchs heute hat sich auf [[value]] kWh geändert"
       },
       "tokens": [
         {
@@ -58,7 +74,9 @@
           "type": "number",
           "title": {
             "en": "Energy (kWh)",
-            "nl": "Energie (kWh)"
+            "nl": "Energie (kWh)",
+            "fr": "Énergie (kWh)",
+            "de": "Energie (kWh)"
           }
         }
       ]

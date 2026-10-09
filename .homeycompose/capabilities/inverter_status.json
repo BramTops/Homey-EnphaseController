@@ -2,7 +2,9 @@
   "type": "string",
   "title": {
     "en": "Inverter Status",
-    "nl": "Omvormer-status"
+    "nl": "Omvormer-status",
+    "fr": "État de l'onduleur",
+    "de": "Wechselrichterstatus"
   },
   "getable": true,
   "setable": false,

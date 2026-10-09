@@ -2,11 +2,15 @@
   "type": "number",
   "title": {
     "en": "Micro-inverters",
-    "nl": "Micro-omvormers"
+    "nl": "Micro-omvormers",
+    "fr": "Micro-onduleurs",
+    "de": "Mikro-Wechselrichter"
   },
   "description": {
     "en": "Number of micro-inverters connected to the Envoy gateway.",
-    "nl": "Aantal micro-omvormers verbonden met de Envoy gateway."
+    "nl": "Aantal micro-omvormers verbonden met de Envoy gateway.",
+    "fr": "Nombre de micro-onduleurs connectés à la passerelle Envoy.",
+    "de": "Anzahl der mit dem Envoy-Gateway verbundenen Mikro-Wechselrichter."
   },
   "getable": true,
   "setable": false,

@@ -2,7 +2,9 @@
   "type": "number",
   "title": {
     "en": "Average load",
-    "nl": "Gemiddelde belasting"
+    "nl": "Gemiddelde belasting",
+    "fr": "Charge moyenne",
+    "de": "Durchschnittliche Auslastung"
   },
   "getable": true,
   "setable": false,

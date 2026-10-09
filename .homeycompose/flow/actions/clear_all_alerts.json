@@ -1,11 +1,15 @@
 {
   "title": {
     "en": "Clear all active alerts",
-    "nl": "Wis alle actieve alarmen"
+    "nl": "Wis alle actieve alarmen",
+    "fr": "Effacer toutes les alertes actives",
+    "de": "Alle aktiven Alarme löschen"
   },
   "description": {
     "en": "Resets the alert engine state, clearing all active flags.",
-    "nl": "Reset de status van de alarmen en wist alle actieve alarmen."
+    "nl": "Reset de status van de alarmen en wist alle actieve alarmen.",
+    "fr": "Réinitialise l'état du moteur d'alertes et efface tous les indicateurs actifs.",
+    "de": "Setzt den Status der Alarm-Engine zurück und löscht alle aktiven Markierungen."
   },
   "args": [
     {

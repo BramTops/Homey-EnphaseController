@@ -1,7 +1,9 @@
 {
   "name": {
     "en": "Enphase Solar inverters",
-    "nl": "Enphase Solar inverters"
+    "nl": "Enphase Solar inverters",
+    "fr": "Onduleurs Enphase Solar",
+    "de": "Enphase Solar Wechselrichter"
   },
   "images": {
     "small": "/drivers/inverters/assets/images/small.png",
@@ -39,7 +41,9 @@
       "type": "group",
       "label": {
         "en": "Alert thresholds",
-        "nl": "Waarschuwingsdrempels"
+        "nl": "Waarschuwingsdrempels",
+        "fr": "Seuils d'alerte",
+        "de": "Alarmschwellen"
       },
       "children": [
         {
@@ -47,7 +51,9 @@
           "type": "number",
           "label": {
             "en": "Inverter underperformance (%)",
-            "nl": "Onderprestatie omvormers (%)"
+            "nl": "Onderprestatie omvormers (%)",
+            "fr": "Sous-performance des onduleurs (%)",
+            "de": "Minderleistung der Wechselrichter (%)"
           },
           "required": true,
           "value": 15,
@@ -59,7 +65,9 @@
           "type": "number",
           "label": {
             "en": "Stale data timeout (hours)",
-            "nl": "Verouderde data time-out (uren)"
+            "nl": "Verouderde data time-out (uren)",
+            "fr": "Délai d'expiration des données obsolètes (heures)",
+            "de": "Zeitlimit für veraltete Daten (Stunden)"
           },
           "required": true,
           "value": 24,

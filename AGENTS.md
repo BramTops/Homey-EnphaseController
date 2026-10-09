@@ -16,7 +16,7 @@ Use the **`homey-app`** skill for SDK v3, manifest and platform conventions.
 * Timers: Clear all timers/listeners in `onUninit()` / `onDeleted()`. (Lint enforces `this.homey.setTimeout` / `setInterval`.)
 * Errors: Wrap network requests and polling in try/catch; polling must never crash the app.
 * Pairing views: Include `<meta name="color-scheme" content="light dark">` in `<head>` and `color-scheme: light dark;` in `:root`; without it, Edge/Chrome webviews force-invert colors and light text becomes illegible in dark mode. No generic `ul`/`li` for custom lists (warnings, logs): Homey's global stylesheet gives every `li` a 78px height and light text color, so use flexbox `div` classes (e.g. `.warning-item`).
-* Store compliance: Brand name is "Enphase Controller". `README.txt` / `README.nl.txt`: plain text, no markdown/headers/lists/URLs, max 2 paragraphs. Changelog rules are in the comment at the top of `CHANGELOG.md` (also covers `.homeychangelog.json`).
+* Store compliance: Brand name is "Enphase Controller". `README.txt` / `README.nl.txt` / `README.fr.txt` / `README.de.txt`: plain text, no markdown/headers/lists/URLs, max 3 paragraphs. Changelog rules are in the comment at the top of `CHANGELOG.md` (also covers `.homeychangelog.json`).
 
 ## Workflow
 * Proactively flag uncommitted/unpushed changes, especially when starting a new coding task.

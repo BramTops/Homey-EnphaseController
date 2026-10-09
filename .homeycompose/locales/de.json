@@ -1,0 +1,260 @@
+{
+  "driver": {
+    "envoy": {
+      "name": "Solarmodule (Enphase)",
+      "error": {
+        "fields_required": "Bitte füllen Sie alle Pflichtfelder aus.",
+        "invalid_serial": "Die Seriennummer muss genau 12 Ziffern haben.",
+        "auth_failed": "Verbindung fehlgeschlagen: __message__",
+        "no_maintainer": "Sie benötigen ein Installateur- oder Wartungskonto, um die Stromproduktion ein- oder auszuschalten.",
+        "command_failed": "Befehl fehlgeschlagen: __message__",
+        "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__"
+      },
+      "status": {
+        "on": "Ein",
+        "off": "Aus",
+        "read_only": "Nur lesen",
+        "read_write": "Lesen und schreiben"
+      }
+    },
+    "gateway": {
+      "name": "Enphase Solar",
+      "error": {
+        "fields_required": "Bitte füllen Sie alle Pflichtfelder aus.",
+        "invalid_serial": "Ungültige Seriennummer des Gateways.",
+        "auth_failed": "Verbindung fehlgeschlagen: __message__",
+        "no_maintainer": "Sie benötigen ein Installateur- oder Wartungskonto, um die Stromproduktion ein- oder auszuschalten.",
+        "always_on": "Dieses Gerät ist auf „Immer eingeschaltet“ gestellt und kann nicht ausgeschaltet werden.",
+        "command_failed": "Befehl fehlgeschlagen: __message__",
+        "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__",
+        "not_metered": "Dieses Gateway scheint nicht über Messtechnik zu verfügen (keine Solar-Stromwandler erkannt). Die Steuerung der Produktionsbegrenzung erfordert ein Gateway mit Messtechnik."
+      },
+      "status": {
+        "on": "Ein",
+        "off": "Aus"
+      }
+    },
+    "inverters": {
+      "name": "Enphase Solar Wechselrichter",
+      "autocomplete": {
+        "any": "Beliebiger Wechselrichter"
+      },
+      "error": {
+        "no_gateway": "Noch kein Enphase Solar gekoppelt. Bitte koppeln Sie zuerst Enphase Solar.",
+        "all_paired": "Allen gekoppelten Enphase Solar Geräten wurden bereits Wechselrichter hinzugefügt."
+      }
+    },
+    "homeload": {
+      "name": "Enphase Home",
+      "error": {
+        "fields_required": "Bitte füllen Sie alle Pflichtfelder aus.",
+        "invalid_serial": "Ungültige Seriennummer des Gateways.",
+        "auth_failed": "Verbindung fehlgeschlagen: __message__",
+        "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__"
+      }
+    },
+    "solar": {
+      "name": "Enphase Solar",
+      "error": {
+        "fields_required": "Bitte füllen Sie alle Pflichtfelder aus.",
+        "invalid_serial": "Ungültige Seriennummer des Gateways.",
+        "invalid_ip": "Ungültige IP-Adresse. Geben Sie die IP-Adresse des Gateways ein (z. B. 10.0.0.123), keinen Hostnamen.",
+        "auth_failed": "Verbindung fehlgeschlagen: __message__",
+        "no_maintainer": "Sie benötigen ein Installateur- oder Wartungskonto, um die Stromproduktion ein- oder auszuschalten.",
+        "always_on": "Dieses Gerät ist auf „Immer eingeschaltet“ gestellt und kann nicht ausgeschaltet werden.",
+        "command_failed": "Befehl fehlgeschlagen: __message__",
+        "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__",
+        "not_metered": "Dieses Gateway scheint nicht über Messtechnik zu verfügen (keine Solar-Stromwandler erkannt). Die Steuerung der Produktionsbegrenzung erfordert ein Gateway mit Messtechnik.",
+        "legacy_conflict": "Nicht aktiv: Für dieses Gateway existiert ein älteres Enphase Envoy- oder Solar-Gerät. Bauen Sie Ihre Flows neu auf und entfernen Sie dann das alte Gerät, um dieses zu aktivieren."
+      },
+      "status": {
+        "on": "Ein",
+        "off": "Aus"
+      }
+    },
+    "grid": {
+      "name": "Enphase Grid",
+      "error": {
+        "fields_required": "Bitte füllen Sie alle Pflichtfelder aus.",
+        "invalid_serial": "Ungültige Seriennummer des Gateways.",
+        "invalid_ip": "Ungültige IP-Adresse. Geben Sie die IP-Adresse des Gateways ein (z. B. 10.0.0.123), keinen Hostnamen.",
+        "auth_failed": "Verbindung fehlgeschlagen: __message__",
+        "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__"
+      }
+    },
+    "battery": {
+      "name": "Enphase Batterie",
+      "error": {
+        "fields_required": "Bitte füllen Sie alle Pflichtfelder aus.",
+        "invalid_serial": "Ungültige Seriennummer des Gateways.",
+        "invalid_ip": "Ungültige IP-Adresse. Geben Sie die IP-Adresse des Gateways ein (z. B. 10.0.0.123), keinen Hostnamen.",
+        "auth_failed": "Verbindung fehlgeschlagen: __message__",
+        "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__"
+      },
+      "warning": {
+        "no_battery": "An diesem Gateway wurde keine Batterie erkannt."
+      },
+      "pair": {
+        "scope": "Nur Überwachung: Dieses Gerät zeigt Batterieleistung, Ladestand und Energie an. Es kann die Batterie nicht steuern."
+      }
+    }
+  },
+  "inverters": {
+    "alert": {
+      "message": {
+        "underperformance": "Die Tagesspitze liegt __difference__ % unter dem Systemmedian",
+        "stale": "Der Wechselrichter hat seit über __hours__ Stunde(n) keine Daten gemeldet",
+        "mismatch": "Abweichung bei der Wechselrichteranzahl: __expected__ Module erwartet, __found__ gefunden"
+      }
+    }
+  },
+  "timeline": {
+    "deprecated_envoy": "Das veraltete Envoy-Gateway-Gerät wird bald entfernt. Verwenden Sie bitte stattdessen das Gerät Enphase Controller Solar.",
+    "migration_2_0_envoy": "Enphase Controller 2.0: Dieses Envoy-Gateway-Gerät ist veraltet. Es funktioniert während des Migrationszeitraums für 2.0 weiterhin, veraltete Geräte sind jedoch für die Entfernung in 2.1.x vorgesehen (genauer Umfang noch nicht festgelegt). Wechseln Sie bitte zum neuen Gerät Enphase Solar und bauen Sie Ihre Flows neu auf; der Gerätverlauf kann verloren gehen. Pro Gateway ist nur ein Solar-Gerät erlaubt: Öffnen Sie die Kopplungsansicht von Enphase Solar, speichern Sie Ihre Einstellungen für die Migration, entfernen Sie dann dieses Gerät und koppeln Sie Enphase Solar.",
+    "migration_2_0_gateway": "Enphase Controller 2.0: Dieses ältere Enphase Solar-Gerät ist veraltet. Es funktioniert während des Migrationszeitraums für 2.0 weiterhin, veraltete Geräte sind jedoch für die Entfernung in 2.1.x vorgesehen (genauer Umfang noch nicht festgelegt). Wechseln Sie bitte zum neuen Gerät Enphase Solar und bauen Sie Ihre Flows neu auf; der Gerätverlauf kann verloren gehen. Pro Gateway ist nur ein Solar-Gerät erlaubt: Öffnen Sie die Kopplungsansicht von Enphase Solar, speichern Sie Ihre Einstellungen für die Migration, entfernen Sie dann dieses Gerät und koppeln Sie Enphase Solar.",
+    "migration_2_0_homeload": "Enphase Controller 2.0: Dieses Enphase Home-Gerät ist veraltet. Es funktioniert während des Migrationszeitraums für 2.0 weiterhin, veraltete Geräte sind jedoch für die Entfernung in 2.1.x vorgesehen (genauer Umfang noch nicht festgelegt). Fügen Sie das neue Gerät Enphase Grid hinzu, bauen Sie Ihre Flows neu auf und entfernen Sie dann dieses Gerät. Behalten Sie beide nicht lange: Ihre Energiezähler würden in Homey Energy doppelt gezählt. Der Gerätverlauf kann verloren gehen."
+  },
+  "pair": {
+    "start": {
+      "title": "Verbinden Sie Ihr Envoy-Gateway",
+      "title_inverters": "Enphase Solar Wechselrichter verbinden",
+      "subtitle": "Verbinden Sie sich mit Ihrem Gateway. Unterstützt Standard-Eigentümerkonten (nur lesen) oder Installateur- und DIY-Konten für die Systemsteuerung.",
+      "discovery_badge": "✨ Envoy-Gateway im Netzwerk automatisch erkannt!",
+      "email_label": "Enphase E-Mail",
+      "email_placeholder": "z. B. eigentuemer-oder-installateur@email.com",
+      "password_label": "Enphase Passwort",
+      "password_placeholder": "Ihr Passwort",
+      "serial_label": "Seriennummer des Gateways",
+      "serial_placeholder": "z. B. 122226012345",
+      "ip_label": "IP-Adresse des Gateways",
+      "ip_placeholder": "z. B. 10.0.0.123",
+      "btn_authenticate": "Authentifizieren",
+      "btn_add_gateway": "Solar zu Homey hinzufügen",
+      "btn_add_inverters": "Wechselrichter zu Homey hinzufügen",
+      "error_required_fields": "Bitte füllen Sie alle Pflichtfelder aus.",
+      "error_auth_failed": "Authentifizierung fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten.",
+      "success_title": "Authentifizierung erfolgreich!",
+      "success_subtitle": "Ihr Enphase-Konto wurde bestätigt und das lokale Gateway erfolgreich verbunden.",
+      "role_maintainer": "Rolle Wartung / Installateur",
+      "desc_maintainer": "Volle Steuerung aktiv. Sie können die Produktion überwachen und die Stromerzeugung ein- und ausschalten.",
+      "role_owner": "Rolle Systemeigentümer",
+      "desc_owner": "Nur-Lese-Modus aktiv. Sie können den Produktionsstatus überwachen, die Steuerung der Stromerzeugung ist jedoch gesperrt.",
+      "title_homeload": "Enphase Home verbinden",
+      "subtitle_homeload": "Verbinden Sie sich mit Ihrem Gateway, um das Gerät für den Hausverbrauch (P1-Zählerersatz) hinzuzufügen.",
+      "warning_title": "Achtung erforderlich",
+      "warning_subtitle": "Warnungen zur Gateway-Überprüfung:",
+      "warning_bypass_desc": "Sie können diese Warnungen ignorieren und das Gerät trotzdem hinzufügen. Einige Funktionen funktionieren dann möglicherweise nicht.",
+      "warning_not_metered": "Dieses Gateway scheint nicht über Messtechnik zu verfügen (kein Solar-EIM-Stromwandler erkannt). Ein P1-Zählerersatz benötigt ein Gateway mit Messtechnik, um Verbrauchsdaten abzurufen.",
+      "warning_no_consumption": "Die Verbrauchsüberwachung ist deaktiviert oder an diesem Gateway sind keine Verbrauchs-Stromwandler installiert. Daten zum Hausverbrauch sind dann nicht verfügbar.",
+      "btn_ignore_continue": "Warnungen ignorieren und fortfahren",
+      "btn_back": "Zurück",
+      "success_subtitle_homeload": "Ihr Enphase-Konto wurde bestätigt und das Home-Gerät kann hinzugefügt werden.",
+      "btn_add_homeload": "Home zu Homey hinzufügen",
+      "title_solar": "Enphase Solar verbinden",
+      "title_grid": "Enphase Grid verbinden",
+      "subtitle_grid": "Verbinden Sie sich mit Ihrem Gateway, um Netzbezug und Netzeinspeisung sowie den Hausverbrauch (P1-Zählerersatz) hinzuzufügen.",
+      "success_subtitle_grid": "Ihr Enphase-Konto wurde bestätigt und das Grid-Gerät kann hinzugefügt werden.",
+      "btn_add_grid": "Grid zu Homey hinzufügen",
+      "chooser_label": "Gekoppelte Gateways",
+      "password_saved_placeholder": "Gespeichert: leer lassen, um es wiederzuverwenden",
+      "serial_from_ip": "Seriennummer vom Gateway unter dieser IP-Adresse gelesen",
+      "serial_corrected": "Seriennummer an das Gateway unter dieser IP-Adresse angepasst (__serial__)",
+      "serial_unreadable": "Die Seriennummer konnte nicht vom Gateway gelesen werden. Bitte geben Sie sie manuell ein.",
+      "reuse_device": "Kontodaten eines bestehenden Enphase-Geräts an diesem Gateway gefunden. Lassen Sie das Passwort leer, um sie wiederzuverwenden.",
+      "reuse_snapshot": "Gespeicherte Einstellungen Ihres vorherigen Geräts gefunden. Lassen Sie das Passwort leer, um sie wiederzuverwenden.",
+      "reuse_cache": "Ihr zuvor verwendetes Enphase-Konto wurde gefunden. Lassen Sie das Passwort leer, um es wiederzuverwenden.",
+      "warning_legacy_grid": "Für dieses Gateway existiert bereits ein älteres Enphase Home-Gerät. Wenn Sie beide behalten, wird dieselbe Netzenergie in Homey Energy doppelt gezählt. Bauen Sie Ihre Flows mit dem neuen Gerät neu auf und entfernen Sie dann das alte Enphase Home-Gerät.",
+      "title_battery": "Enphase Batterie verbinden",
+      "subtitle_battery": "Verbinden Sie sich mit Ihrem Gateway, um Batterieleistung, Ladestand und Energie hinzuzufügen.",
+      "success_subtitle_battery": "Ihr Enphase-Konto wurde bestätigt und das Batteriegerät kann hinzugefügt werden.",
+      "btn_add_battery": "Batterie zu Homey hinzufügen",
+      "warning_no_battery": "An diesem Gateway wurde keine Batterie erkannt. Sie können das Gerät trotzdem hinzufügen, es zeigt jedoch keine Daten an, solange keine Batterie verfügbar ist.",
+      "warning_battery_unknown": "Die Batterieerkennung ist fehlgeschlagen, daher ist unbekannt, ob eine Batterie installiert ist. Sie können das Gerät trotzdem hinzufügen.",
+      "error_invalid_serial": "Die Seriennummer muss genau 12 Ziffern haben (nur Zahlen).",
+      "ip_auto_detected": "IP-Adresse in Ihrem Netzwerk automatisch erkannt",
+      "ip_not_found": "Die IP-Adresse des Gateways wurde in Ihrem Netzwerk nicht gefunden. Bitte geben Sie sie manuell ein.",
+      "serial_auto_detected": "Seriennummer in Ihrem Netzwerk automatisch erkannt",
+      "serial_not_found": "Die Seriennummer des Gateways wurde in Ihrem Netzwerk nicht gefunden. Bitte geben Sie sie manuell ein.",
+      "repair_title": "Gateway-Verbindung reparieren",
+      "repair_subtitle": "Aktualisieren Sie Ihre Enphase-Zugangsdaten oder die lokale IP-Adresse des Gateways, falls sie sich geändert haben.",
+      "btn_save_changes": "Änderungen speichern",
+      "warning_no_gridpower_but_homepower": "Die Netzleistungsüberwachung (net-consumption) ist nicht aktiv, die Überwachung des Hausverbrauchs (total-consumption) dagegen schon. Homey kann die Leistung des Hausverbrauchs trotzdem erfassen.",
+      "warning_no_gridpower": "Die Netzleistungsüberwachung (net-consumption) ist nicht aktiv, oder an diesem Gateway sind keine Stromwandler installiert. Homey kann Netzbezug und Netzeinspeisung nicht erfassen."
+    },
+    "error": {
+      "legacy_solar_conflict": "Für dieses Gateway existiert bereits ein älteres Enphase Envoy- oder Solar-Gerät. Entfernen Sie zuerst das alte Gerät, koppeln Sie erneut und bauen Sie dann Ihre Flows mit dem neuen Enphase Solar-Gerät neu auf."
+    },
+    "migration": {
+      "blocked_title": "Älteres Enphase-Gerät gefunden",
+      "blocked_body": "Für dieses Gateway existiert bereits ein älteres Enphase Envoy- oder Solar-Gerät. Pro Gateway wird nur ein Solar-Gerät unterstützt.",
+      "step_save": "1. Speichern Sie unten Ihre Einstellungen (optional, spart das erneute Eingeben Ihres Kontos).",
+      "step_remove": "2. Entfernen Sie das alte Gerät in Homey.",
+      "step_pair": "3. Starten Sie die Kopplung von Enphase Solar erneut.",
+      "step_flows": "4. Bauen Sie Ihre Flows mit dem neuen Enphase Solar-Gerät neu auf.",
+      "btn_save": "Einstellungen für die Migration speichern",
+      "btn_discard": "Gespeicherte Einstellungen verwerfen",
+      "status_saved": "Einstellungen gespeichert. Sie werden wiederverwendet, wenn Sie Enphase Solar nach dem Entfernen des alten Geräts koppeln.",
+      "saved_ok": "Einstellungen gespeichert. Sie werden wiederverwendet, wenn Sie Enphase Solar nach dem Entfernen des alten Geräts koppeln.",
+      "save_no_credentials": "Auf dem alten Gerät wurde kein gespeichertes Konto gefunden. Sie müssen Ihre Kontodaten erneut eingeben.",
+      "save_failed": "Das Speichern der Einstellungen ist fehlgeschlagen. Sie können trotzdem fortfahren und Ihre Kontodaten erneut eingeben.",
+      "discarded": "Gespeicherte Einstellungen verworfen."
+    }
+  },
+  "widget": {
+    "energy_flow": {
+      "number_locale": "de-DE",
+      "node": {
+        "solar": "Solar",
+        "grid": "Netz",
+        "home": "Haus",
+        "battery": "Batterie"
+      },
+      "state": {
+        "importing": "Bezug",
+        "exporting": "Einspeisung",
+        "idle": "Inaktiv",
+        "disconnected": "Getrennt",
+        "consuming": "Verbrauch",
+        "charging": "Lädt",
+        "discharging": "Entlädt",
+        "no_data": "Keine Daten",
+        "outdated": "Veraltet"
+      },
+      "message": {
+        "loading": "Wird geladen...",
+        "retry": "Erneut versuchen",
+        "no_gateways": {
+          "title": "Kein Gateway gefunden",
+          "body": "Fügen Sie ein Enphase Solar-, Grid- oder Batterie-Gerät hinzu, um den Energiefluss anzuzeigen."
+        },
+        "upgrade": {
+          "title": "Geräteaktualisierung erforderlich",
+          "body": "Dieses Gateway hat nur ältere Geräte. Fügen Sie ein Enphase Solar-, Grid- oder Batterie-Gerät hinzu, um den Energiefluss anzuzeigen."
+        },
+        "missing": {
+          "title": "Gateway nicht gefunden",
+          "body": "Das ausgewählte Gateway ist nicht mehr verfügbar. Wählen Sie ein anderes Gateway."
+        },
+        "choose": {
+          "title": "Gateway auswählen",
+          "body": "Wählen Sie das Gateway aus, das dieses Widget anzeigen soll."
+        },
+        "waiting": {
+          "title": "Warten auf Daten",
+          "body": "Die ersten Messwerte sind noch nicht eingegangen."
+        },
+        "error": {
+          "title": "Daten konnten nicht geladen werden",
+          "body": "Die Daten zum Energiefluss sind momentan nicht verfügbar. Es wird automatisch erneut versucht."
+        }
+      },
+      "chooser": {
+        "placeholder": "Gateway auswählen...",
+        "label": "Gateway"
+      },
+      "aria": {
+        "summary": "Energiefluss"
+      }
+    }
+  }
+}

@@ -1,3 +1,5 @@
-Monitor solar production, grid import and export, home consumption, individual microinverters, and Enphase battery power and charge level. The Energy Flow widget animates live power between solar, grid, home, and battery. Add a new Enphase Solar, Grid, or Battery device on a gateway to use the widget. Battery monitoring is read-only; solar production can still be controlled with supported hardware and account access.
+Monitor solar production, grid import and export, home consumption, individual microinverters, and battery power and charge level of your Enphase systems. The Energy Flow widget animates live power between solar, grid, home, and battery. Battery monitoring is read-only; solar production can be controlled.
 
-For solar migration, save settings in the new Solar pairing screen, remove the old solar device, then pair the new one. Rebuild Flows after moving devices; device history may be lost. Avoid keeping old and new Grid devices together because Homey Energy can count their totals twice. Monitoring and control features depend on gateway hardware, account access, and installed consumption clamps.
+This app integrates well into the Homey Energy tab and utilizes the latest energy related features.
+
+Monitoring and control features depend on gateway hardware, account access, and installed consumption clamps; the app will detect this automatically. See the community "Visit forum"-link below.

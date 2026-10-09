@@ -1,7 +1,9 @@
 {
   "name": {
     "en": "Enphase Solar",
-    "nl": "Enphase Solar"
+    "nl": "Enphase Solar",
+    "fr": "Enphase Solar",
+    "de": "Enphase Solar"
   },
   "images": {
     "small": "/drivers/solar/assets/images/small.png",
@@ -27,65 +29,85 @@
     "onoff": {
       "title": {
         "en": "Power production",
-        "nl": "Stroomproductie"
+        "nl": "Stroomproductie",
+        "fr": "Production d'énergie",
+        "de": "Stromproduktion"
       }
     },
     "measure_power": {
       "title": {
         "en": "Solar power",
-        "nl": "Zonnevermogen"
+        "nl": "Zonnevermogen",
+        "fr": "Puissance solaire",
+        "de": "Solarleistung"
       }
     },
     "meter_power": {
       "title": {
         "en": "Solar energy",
-        "nl": "Zonne-energie"
+        "nl": "Zonne-energie",
+        "fr": "Énergie solaire",
+        "de": "Solarenergie"
       }
     },
     "meter_power_today": {
       "title": {
         "en": "Solar energy today",
-        "nl": "Zonne-energie vandaag"
+        "nl": "Zonne-energie vandaag",
+        "fr": "Énergie solaire aujourd'hui",
+        "de": "Solarenergie heute"
       }
     },
     "target_power": {
       "title": {
         "en": "Production limit",
-        "nl": "Productielimiet"
+        "nl": "Productielimiet",
+        "fr": "Limite de production",
+        "de": "Produktionsgrenze"
       }
     },
     "target_power_mode": {
       "title": {
         "en": "Production limit mode",
-        "nl": "Productielimiet modus"
+        "nl": "Productielimiet modus",
+        "fr": "Mode de limite de production",
+        "de": "Modus der Produktionsgrenze"
       },
       "values": [
         {
           "id": "device",
           "title": {
             "en": "Normal solar production",
-            "nl": "Normale zonneproductie"
+            "nl": "Normale zonneproductie",
+            "fr": "Production solaire normale",
+            "de": "Normale Solarproduktion"
           }
         },
         {
           "id": "homey",
           "title": {
             "en": "Custom solar production",
-            "nl": "Aangepaste zonneproductie"
+            "nl": "Aangepaste zonneproductie",
+            "fr": "Production solaire personnalisée",
+            "de": "Benutzerdefinierte Solarproduktion"
           }
         },
         {
           "id": "self_use",
           "title": {
             "en": "Self-use only",
-            "nl": "Alleen zelfverbruik"
+            "nl": "Alleen zelfverbruik",
+            "fr": "Autoconsommation uniquement",
+            "de": "Nur Eigenverbrauch"
           }
         },
         {
           "id": "no_production",
           "title": {
             "en": "No production",
-            "nl": "Geen productie"
+            "nl": "Geen productie",
+            "fr": "Aucune production",
+            "de": "Keine Produktion"
           }
         }
       ]
@@ -117,7 +139,9 @@
       "type": "group",
       "label": {
         "en": "Enphase account",
-        "nl": "Enphase-account"
+        "nl": "Enphase-account",
+        "fr": "Compte Enphase",
+        "de": "Enphase-Konto"
       },
       "children": [
         {
@@ -125,7 +149,9 @@
           "type": "text",
           "label": {
             "en": "Email address",
-            "nl": "E-mailadres"
+            "nl": "E-mailadres",
+            "fr": "Adresse e-mail",
+            "de": "E-Mail-Adresse"
           },
           "placeholder": "owner-or-installer@email.com",
           "required": true,
@@ -136,7 +162,9 @@
           "type": "password",
           "label": {
             "en": "Password",
-            "nl": "Wachtwoord"
+            "nl": "Wachtwoord",
+            "fr": "Mot de passe",
+            "de": "Passwort"
           },
           "required": true,
           "value": ""
@@ -147,7 +175,9 @@
       "type": "group",
       "label": {
         "en": "Envoy gateway",
-        "nl": "Envoy-gateway"
+        "nl": "Envoy-gateway",
+        "fr": "Passerelle Envoy",
+        "de": "Envoy-Gateway"
       },
       "children": [
         {
@@ -155,7 +185,9 @@
           "type": "text",
           "label": {
             "en": "Serial number",
-            "nl": "Serienummer"
+            "nl": "Serienummer",
+            "fr": "Numéro de série",
+            "de": "Seriennummer"
           },
           "placeholder": "122226012345",
           "required": true,
@@ -166,7 +198,9 @@
           "type": "text",
           "label": {
             "en": "Local IP address",
-            "nl": "Lokaal IP-adres"
+            "nl": "Lokaal IP-adres",
+            "fr": "Adresse IP locale",
+            "de": "Lokale IP-Adresse"
           },
           "placeholder": "10.0.0.123",
           "required": true,
@@ -178,7 +212,9 @@
       "type": "group",
       "label": {
         "en": "Advanced settings",
-        "nl": "Geavanceerde instellingen"
+        "nl": "Geavanceerde instellingen",
+        "fr": "Paramètres avancés",
+        "de": "Erweiterte Einstellungen"
       },
       "children": [
         {
@@ -186,11 +222,15 @@
           "type": "checkbox",
           "label": {
             "en": "Always on",
-            "nl": "Altijd aan"
+            "nl": "Altijd aan",
+            "fr": "Toujours activé",
+            "de": "Immer eingeschaltet"
           },
           "hint": {
             "en": "Prevent this device from turning off, even when running 'Turn all devices off' flows.",
-            "nl": "Voorkom dat dit apparaat wordt uitgeschakeld, zelfs bij 'Schakel alle apparaten uit'-flows."
+            "nl": "Voorkom dat dit apparaat wordt uitgeschakeld, zelfs bij 'Schakel alle apparaten uit'-flows.",
+            "fr": "Empêche cet appareil de s'éteindre, même lors de l'exécution de Flows « Éteindre tous les appareils ».",
+            "de": "Verhindert, dass dieses Gerät ausgeschaltet wird, auch wenn Flows „Alle Geräte ausschalten“ ausgeführt werden."
           },
           "value": false
         },
@@ -199,11 +239,15 @@
           "type": "number",
           "label": {
             "en": "Self-use offset",
-            "nl": "Zelfverbruik offset"
+            "nl": "Zelfverbruik offset",
+            "fr": "Décalage de l'autoconsommation",
+            "de": "Versatz für Eigenverbrauch"
           },
           "description": {
             "en": "The export limit value in Watts used when in Self-use only mode (defaults to 0).",
-            "nl": "De terugleverlimiet in Watt die wordt gebruikt in de modus Alleen zelfverbruik (standaard 0)."
+            "nl": "De terugleverlimiet in Watt die wordt gebruikt in de modus Alleen zelfverbruik (standaard 0).",
+            "fr": "Valeur limite d'export en watts utilisée en mode Autoconsommation uniquement (0 par défaut).",
+            "de": "Der Einspeisegrenzwert in Watt, der im Modus „Nur Eigenverbrauch“ verwendet wird (Standard 0)."
           },
           "required": true,
           "value": 0,
@@ -214,11 +258,15 @@
           "type": "number",
           "label": {
             "en": "Update interval",
-            "nl": "Update-interval"
+            "nl": "Update-interval",
+            "fr": "Intervalle de mise à jour",
+            "de": "Aktualisierungsintervall"
           },
           "hint": {
             "en": "How often live power is read from the gateway, in seconds (5-120, default 15). Shorter intervals give faster updates but put more load on the Envoy.",
-            "nl": "Hoe vaak het actuele vermogen van de gateway wordt uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer."
+            "nl": "Hoe vaak het actuele vermogen van de gateway wordt uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer.",
+            "fr": "Fréquence de lecture de la puissance en direct sur la passerelle, en secondes (5 à 120, 15 par défaut). Des intervalles plus courts donnent des mises à jour plus rapides, mais sollicitent davantage l'Envoy.",
+            "de": "Wie oft die aktuelle Leistung vom Gateway abgerufen wird, in Sekunden (5 bis 120, Standard 15). Kürzere Intervalle liefern schnellere Aktualisierungen, belasten den Envoy aber stärker."
           },
           "value": 15,
           "min": 5,

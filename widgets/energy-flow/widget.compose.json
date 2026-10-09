@@ -1,7 +1,9 @@
 {
   "name": {
     "en": "Energy flow",
-    "nl": "Energiestroom"
+    "nl": "Energiestroom",
+    "fr": "Flux d'énergie",
+    "de": "Energiefluss"
   },
   "height": 300,
   "settings": [
@@ -10,11 +12,15 @@
       "type": "number",
       "title": {
         "en": "Track opacity (%)",
-        "nl": "Dekking van het spoor (%)"
+        "nl": "Dekking van het spoor (%)",
+        "fr": "Opacité du tracé (%)",
+        "de": "Deckkraft der Spur (%)"
       },
       "hint": {
         "en": "Brightness of the faint band shown behind the particles.",
-        "nl": "Helderheid van de vage band achter de deeltjes."
+        "nl": "Helderheid van de vage band achter de deeltjes.",
+        "fr": "Luminosité de la bande discrète affichée derrière les particules.",
+        "de": "Helligkeit des schwachen Bandes hinter den Partikeln."
       },
       "value": 20,
       "min": 0,
@@ -25,11 +31,15 @@
       "type": "number",
       "title": {
         "en": "Particle speed (%)",
-        "nl": "Snelheid van deeltjes (%)"
+        "nl": "Snelheid van deeltjes (%)",
+        "fr": "Vitesse des particules (%)",
+        "de": "Geschwindigkeit der Partikel (%)"
       },
       "hint": {
         "en": "Overall flow speed of the particles. 100 = default.",
-        "nl": "Algemene stroomsnelheid van de deeltjes. 100 = standaard."
+        "nl": "Algemene stroomsnelheid van de deeltjes. 100 = standaard.",
+        "fr": "Vitesse globale d'écoulement des particules. 100 = valeur par défaut.",
+        "de": "Gesamtgeschwindigkeit der Partikel. 100 = Standard."
       },
       "value": 100,
       "min": 10,
@@ -40,11 +50,15 @@
       "type": "number",
       "title": {
         "en": "Trail length",
-        "nl": "Lengte van de staart"
+        "nl": "Lengte van de staart",
+        "fr": "Longueur de la traînée",
+        "de": "Länge des Schweifs"
       },
       "hint": {
         "en": "Length of each particle's fading tail (2 to 40).",
-        "nl": "Lengte van de vervagende staart van elk deeltje (2 tot 40)."
+        "nl": "Lengte van de vervagende staart van elk deeltje (2 tot 40).",
+        "fr": "Longueur de la traînée qui s'estompe derrière chaque particule (2 à 40).",
+        "de": "Länge des verblassenden Schweifs jedes Partikels (2 bis 40)."
       },
       "value": 10,
       "min": 2,
@@ -55,11 +69,15 @@
       "type": "number",
       "title": {
         "en": "Particle opacity (%)",
-        "nl": "Dekking van deeltjes (%)"
+        "nl": "Dekking van deeltjes (%)",
+        "fr": "Opacité des particules (%)",
+        "de": "Deckkraft der Partikel (%)"
       },
       "hint": {
         "en": "Brightness of the moving particles. 100 = fully opaque.",
-        "nl": "Helderheid van de bewegende deeltjes. 100 = volledig dekkend."
+        "nl": "Helderheid van de bewegende deeltjes. 100 = volledig dekkend.",
+        "fr": "Luminosité des particules en mouvement. 100 = totalement opaque.",
+        "de": "Helligkeit der bewegten Partikel. 100 = volle Deckkraft."
       },
       "value": 90,
       "min": 0,

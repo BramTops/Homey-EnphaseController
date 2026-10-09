@@ -2,7 +2,9 @@
   "type": "number",
   "title": {
     "en": "Inverter average",
-    "nl": "Omvormer gemiddelde"
+    "nl": "Omvormer gemiddelde",
+    "fr": "Moyenne des onduleurs",
+    "de": "Durchschnitt Wechselrichter"
   },
   "getable": true,
   "setable": false,

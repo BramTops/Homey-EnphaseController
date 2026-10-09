@@ -16,6 +16,7 @@ All notable changes to the Enphase Controller application for Homey Pro will be 
 - Adds animated energy flow widget (only for metered systems).
 - Homey alarm support for inverter problems.
 - Adds deprecation notices to timeline for older drivers.
+- Adds French and German language support.
 
 ## 2026-10-06
 

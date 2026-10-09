@@ -2,7 +2,9 @@
   "type": "string",
   "title": {
     "en": "Last Envoy update",
-    "nl": "Laatste Envoy update"
+    "nl": "Laatste Envoy update",
+    "fr": "Dernière mise à jour Envoy",
+    "de": "Letzte Envoy-Aktualisierung"
   },
   "getable": true,
   "setable": false,

@@ -10,11 +10,15 @@
   ],
   "name": {
     "en": "Enphase Controller",
-    "nl": "Enphase Controller"
+    "nl": "Enphase Controller",
+    "fr": "Enphase Controller",
+    "de": "Enphase Controller"
   },
   "description": {
     "en": "Monitor solar production, grid import and export, home consumption, and Enphase battery power and charge level. Control solar production, set custom limits, and restrict grid export. View live energy flows in a dashboard widget. The widget requires a new Solar, Grid, or Battery device.",
-    "nl": "Monitor zonneproductie, netafname en teruglevering, huisverbruik en het vermogen en laadniveau van Enphase-batterijen. Bestuur zonneproductie, stel limieten in en beperk net-teruglevering. Bekijk energiestromen live in een dashboardwidget. De widget vereist een nieuw Solar-, Grid- of Batterij-apparaat."
+    "nl": "Monitor zonneproductie, netafname en teruglevering, huisverbruik en het vermogen en laadniveau van Enphase-batterijen. Bestuur zonneproductie, stel limieten in en beperk net-teruglevering. Bekijk energiestromen live in een dashboardwidget. De widget vereist een nieuw Solar-, Grid- of Batterij-apparaat.",
+    "fr": "Surveillez la production solaire, l'import et l'export réseau, la consommation domestique, ainsi que la puissance et le niveau de charge des batteries Enphase. Contrôlez la production solaire, définissez des limites personnalisées et restreignez l'export vers le réseau. Affichez les flux d'énergie en direct dans un widget de tableau de bord. Le widget nécessite un nouvel appareil Solar, Grid ou Batterie.",
+    "de": "Überwachen Sie die Solarproduktion, Netzbezug und Netzeinspeisung, den Hausverbrauch sowie Leistung und Ladestand von Enphase-Batterien. Steuern Sie die Solarproduktion, legen Sie eigene Grenzen fest und begrenzen Sie die Netzeinspeisung. Zeigen Sie Energieflüsse live in einem Dashboard-Widget an. Das Widget erfordert ein neues Solar-, Grid- oder Batterie-Gerät."
   },
   "category": [
     "energy"
@@ -53,6 +57,40 @@
       "batterij",
       "net",
       "energiestroom"
+    ],
+    "fr": [
+      "enphase",
+      "envoy",
+      "iq",
+      "onduleur",
+      "contrôle",
+      "installateur",
+      "mainteneur",
+      "solaire",
+      "micro-onduleur",
+      "énergie",
+      "passerelle",
+      "tarifs dynamiques",
+      "batterie",
+      "réseau",
+      "flux d'énergie"
+    ],
+    "de": [
+      "enphase",
+      "envoy",
+      "iq",
+      "wechselrichter",
+      "steuerung",
+      "installateur",
+      "wartung",
+      "solar",
+      "mikro-wechselrichter",
+      "energie",
+      "gateway",
+      "dynamische tarife",
+      "batterie",
+      "netz",
+      "energiefluss"
     ]
   },
   "permissions": [],

@@ -2,11 +2,15 @@
   "type": "boolean",
   "title": {
     "en": "Production limiting",
-    "nl": "Productiebeperking"
+    "nl": "Productiebeperking",
+    "fr": "Limitation de production",
+    "de": "Produktionsbegrenzung"
   },
   "description": {
     "en": "Indicates whether the gateway supports dynamic production export limiting (tested during pairing).",
-    "nl": "Geeft aan of de gateway dynamische exportbeperking ondersteunt (getest tijdens koppelen)."
+    "nl": "Geeft aan of de gateway dynamische exportbeperking ondersteunt (getest tijdens koppelen).",
+    "fr": "Indique si la passerelle prend en charge la limitation dynamique de l'export de production (testé lors de l'association).",
+    "de": "Gibt an, ob das Gateway eine dynamische Begrenzung der Produktionseinspeisung unterstützt (wird bei der Kopplung geprüft)."
   },
   "getable": true,
   "setable": false,

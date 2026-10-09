@@ -2,7 +2,9 @@
   "type": "string",
   "title": {
     "en": "Power production",
-    "nl": "Stroomproductie"
+    "nl": "Stroomproductie",
+    "fr": "Production d'énergie",
+    "de": "Stromproduktion"
   },
   "getable": true,
   "setable": false,

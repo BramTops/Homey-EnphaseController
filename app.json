@@ -11,11 +11,15 @@
   ],
   "name": {
     "en": "Enphase Controller",
-    "nl": "Enphase Controller"
+    "nl": "Enphase Controller",
+    "fr": "Enphase Controller",
+    "de": "Enphase Controller"
   },
   "description": {
     "en": "Monitor solar production, grid import and export, home consumption, and Enphase battery power and charge level. Control solar production, set custom limits, and restrict grid export. View live energy flows in a dashboard widget. The widget requires a new Solar, Grid, or Battery device.",
-    "nl": "Monitor zonneproductie, netafname en teruglevering, huisverbruik en het vermogen en laadniveau van Enphase-batterijen. Bestuur zonneproductie, stel limieten in en beperk net-teruglevering. Bekijk energiestromen live in een dashboardwidget. De widget vereist een nieuw Solar-, Grid- of Batterij-apparaat."
+    "nl": "Monitor zonneproductie, netafname en teruglevering, huisverbruik en het vermogen en laadniveau van Enphase-batterijen. Bestuur zonneproductie, stel limieten in en beperk net-teruglevering. Bekijk energiestromen live in een dashboardwidget. De widget vereist een nieuw Solar-, Grid- of Batterij-apparaat.",
+    "fr": "Surveillez la production solaire, l'import et l'export réseau, la consommation domestique, ainsi que la puissance et le niveau de charge des batteries Enphase. Contrôlez la production solaire, définissez des limites personnalisées et restreignez l'export vers le réseau. Affichez les flux d'énergie en direct dans un widget de tableau de bord. Le widget nécessite un nouvel appareil Solar, Grid ou Batterie.",
+    "de": "Überwachen Sie die Solarproduktion, Netzbezug und Netzeinspeisung, den Hausverbrauch sowie Leistung und Ladestand von Enphase-Batterien. Steuern Sie die Solarproduktion, legen Sie eigene Grenzen fest und begrenzen Sie die Netzeinspeisung. Zeigen Sie Energieflüsse live in einem Dashboard-Widget an. Das Widget erfordert ein neues Solar-, Grid- oder Batterie-Gerät."
   },
   "category": [
     "energy"
@@ -54,6 +58,40 @@
       "batterij",
       "net",
       "energiestroom"
+    ],
+    "fr": [
+      "enphase",
+      "envoy",
+      "iq",
+      "onduleur",
+      "contrôle",
+      "installateur",
+      "mainteneur",
+      "solaire",
+      "micro-onduleur",
+      "énergie",
+      "passerelle",
+      "tarifs dynamiques",
+      "batterie",
+      "réseau",
+      "flux d'énergie"
+    ],
+    "de": [
+      "enphase",
+      "envoy",
+      "iq",
+      "wechselrichter",
+      "steuerung",
+      "installateur",
+      "wartung",
+      "solar",
+      "mikro-wechselrichter",
+      "energie",
+      "gateway",
+      "dynamische tarife",
+      "batterie",
+      "netz",
+      "energiefluss"
     ]
   },
   "permissions": [],
@@ -77,15 +115,21 @@
       {
         "title": {
           "en": "An alert was triggered",
-          "nl": "Er is een alarm afgegaan"
+          "nl": "Er is een alarm afgegaan",
+          "fr": "Une alerte a été déclenchée",
+          "de": "Ein Alarm wurde ausgelöst"
         },
         "titleFormatted": {
           "en": "An inverter alert was triggered",
-          "nl": "Er is een omvormer-alarm afgegaan"
+          "nl": "Er is een omvormer-alarm afgegaan",
+          "fr": "Une alerte d'onduleur a été déclenchée",
+          "de": "Ein Wechselrichter-Alarm wurde ausgelöst"
         },
         "description": {
           "en": "Fired when a new alert is registered.",
-          "nl": "Wordt geactiveerd wanneer er een nieuw alarm wordt geregistreerd."
+          "nl": "Wordt geactiveerd wanneer er een nieuw alarm wordt geregistreerd.",
+          "fr": "Déclenché lorsqu'une nouvelle alerte est enregistrée.",
+          "de": "Wird ausgelöst, wenn ein neuer Alarm registriert wird."
         },
         "args": [
           {
@@ -100,7 +144,9 @@
             "type": "string",
             "title": {
               "en": "Inverter Serial",
-              "nl": "Serienummer omvormer"
+              "nl": "Serienummer omvormer",
+              "fr": "Numéro de série de l'onduleur",
+              "de": "Seriennummer des Wechselrichters"
             }
           },
           {
@@ -108,7 +154,9 @@
             "type": "number",
             "title": {
               "en": "Inverter Index",
-              "nl": "Index omvormer"
+              "nl": "Index omvormer",
+              "fr": "Index de l'onduleur",
+              "de": "Index des Wechselrichters"
             }
           },
           {
@@ -116,7 +164,9 @@
             "type": "string",
             "title": {
               "en": "Alert Type",
-              "nl": "Alarmtype"
+              "nl": "Alarmtype",
+              "fr": "Type d'alerte",
+              "de": "Alarmtyp"
             }
           },
           {
@@ -124,7 +174,9 @@
             "type": "string",
             "title": {
               "en": "Alert Message",
-              "nl": "Alarmbericht"
+              "nl": "Alarmbericht",
+              "fr": "Message d'alerte",
+              "de": "Alarmmeldung"
             }
           }
         ],
@@ -133,15 +185,21 @@
       {
         "title": {
           "en": "Inverter power changed",
-          "nl": "Vermogen van omvormer gewijzigd"
+          "nl": "Vermogen van omvormer gewijzigd",
+          "fr": "Puissance de l'onduleur modifiée",
+          "de": "Leistung des Wechselrichters geändert"
         },
         "titleFormatted": {
           "en": "Inverter [[inverter_index]] power output changed",
-          "nl": "Vermogen van omvormer [[inverter_index]] gewijzigd"
+          "nl": "Vermogen van omvormer [[inverter_index]] gewijzigd",
+          "fr": "La puissance de sortie de l'onduleur [[inverter_index]] a changé",
+          "de": "Leistungsabgabe von Wechselrichter [[inverter_index]] hat sich geändert"
         },
         "description": {
           "en": "Fired when an inverter reports a change in power output.",
-          "nl": "Wordt geactiveerd wanneer een omvormer een wijziging in vermogen rapporteert."
+          "nl": "Wordt geactiveerd wanneer een omvormer een wijziging in vermogen rapporteert.",
+          "fr": "Déclenché lorsqu'un onduleur signale une variation de sa puissance de sortie.",
+          "de": "Wird ausgelöst, wenn ein Wechselrichter eine Änderung der Leistungsabgabe meldet."
         },
         "args": [
           {
@@ -154,7 +212,9 @@
             "type": "autocomplete",
             "title": {
               "en": "Select Inverter",
-              "nl": "Selecteer omvormer"
+              "nl": "Selecteer omvormer",
+              "fr": "Sélectionner l'onduleur",
+              "de": "Wechselrichter auswählen"
             }
           }
         ],
@@ -164,7 +224,9 @@
             "type": "string",
             "title": {
               "en": "Inverter Serial",
-              "nl": "Serienummer omvormer"
+              "nl": "Serienummer omvormer",
+              "fr": "Numéro de série de l'onduleur",
+              "de": "Seriennummer des Wechselrichters"
             }
           },
           {
@@ -172,7 +234,9 @@
             "type": "number",
             "title": {
               "en": "Inverter Index",
-              "nl": "Index omvormer"
+              "nl": "Index omvormer",
+              "fr": "Index de l'onduleur",
+              "de": "Index des Wechselrichters"
             }
           },
           {
@@ -180,7 +244,9 @@
             "type": "number",
             "title": {
               "en": "Power (W)",
-              "nl": "Vermogen (W)"
+              "nl": "Vermogen (W)",
+              "fr": "Puissance (W)",
+              "de": "Leistung (W)"
             }
           }
         ],
@@ -190,11 +256,15 @@
         "id": "grid_home_power_changed",
         "title": {
           "en": "The home consumption power changed",
-          "nl": "Het huisverbruik vermogen is veranderd"
+          "nl": "Het huisverbruik vermogen is veranderd",
+          "fr": "La puissance de consommation domestique a changé",
+          "de": "Die Leistung des Hausverbrauchs hat sich geändert"
         },
         "titleFormatted": {
           "en": "The home consumption power changed to [[value]] W",
-          "nl": "Het huisverbruik vermogen is veranderd naar [[value]] W"
+          "nl": "Het huisverbruik vermogen is veranderd naar [[value]] W",
+          "fr": "La puissance de consommation domestique est passée à [[value]] W",
+          "de": "Die Leistung des Hausverbrauchs hat sich auf [[value]] W geändert"
         },
         "tokens": [
           {
@@ -202,7 +272,9 @@
             "type": "number",
             "title": {
               "en": "Power (W)",
-              "nl": "Vermogen (W)"
+              "nl": "Vermogen (W)",
+              "fr": "Puissance (W)",
+              "de": "Leistung (W)"
             }
           }
         ],
@@ -218,11 +290,15 @@
         "id": "grid_home_energy_changed",
         "title": {
           "en": "The home consumption energy changed",
-          "nl": "Het huisverbruik is veranderd"
+          "nl": "Het huisverbruik is veranderd",
+          "fr": "L'énergie de consommation domestique a changé",
+          "de": "Die Energie des Hausverbrauchs hat sich geändert"
         },
         "titleFormatted": {
           "en": "The home consumption energy changed to [[value]] kWh",
-          "nl": "Het huisverbruik is veranderd naar [[value]] kWh"
+          "nl": "Het huisverbruik is veranderd naar [[value]] kWh",
+          "fr": "L'énergie de consommation domestique est passée à [[value]] kWh",
+          "de": "Die Energie des Hausverbrauchs hat sich auf [[value]] kWh geändert"
         },
         "tokens": [
           {
@@ -230,7 +306,9 @@
             "type": "number",
             "title": {
               "en": "Energy (kWh)",
-              "nl": "Energie (kWh)"
+              "nl": "Energie (kWh)",
+              "fr": "Énergie (kWh)",
+              "de": "Energie (kWh)"
             }
           }
         ],
@@ -246,11 +324,15 @@
         "id": "grid_home_energy_today_changed",
         "title": {
           "en": "The home consumption energy today changed",
-          "nl": "Het huisverbruik vandaag is veranderd"
+          "nl": "Het huisverbruik vandaag is veranderd",
+          "fr": "L'énergie de consommation domestique d'aujourd'hui a changé",
+          "de": "Die Energie des Hausverbrauchs heute hat sich geändert"
         },
         "titleFormatted": {
           "en": "The home consumption energy today changed to [[value]] kWh",
-          "nl": "Het huisverbruik vandaag is veranderd naar [[value]] kWh"
+          "nl": "Het huisverbruik vandaag is veranderd naar [[value]] kWh",
+          "fr": "L'énergie de consommation domestique d'aujourd'hui est passée à [[value]] kWh",
+          "de": "Die Energie des Hausverbrauchs heute hat sich auf [[value]] kWh geändert"
         },
         "tokens": [
           {
@@ -258,7 +340,9 @@
             "type": "number",
             "title": {
               "en": "Energy (kWh)",
-              "nl": "Energie (kWh)"
+              "nl": "Energie (kWh)",
+              "fr": "Énergie (kWh)",
+              "de": "Energie (kWh)"
             }
           }
         ],
@@ -359,11 +443,15 @@
       {
         "title": {
           "en": "Clear all active alerts",
-          "nl": "Wis alle actieve alarmen"
+          "nl": "Wis alle actieve alarmen",
+          "fr": "Effacer toutes les alertes actives",
+          "de": "Alle aktiven Alarme löschen"
         },
         "description": {
           "en": "Resets the alert engine state, clearing all active flags.",
-          "nl": "Reset de status van de alarmen en wist alle actieve alarmen."
+          "nl": "Reset de status van de alarmen en wist alle actieve alarmen.",
+          "fr": "Réinitialise l'état du moteur d'alertes et efface tous les indicateurs actifs.",
+          "de": "Setzt den Status der Alarm-Engine zurück und löscht alle aktiven Markierungen."
         },
         "args": [
           {
@@ -377,15 +465,21 @@
       {
         "title": {
           "en": "Clear active alert for inverter",
-          "nl": "Wis actief alarm voor omvormer"
+          "nl": "Wis actief alarm voor omvormer",
+          "fr": "Effacer l'alerte active d'un onduleur",
+          "de": "Aktiven Alarm eines Wechselrichters löschen"
         },
         "titleFormatted": {
           "en": "Clear active alert for inverter [[inverter_index]]",
-          "nl": "Wis actief alarm voor omvormer [[inverter_index]]"
+          "nl": "Wis actief alarm voor omvormer [[inverter_index]]",
+          "fr": "Effacer l'alerte active de l'onduleur [[inverter_index]]",
+          "de": "Aktiven Alarm von Wechselrichter [[inverter_index]] löschen"
         },
         "description": {
           "en": "Resets the alert state for a specific inverter.",
-          "nl": "Reset de alarmstatus voor een specifieke omvormer."
+          "nl": "Reset de alarmstatus voor een specifieke omvormer.",
+          "fr": "Réinitialise l'état d'alerte d'un onduleur spécifique.",
+          "de": "Setzt den Alarmstatus für einen bestimmten Wechselrichter zurück."
         },
         "args": [
           {
@@ -398,7 +492,9 @@
             "type": "autocomplete",
             "title": {
               "en": "Select Inverter",
-              "nl": "Selecteer omvormer"
+              "nl": "Selecteer omvormer",
+              "fr": "Sélectionner l'onduleur",
+              "de": "Wechselrichter auswählen"
             }
           }
         ],
@@ -410,7 +506,9 @@
     {
       "name": {
         "en": "Enphase Battery",
-        "nl": "Enphase Batterij"
+        "nl": "Enphase Batterij",
+        "fr": "Batterie Enphase",
+        "de": "Enphase Batterie"
       },
       "images": {
         "small": "/drivers/battery/assets/images/small.png",
@@ -430,25 +528,33 @@
         "measure_power": {
           "title": {
             "en": "Battery power",
-            "nl": "Batterijvermogen"
+            "nl": "Batterijvermogen",
+            "fr": "Puissance de la batterie",
+            "de": "Batterieleistung"
           }
         },
         "measure_battery": {
           "title": {
             "en": "Battery level",
-            "nl": "Batterijniveau"
+            "nl": "Batterijniveau",
+            "fr": "Niveau de la batterie",
+            "de": "Ladestand"
           }
         },
         "meter_power.charged": {
           "title": {
             "en": "Charged",
-            "nl": "Opgeladen"
+            "nl": "Opgeladen",
+            "fr": "Chargée",
+            "de": "Geladen"
           }
         },
         "meter_power.discharged": {
           "title": {
             "en": "Discharged",
-            "nl": "Ontladen"
+            "nl": "Ontladen",
+            "fr": "Déchargée",
+            "de": "Entladen"
           }
         }
       },
@@ -478,7 +584,9 @@
           "type": "group",
           "label": {
             "en": "Enphase account",
-            "nl": "Enphase-account"
+            "nl": "Enphase-account",
+            "fr": "Compte Enphase",
+            "de": "Enphase-Konto"
           },
           "children": [
             {
@@ -486,7 +594,9 @@
               "type": "text",
               "label": {
                 "en": "Email address",
-                "nl": "E-mailadres"
+                "nl": "E-mailadres",
+                "fr": "Adresse e-mail",
+                "de": "E-Mail-Adresse"
               },
               "placeholder": "owner-or-installer@email.com",
               "required": true,
@@ -497,7 +607,9 @@
               "type": "password",
               "label": {
                 "en": "Password",
-                "nl": "Wachtwoord"
+                "nl": "Wachtwoord",
+                "fr": "Mot de passe",
+                "de": "Passwort"
               },
               "required": true,
               "value": ""
@@ -508,7 +620,9 @@
           "type": "group",
           "label": {
             "en": "Envoy gateway",
-            "nl": "Envoy-gateway"
+            "nl": "Envoy-gateway",
+            "fr": "Passerelle Envoy",
+            "de": "Envoy-Gateway"
           },
           "children": [
             {
@@ -516,7 +630,9 @@
               "type": "text",
               "label": {
                 "en": "Serial number",
-                "nl": "Serienummer"
+                "nl": "Serienummer",
+                "fr": "Numéro de série",
+                "de": "Seriennummer"
               },
               "placeholder": "122226012345",
               "required": true,
@@ -527,7 +643,9 @@
               "type": "text",
               "label": {
                 "en": "Local IP address",
-                "nl": "Lokaal IP-adres"
+                "nl": "Lokaal IP-adres",
+                "fr": "Adresse IP locale",
+                "de": "Lokale IP-Adresse"
               },
               "placeholder": "10.0.0.123",
               "required": true,
@@ -539,7 +657,9 @@
           "type": "group",
           "label": {
             "en": "Advanced settings",
-            "nl": "Geavanceerde instellingen"
+            "nl": "Geavanceerde instellingen",
+            "fr": "Paramètres avancés",
+            "de": "Erweiterte Einstellungen"
           },
           "children": [
             {
@@ -547,11 +667,15 @@
               "type": "number",
               "label": {
                 "en": "Update interval",
-                "nl": "Update-interval"
+                "nl": "Update-interval",
+                "fr": "Intervalle de mise à jour",
+                "de": "Aktualisierungsintervall"
               },
               "hint": {
                 "en": "How often live battery power and charge level are read from the gateway, in seconds (5-120, default 15). Shorter intervals give faster updates but put more load on the Envoy.",
-                "nl": "Hoe vaak het actuele batterijvermogen en laadniveau van de gateway worden uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer."
+                "nl": "Hoe vaak het actuele batterijvermogen en laadniveau van de gateway worden uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer.",
+                "fr": "Fréquence de lecture de la puissance et du niveau de charge de la batterie sur la passerelle, en secondes (5 à 120, 15 par défaut). Des intervalles plus courts donnent des mises à jour plus rapides, mais sollicitent davantage l'Envoy.",
+                "de": "Wie oft Batterieleistung und Ladestand live vom Gateway abgerufen werden, in Sekunden (5 bis 120, Standard 15). Kürzere Intervalle liefern schnellere Aktualisierungen, belasten den Envoy aber stärker."
               },
               "value": 15,
               "min": 5,
@@ -563,12 +687,16 @@
               "type": "label",
               "label": {
                 "en": "Charged and discharged energy",
-                "nl": "Opgeladen en ontladen energie"
+                "nl": "Opgeladen en ontladen energie",
+                "fr": "Énergie chargée et déchargée",
+                "de": "Geladene und entladene Energie"
               },
               "value": "",
               "hint": {
                 "en": "Totals use the gateway's battery meter counters when available. Otherwise they are estimated from battery power over time and can differ slightly from the Enphase app. Totals are kept per gateway and survive removing and re-adding this device. This device only monitors the battery; it cannot control it.",
-                "nl": "Totalen gebruiken de tellers van de batterijmeter van de gateway als die beschikbaar zijn. Anders worden ze geschat op basis van het batterijvermogen in de tijd en kunnen ze licht afwijken van de Enphase-app. Totalen worden per gateway bijgehouden en blijven behouden als je dit apparaat verwijdert en opnieuw toevoegt. Dit apparaat bewaakt de batterij alleen; het kan de batterij niet aansturen."
+                "nl": "Totalen gebruiken de tellers van de batterijmeter van de gateway als die beschikbaar zijn. Anders worden ze geschat op basis van het batterijvermogen in de tijd en kunnen ze licht afwijken van de Enphase-app. Totalen worden per gateway bijgehouden en blijven behouden als je dit apparaat verwijdert en opnieuw toevoegt. Dit apparaat bewaakt de batterij alleen; het kan de batterij niet aansturen.",
+                "fr": "Les totaux utilisent les compteurs du compteur de batterie de la passerelle lorsqu'ils sont disponibles. Sinon, ils sont estimés à partir de la puissance de la batterie au fil du temps et peuvent légèrement différer de l'application Enphase. Les totaux sont conservés par passerelle et restent en place si vous supprimez puis rajoutez cet appareil. Cet appareil ne fait que surveiller la batterie ; il ne peut pas la commander.",
+                "de": "Die Summen verwenden die Zählerstände des Batteriemessgeräts am Gateway, sofern verfügbar. Andernfalls werden sie aus der Batterieleistung über die Zeit geschätzt und können geringfügig von der Enphase-App abweichen. Die Summen werden pro Gateway gespeichert und bleiben erhalten, wenn Sie dieses Gerät entfernen und erneut hinzufügen. Dieses Gerät überwacht nur die Batterie; es kann sie nicht steuern."
               }
             }
           ]
@@ -908,7 +1036,9 @@
     {
       "name": {
         "en": "Enphase Grid",
-        "nl": "Enphase Grid"
+        "nl": "Enphase Grid",
+        "fr": "Enphase Grid",
+        "de": "Enphase Grid"
       },
       "images": {
         "small": "/drivers/grid/assets/images/small.png",
@@ -933,61 +1063,81 @@
         "measure_power": {
           "title": {
             "en": "Grid power",
-            "nl": "Netstroom vermogen"
+            "nl": "Netstroom vermogen",
+            "fr": "Puissance réseau",
+            "de": "Netzleistung"
           }
         },
         "meter_power": {
           "title": {
             "en": "Grid energy imported",
-            "nl": "Netstroom energie geïmporteerd"
+            "nl": "Netstroom energie geïmporteerd",
+            "fr": "Énergie réseau importée",
+            "de": "Netzbezug (Energie)"
           }
         },
         "meter_power_today": {
           "title": {
             "en": "Grid energy imported today",
-            "nl": "Netstroom energie geïmporteerd vandaag"
+            "nl": "Netstroom energie geïmporteerd vandaag",
+            "fr": "Énergie réseau importée aujourd'hui",
+            "de": "Netzbezug heute"
           }
         },
         "meter_power.produced": {
           "title": {
             "en": "Grid energy exported",
-            "nl": "Netstroom energie geëxporteerd"
+            "nl": "Netstroom energie geëxporteerd",
+            "fr": "Énergie réseau exportée",
+            "de": "Netzeinspeisung (Energie)"
           }
         },
         "meter_power_today.produced": {
           "title": {
             "en": "Grid energy exported today",
-            "nl": "Netstroom energie geëxporteerd vandaag"
+            "nl": "Netstroom energie geëxporteerd vandaag",
+            "fr": "Énergie réseau exportée aujourd'hui",
+            "de": "Netzeinspeisung heute"
           }
         },
         "measure_power.home": {
           "title": {
             "en": "Home consumption power",
-            "nl": "Huisverbruik vermogen"
+            "nl": "Huisverbruik vermogen",
+            "fr": "Puissance de consommation domestique",
+            "de": "Leistung Hausverbrauch"
           }
         },
         "meter_power.home": {
           "title": {
             "en": "Home consumption energy",
-            "nl": "Huisverbruik energie"
+            "nl": "Huisverbruik energie",
+            "fr": "Énergie de consommation domestique",
+            "de": "Energie Hausverbrauch"
           }
         },
         "meter_power_today.home": {
           "title": {
             "en": "Home consumption energy today",
-            "nl": "Huisverbruik energie vandaag"
+            "nl": "Huisverbruik energie vandaag",
+            "fr": "Énergie de consommation domestique aujourd'hui",
+            "de": "Energie Hausverbrauch heute"
           }
         },
         "meter_power.home_produced": {
           "title": {
             "en": "Home energy exported",
-            "nl": "Huisenergie geëxporteerd"
+            "nl": "Huisenergie geëxporteerd",
+            "fr": "Énergie domestique exportée",
+            "de": "Energie Haus eingespeist"
           }
         },
         "meter_power_today.home_produced": {
           "title": {
             "en": "Home energy exported today",
-            "nl": "Huisenergie geëxporteerd vandaag"
+            "nl": "Huisenergie geëxporteerd vandaag",
+            "fr": "Énergie domestique exportée aujourd'hui",
+            "de": "Energie Haus heute eingespeist"
           }
         }
       },
@@ -1022,7 +1172,9 @@
           "type": "group",
           "label": {
             "en": "Enphase account",
-            "nl": "Enphase-account"
+            "nl": "Enphase-account",
+            "fr": "Compte Enphase",
+            "de": "Enphase-Konto"
           },
           "children": [
             {
@@ -1030,7 +1182,9 @@
               "type": "text",
               "label": {
                 "en": "Email address",
-                "nl": "E-mailadres"
+                "nl": "E-mailadres",
+                "fr": "Adresse e-mail",
+                "de": "E-Mail-Adresse"
               },
               "placeholder": "owner-or-installer@email.com",
               "required": true,
@@ -1041,7 +1195,9 @@
               "type": "password",
               "label": {
                 "en": "Password",
-                "nl": "Wachtwoord"
+                "nl": "Wachtwoord",
+                "fr": "Mot de passe",
+                "de": "Passwort"
               },
               "required": true,
               "value": ""
@@ -1052,7 +1208,9 @@
           "type": "group",
           "label": {
             "en": "Envoy gateway",
-            "nl": "Envoy-gateway"
+            "nl": "Envoy-gateway",
+            "fr": "Passerelle Envoy",
+            "de": "Envoy-Gateway"
           },
           "children": [
             {
@@ -1060,7 +1218,9 @@
               "type": "text",
               "label": {
                 "en": "Serial number",
-                "nl": "Serienummer"
+                "nl": "Serienummer",
+                "fr": "Numéro de série",
+                "de": "Seriennummer"
               },
               "placeholder": "122226012345",
               "required": true,
@@ -1071,7 +1231,9 @@
               "type": "text",
               "label": {
                 "en": "Local IP address",
-                "nl": "Lokaal IP-adres"
+                "nl": "Lokaal IP-adres",
+                "fr": "Adresse IP locale",
+                "de": "Lokale IP-Adresse"
               },
               "placeholder": "10.0.0.123",
               "required": true,
@@ -1083,7 +1245,9 @@
           "type": "group",
           "label": {
             "en": "Advanced settings",
-            "nl": "Geavanceerde instellingen"
+            "nl": "Geavanceerde instellingen",
+            "fr": "Paramètres avancés",
+            "de": "Erweiterte Einstellungen"
           },
           "children": [
             {
@@ -1091,11 +1255,15 @@
               "type": "number",
               "label": {
                 "en": "Update interval",
-                "nl": "Update-interval"
+                "nl": "Update-interval",
+                "fr": "Intervalle de mise à jour",
+                "de": "Aktualisierungsintervall"
               },
               "hint": {
                 "en": "How often live grid and home power is read from the gateway, in seconds (5-120, default 15). Shorter intervals give faster updates but put more load on the Envoy.",
-                "nl": "Hoe vaak het actuele net- en huisvermogen van de gateway wordt uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer."
+                "nl": "Hoe vaak het actuele net- en huisvermogen van de gateway wordt uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer.",
+                "fr": "Fréquence de lecture de la puissance réseau et domestique sur la passerelle, en secondes (5 à 120, 15 par défaut). Des intervalles plus courts donnent des mises à jour plus rapides, mais sollicitent davantage l'Envoy.",
+                "de": "Wie oft Netz- und Hausleistung vom Gateway abgerufen werden, in Sekunden (5 bis 120, Standard 15). Kürzere Intervalle liefern schnellere Aktualisierungen, belasten den Envoy aber stärker."
               },
               "value": 15,
               "min": 5,
@@ -1283,7 +1451,9 @@
     {
       "name": {
         "en": "Enphase Solar inverters",
-        "nl": "Enphase Solar inverters"
+        "nl": "Enphase Solar inverters",
+        "fr": "Onduleurs Enphase Solar",
+        "de": "Enphase Solar Wechselrichter"
       },
       "images": {
         "small": "/drivers/inverters/assets/images/small.png",
@@ -1321,7 +1491,9 @@
           "type": "group",
           "label": {
             "en": "Alert thresholds",
-            "nl": "Waarschuwingsdrempels"
+            "nl": "Waarschuwingsdrempels",
+            "fr": "Seuils d'alerte",
+            "de": "Alarmschwellen"
           },
           "children": [
             {
@@ -1329,7 +1501,9 @@
               "type": "number",
               "label": {
                 "en": "Inverter underperformance (%)",
-                "nl": "Onderprestatie omvormers (%)"
+                "nl": "Onderprestatie omvormers (%)",
+                "fr": "Sous-performance des onduleurs (%)",
+                "de": "Minderleistung der Wechselrichter (%)"
               },
               "required": true,
               "value": 15,
@@ -1341,7 +1515,9 @@
               "type": "number",
               "label": {
                 "en": "Stale data timeout (hours)",
-                "nl": "Verouderde data time-out (uren)"
+                "nl": "Verouderde data time-out (uren)",
+                "fr": "Délai d'expiration des données obsolètes (heures)",
+                "de": "Zeitlimit für veraltete Daten (Stunden)"
               },
               "required": true,
               "value": 24,
@@ -1356,7 +1532,9 @@
     {
       "name": {
         "en": "Enphase Solar",
-        "nl": "Enphase Solar"
+        "nl": "Enphase Solar",
+        "fr": "Enphase Solar",
+        "de": "Enphase Solar"
       },
       "images": {
         "small": "/drivers/solar/assets/images/small.png",
@@ -1382,65 +1560,85 @@
         "onoff": {
           "title": {
             "en": "Power production",
-            "nl": "Stroomproductie"
+            "nl": "Stroomproductie",
+            "fr": "Production d'énergie",
+            "de": "Stromproduktion"
           }
         },
         "measure_power": {
           "title": {
             "en": "Solar power",
-            "nl": "Zonnevermogen"
+            "nl": "Zonnevermogen",
+            "fr": "Puissance solaire",
+            "de": "Solarleistung"
           }
         },
         "meter_power": {
           "title": {
             "en": "Solar energy",
-            "nl": "Zonne-energie"
+            "nl": "Zonne-energie",
+            "fr": "Énergie solaire",
+            "de": "Solarenergie"
           }
         },
         "meter_power_today": {
           "title": {
             "en": "Solar energy today",
-            "nl": "Zonne-energie vandaag"
+            "nl": "Zonne-energie vandaag",
+            "fr": "Énergie solaire aujourd'hui",
+            "de": "Solarenergie heute"
           }
         },
         "target_power": {
           "title": {
             "en": "Production limit",
-            "nl": "Productielimiet"
+            "nl": "Productielimiet",
+            "fr": "Limite de production",
+            "de": "Produktionsgrenze"
           }
         },
         "target_power_mode": {
           "title": {
             "en": "Production limit mode",
-            "nl": "Productielimiet modus"
+            "nl": "Productielimiet modus",
+            "fr": "Mode de limite de production",
+            "de": "Modus der Produktionsgrenze"
           },
           "values": [
             {
               "id": "device",
               "title": {
                 "en": "Normal solar production",
-                "nl": "Normale zonneproductie"
+                "nl": "Normale zonneproductie",
+                "fr": "Production solaire normale",
+                "de": "Normale Solarproduktion"
               }
             },
             {
               "id": "homey",
               "title": {
                 "en": "Custom solar production",
-                "nl": "Aangepaste zonneproductie"
+                "nl": "Aangepaste zonneproductie",
+                "fr": "Production solaire personnalisée",
+                "de": "Benutzerdefinierte Solarproduktion"
               }
             },
             {
               "id": "self_use",
               "title": {
                 "en": "Self-use only",
-                "nl": "Alleen zelfverbruik"
+                "nl": "Alleen zelfverbruik",
+                "fr": "Autoconsommation uniquement",
+                "de": "Nur Eigenverbrauch"
               }
             },
             {
               "id": "no_production",
               "title": {
                 "en": "No production",
-                "nl": "Geen productie"
+                "nl": "Geen productie",
+                "fr": "Aucune production",
+                "de": "Keine Produktion"
               }
             }
           ]
@@ -1472,7 +1670,9 @@
           "type": "group",
           "label": {
             "en": "Enphase account",
-            "nl": "Enphase-account"
+            "nl": "Enphase-account",
+            "fr": "Compte Enphase",
+            "de": "Enphase-Konto"
           },
           "children": [
             {
@@ -1480,7 +1680,9 @@
               "type": "text",
               "label": {
                 "en": "Email address",
-                "nl": "E-mailadres"
+                "nl": "E-mailadres",
+                "fr": "Adresse e-mail",
+                "de": "E-Mail-Adresse"
               },
               "placeholder": "owner-or-installer@email.com",
               "required": true,
@@ -1491,7 +1693,9 @@
               "type": "password",
               "label": {
                 "en": "Password",
-                "nl": "Wachtwoord"
+                "nl": "Wachtwoord",
+                "fr": "Mot de passe",
+                "de": "Passwort"
               },
               "required": true,
               "value": ""
@@ -1502,7 +1706,9 @@
           "type": "group",
           "label": {
             "en": "Envoy gateway",
-            "nl": "Envoy-gateway"
+            "nl": "Envoy-gateway",
+            "fr": "Passerelle Envoy",
+            "de": "Envoy-Gateway"
           },
           "children": [
             {
@@ -1510,7 +1716,9 @@
               "type": "text",
               "label": {
                 "en": "Serial number",
-                "nl": "Serienummer"
+                "nl": "Serienummer",
+                "fr": "Numéro de série",
+                "de": "Seriennummer"
               },
               "placeholder": "122226012345",
               "required": true,
@@ -1521,7 +1729,9 @@
               "type": "text",
               "label": {
                 "en": "Local IP address",
-                "nl": "Lokaal IP-adres"
+                "nl": "Lokaal IP-adres",
+                "fr": "Adresse IP locale",
+                "de": "Lokale IP-Adresse"
               },
               "placeholder": "10.0.0.123",
               "required": true,
@@ -1533,7 +1743,9 @@
           "type": "group",
           "label": {
             "en": "Advanced settings",
-            "nl": "Geavanceerde instellingen"
+            "nl": "Geavanceerde instellingen",
+            "fr": "Paramètres avancés",
+            "de": "Erweiterte Einstellungen"
           },
           "children": [
             {
@@ -1541,11 +1753,15 @@
               "type": "checkbox",
               "label": {
                 "en": "Always on",
-                "nl": "Altijd aan"
+                "nl": "Altijd aan",
+                "fr": "Toujours activé",
+                "de": "Immer eingeschaltet"
               },
               "hint": {
                 "en": "Prevent this device from turning off, even when running 'Turn all devices off' flows.",
-                "nl": "Voorkom dat dit apparaat wordt uitgeschakeld, zelfs bij 'Schakel alle apparaten uit'-flows."
+                "nl": "Voorkom dat dit apparaat wordt uitgeschakeld, zelfs bij 'Schakel alle apparaten uit'-flows.",
+                "fr": "Empêche cet appareil de s'éteindre, même lors de l'exécution de Flows « Éteindre tous les appareils ».",
+                "de": "Verhindert, dass dieses Gerät ausgeschaltet wird, auch wenn Flows „Alle Geräte ausschalten“ ausgeführt werden."
               },
               "value": false
             },
@@ -1554,11 +1770,15 @@
               "type": "number",
               "label": {
                 "en": "Self-use offset",
-                "nl": "Zelfverbruik offset"
+                "nl": "Zelfverbruik offset",
+                "fr": "Décalage de l'autoconsommation",
+                "de": "Versatz für Eigenverbrauch"
               },
               "description": {
                 "en": "The export limit value in Watts used when in Self-use only mode (defaults to 0).",
-                "nl": "De terugleverlimiet in Watt die wordt gebruikt in de modus Alleen zelfverbruik (standaard 0)."
+                "nl": "De terugleverlimiet in Watt die wordt gebruikt in de modus Alleen zelfverbruik (standaard 0).",
+                "fr": "Valeur limite d'export en watts utilisée en mode Autoconsommation uniquement (0 par défaut).",
+                "de": "Der Einspeisegrenzwert in Watt, der im Modus „Nur Eigenverbrauch“ verwendet wird (Standard 0)."
               },
               "required": true,
               "value": 0,
@@ -1569,11 +1789,15 @@
               "type": "number",
               "label": {
                 "en": "Update interval",
-                "nl": "Update-interval"
+                "nl": "Update-interval",
+                "fr": "Intervalle de mise à jour",
+                "de": "Aktualisierungsintervall"
               },
               "hint": {
                 "en": "How often live power is read from the gateway, in seconds (5-120, default 15). Shorter intervals give faster updates but put more load on the Envoy.",
-                "nl": "Hoe vaak het actuele vermogen van de gateway wordt uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer."
+                "nl": "Hoe vaak het actuele vermogen van de gateway wordt uitgelezen, in seconden (5-120, standaard 15). Kortere intervallen geven snellere updates maar belasten de Envoy meer.",
+                "fr": "Fréquence de lecture de la puissance en direct sur la passerelle, en secondes (5 à 120, 15 par défaut). Des intervalles plus courts donnent des mises à jour plus rapides, mais sollicitent davantage l'Envoy.",
+                "de": "Wie oft die aktuelle Leistung vom Gateway abgerufen wird, in Sekunden (5 bis 120, Standard 15). Kürzere Intervalle liefern schnellere Aktualisierungen, belasten den Envoy aber stärker."
               },
               "value": 15,
               "min": 5,
@@ -1590,7 +1814,9 @@
     "energy-flow": {
       "name": {
         "en": "Energy flow",
-        "nl": "Energiestroom"
+        "nl": "Energiestroom",
+        "fr": "Flux d'énergie",
+        "de": "Energiefluss"
       },
       "height": 300,
       "settings": [
@@ -1599,11 +1825,15 @@
           "type": "number",
           "title": {
             "en": "Track opacity (%)",
-            "nl": "Dekking van het spoor (%)"
+            "nl": "Dekking van het spoor (%)",
+            "fr": "Opacité du tracé (%)",
+            "de": "Deckkraft der Spur (%)"
           },
           "hint": {
             "en": "Brightness of the faint band shown behind the particles.",
-            "nl": "Helderheid van de vage band achter de deeltjes."
+            "nl": "Helderheid van de vage band achter de deeltjes.",
+            "fr": "Luminosité de la bande discrète affichée derrière les particules.",
+            "de": "Helligkeit des schwachen Bandes hinter den Partikeln."
           },
           "value": 20,
           "min": 0,
@@ -1614,11 +1844,15 @@
           "type": "number",
           "title": {
             "en": "Particle speed (%)",
-            "nl": "Snelheid van deeltjes (%)"
+            "nl": "Snelheid van deeltjes (%)",
+            "fr": "Vitesse des particules (%)",
+            "de": "Geschwindigkeit der Partikel (%)"
           },
           "hint": {
             "en": "Overall flow speed of the particles. 100 = default.",
-            "nl": "Algemene stroomsnelheid van de deeltjes. 100 = standaard."
+            "nl": "Algemene stroomsnelheid van de deeltjes. 100 = standaard.",
+            "fr": "Vitesse globale d'écoulement des particules. 100 = valeur par défaut.",
+            "de": "Gesamtgeschwindigkeit der Partikel. 100 = Standard."
           },
           "value": 100,
           "min": 10,
@@ -1629,11 +1863,15 @@
           "type": "number",
           "title": {
             "en": "Trail length",
-            "nl": "Lengte van de staart"
+            "nl": "Lengte van de staart",
+            "fr": "Longueur de la traînée",
+            "de": "Länge des Schweifs"
           },
           "hint": {
             "en": "Length of each particle's fading tail (2 to 40).",
-            "nl": "Lengte van de vervagende staart van elk deeltje (2 tot 40)."
+            "nl": "Lengte van de vervagende staart van elk deeltje (2 tot 40).",
+            "fr": "Longueur de la traînée qui s'estompe derrière chaque particule (2 à 40).",
+            "de": "Länge des verblassenden Schweifs jedes Partikels (2 bis 40)."
           },
           "value": 10,
           "min": 2,
@@ -1644,11 +1882,15 @@
           "type": "number",
           "title": {
             "en": "Particle opacity (%)",
-            "nl": "Dekking van deeltjes (%)"
+            "nl": "Dekking van deeltjes (%)",
+            "fr": "Opacité des particules (%)",
+            "de": "Deckkraft der Partikel (%)"
           },
           "hint": {
             "en": "Brightness of the moving particles. 100 = fully opaque.",
-            "nl": "Helderheid van de bewegende deeltjes. 100 = volledig dekkend."
+            "nl": "Helderheid van de bewegende deeltjes. 100 = volledig dekkend.",
+            "fr": "Luminosité des particules en mouvement. 100 = totalement opaque.",
+            "de": "Helligkeit der bewegten Partikel. 100 = volle Deckkraft."
           },
           "value": 90,
           "min": 0,
@@ -1673,7 +1915,9 @@
       "type": "boolean",
       "title": {
         "en": "Inverter Alarm",
-        "nl": "Omvormer-alarm"
+        "nl": "Omvormer-alarm",
+        "fr": "Alarme onduleur",
+        "de": "Wechselrichter-Alarm"
       },
       "getable": true,
       "setable": false,
@@ -1684,11 +1928,15 @@
       "type": "number",
       "title": {
         "en": "Micro-inverters",
-        "nl": "Micro-omvormers"
+        "nl": "Micro-omvormers",
+        "fr": "Micro-onduleurs",
+        "de": "Mikro-Wechselrichter"
       },
       "description": {
         "en": "Number of micro-inverters connected to the Envoy gateway.",
-        "nl": "Aantal micro-omvormers verbonden met de Envoy gateway."
+        "nl": "Aantal micro-omvormers verbonden met de Envoy gateway.",
+        "fr": "Nombre de micro-onduleurs connectés à la passerelle Envoy.",
+        "de": "Anzahl der mit dem Envoy-Gateway verbundenen Mikro-Wechselrichter."
       },
       "getable": true,
       "setable": false,
@@ -1701,11 +1949,15 @@
       "type": "boolean",
       "title": {
         "en": "Control access",
-        "nl": "Besturingstoegang"
+        "nl": "Besturingstoegang",
+        "fr": "Accès au contrôle",
+        "de": "Steuerungszugriff"
       },
       "description": {
         "en": "Enables the power toggle for this device. Determined by the use of an owner or installer account.",
-        "nl": "Activeert de aan/uit-schakelaar voor dit apparaat. Bepaald door het gebruik van een eigenaars- of installateursaccount."
+        "nl": "Activeert de aan/uit-schakelaar voor dit apparaat. Bepaald door het gebruik van een eigenaars- of installateursaccount.",
+        "fr": "Active le bouton marche/arrêt de cet appareil. Déterminé par l'utilisation d'un compte propriétaire ou installateur.",
+        "de": "Aktiviert den Ein-/Aus-Schalter für dieses Gerät. Wird durch die Verwendung eines Eigentümer- oder Installateurkontos bestimmt."
       },
       "getable": true,
       "setable": false,
@@ -1716,7 +1968,9 @@
       "type": "string",
       "title": {
         "en": "Inverter Status",
-        "nl": "Omvormer-status"
+        "nl": "Omvormer-status",
+        "fr": "État de l'onduleur",
+        "de": "Wechselrichterstatus"
       },
       "getable": true,
       "setable": false,
@@ -1727,7 +1981,9 @@
       "type": "number",
       "title": {
         "en": "Average load",
-        "nl": "Gemiddelde belasting"
+        "nl": "Gemiddelde belasting",
+        "fr": "Charge moyenne",
+        "de": "Durchschnittliche Auslastung"
       },
       "getable": true,
       "setable": false,
@@ -1741,7 +1997,9 @@
       "type": "number",
       "title": {
         "en": "Inverter average",
-        "nl": "Omvormer gemiddelde"
+        "nl": "Omvormer gemiddelde",
+        "fr": "Moyenne des onduleurs",
+        "de": "Durchschnitt Wechselrichter"
       },
       "getable": true,
       "setable": false,
@@ -1755,7 +2013,9 @@
       "type": "string",
       "title": {
         "en": "Last Envoy update",
-        "nl": "Laatste Envoy update"
+        "nl": "Laatste Envoy update",
+        "fr": "Dernière mise à jour Envoy",
+        "de": "Letzte Envoy-Aktualisierung"
       },
       "getable": true,
       "setable": false,
@@ -1766,11 +2026,15 @@
       "type": "number",
       "title": {
         "en": "Energy today",
-        "nl": "Energie vandaag"
+        "nl": "Energie vandaag",
+        "fr": "Énergie aujourd'hui",
+        "de": "Energie heute"
       },
       "description": {
         "en": "Energy produced today.",
-        "nl": "Geproduceerde energie vandaag."
+        "nl": "Geproduceerde energie vandaag.",
+        "fr": "Énergie produite aujourd'hui.",
+        "de": "Heute erzeugte Energie."
       },
       "getable": true,
       "setable": false,
@@ -1784,11 +2048,15 @@
       "type": "boolean",
       "title": {
         "en": "Metered gateway",
-        "nl": "Metered gateway"
+        "nl": "Metered gateway",
+        "fr": "Passerelle mesurée",
+        "de": "Gateway mit Messung"
       },
       "description": {
         "en": "Metered gateways respond much faster to on/off commands, and allow for power export limiting. Determined by the presence of active CT-clamps.",
-        "nl": "Metered gateways reageren veel sneller op aan/uit commando’s, en laten exportbegrenzing toe. Dit word bepaald door de aanwezigheid van actieve CT-klemmen."
+        "nl": "Metered gateways reageren veel sneller op aan/uit commando’s, en laten exportbegrenzing toe. Dit word bepaald door de aanwezigheid van actieve CT-klemmen.",
+        "fr": "Les passerelles mesurées réagissent beaucoup plus vite aux commandes marche/arrêt et permettent de limiter l'export d'énergie. Déterminé par la présence de pinces CT actives.",
+        "de": "Gateways mit Messung reagieren deutlich schneller auf Ein-/Aus-Befehle und ermöglichen die Begrenzung der Einspeisung. Wird durch das Vorhandensein aktiver Stromwandler bestimmt."
       },
       "getable": true,
       "setable": false,
@@ -1799,7 +2067,9 @@
       "type": "string",
       "title": {
         "en": "Power production",
-        "nl": "Stroomproductie"
+        "nl": "Stroomproductie",
+        "fr": "Production d'énergie",
+        "de": "Stromproduktion"
       },
       "getable": true,
       "setable": false,
@@ -1810,11 +2080,15 @@
       "type": "boolean",
       "title": {
         "en": "Production limiting",
-        "nl": "Productiebeperking"
+        "nl": "Productiebeperking",
+        "fr": "Limitation de production",
+        "de": "Produktionsbegrenzung"
       },
       "description": {
         "en": "Indicates whether the gateway supports dynamic production export limiting (tested during pairing).",
-        "nl": "Geeft aan of de gateway dynamische exportbeperking ondersteunt (getest tijdens koppelen)."
+        "nl": "Geeft aan of de gateway dynamische exportbeperking ondersteunt (getest tijdens koppelen).",
+        "fr": "Indique si la passerelle prend en charge la limitation dynamique de l'export de production (testé lors de l'association).",
+        "de": "Gibt an, ob das Gateway eine dynamische Begrenzung der Produktionseinspeisung unterstützt (wird bei der Kopplung geprüft)."
       },
       "getable": true,
       "setable": false,

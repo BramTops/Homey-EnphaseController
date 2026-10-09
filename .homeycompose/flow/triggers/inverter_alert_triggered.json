@@ -1,15 +1,21 @@
 {
   "title": {
     "en": "An alert was triggered",
-    "nl": "Er is een alarm afgegaan"
+    "nl": "Er is een alarm afgegaan",
+    "fr": "Une alerte a été déclenchée",
+    "de": "Ein Alarm wurde ausgelöst"
   },
   "titleFormatted": {
     "en": "An inverter alert was triggered",
-    "nl": "Er is een omvormer-alarm afgegaan"
+    "nl": "Er is een omvormer-alarm afgegaan",
+    "fr": "Une alerte d'onduleur a été déclenchée",
+    "de": "Ein Wechselrichter-Alarm wurde ausgelöst"
   },
   "description": {
     "en": "Fired when a new alert is registered.",
-    "nl": "Wordt geactiveerd wanneer er een nieuw alarm wordt geregistreerd."
+    "nl": "Wordt geactiveerd wanneer er een nieuw alarm wordt geregistreerd.",
+    "fr": "Déclenché lorsqu'une nouvelle alerte est enregistrée.",
+    "de": "Wird ausgelöst, wenn ein neuer Alarm registriert wird."
   },
   "args": [
     {
@@ -24,7 +30,9 @@
       "type": "string",
       "title": {
         "en": "Inverter Serial",
-        "nl": "Serienummer omvormer"
+        "nl": "Serienummer omvormer",
+        "fr": "Numéro de série de l'onduleur",
+        "de": "Seriennummer des Wechselrichters"
       }
     },
     {
@@ -32,7 +40,9 @@
       "type": "number",
       "title": {
         "en": "Inverter Index",
-        "nl": "Index omvormer"
+        "nl": "Index omvormer",
+        "fr": "Index de l'onduleur",
+        "de": "Index des Wechselrichters"
       }
     },
     {
@@ -40,7 +50,9 @@
       "type": "string",
       "title": {
         "en": "Alert Type",
-        "nl": "Alarmtype"
+        "nl": "Alarmtype",
+        "fr": "Type d'alerte",
+        "de": "Alarmtyp"
       }
     },
     {
@@ -48,7 +60,9 @@
       "type": "string",
       "title": {
         "en": "Alert Message",
-        "nl": "Alarmbericht"
+        "nl": "Alarmbericht",
+        "fr": "Message d'alerte",
+        "de": "Alarmmeldung"
       }
     }
   ]

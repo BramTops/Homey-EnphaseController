@@ -2,7 +2,9 @@
   "type": "boolean",
   "title": {
     "en": "Inverter Alarm",
-    "nl": "Omvormer-alarm"
+    "nl": "Omvormer-alarm",
+    "fr": "Alarme onduleur",
+    "de": "Wechselrichter-Alarm"
   },
   "getable": true,
   "setable": false,

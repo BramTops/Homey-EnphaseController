@@ -2,11 +2,15 @@
   "type": "boolean",
   "title": {
     "en": "Control access",
-    "nl": "Besturingstoegang"
+    "nl": "Besturingstoegang",
+    "fr": "Accès au contrôle",
+    "de": "Steuerungszugriff"
   },
   "description": {
     "en": "Enables the power toggle for this device. Determined by the use of an owner or installer account.",
-    "nl": "Activeert de aan/uit-schakelaar voor dit apparaat. Bepaald door het gebruik van een eigenaars- of installateursaccount."
+    "nl": "Activeert de aan/uit-schakelaar voor dit apparaat. Bepaald door het gebruik van een eigenaars- of installateursaccount.",
+    "fr": "Active le bouton marche/arrêt de cet appareil. Déterminé par l'utilisation d'un compte propriétaire ou installateur.",
+    "de": "Aktiviert den Ein-/Aus-Schalter für dieses Gerät. Wird durch die Verwendung eines Eigentümer- oder Installateurkontos bestimmt."
   },
   "getable": true,
   "setable": false,

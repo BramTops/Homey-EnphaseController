@@ -1,0 +1,260 @@
+{
+  "driver": {
+    "envoy": {
+      "name": "Panneaux solaires (Enphase)",
+      "error": {
+        "fields_required": "Veuillez remplir tous les champs obligatoires.",
+        "invalid_serial": "Le numéro de série doit comporter exactement 12 chiffres.",
+        "auth_failed": "Échec de la connexion : __message__",
+        "no_maintainer": "Un compte Installateur/Mainteneur est nécessaire pour activer ou désactiver la production d'énergie.",
+        "command_failed": "Échec de la commande : __message__",
+        "save_settings_failed": "Échec de l'enregistrement des paramètres : erreur de connexion : __message__"
+      },
+      "status": {
+        "on": "Activé",
+        "off": "Désactivé",
+        "read_only": "Lecture seule",
+        "read_write": "Lecture et écriture"
+      }
+    },
+    "gateway": {
+      "name": "Enphase Solar",
+      "error": {
+        "fields_required": "Veuillez remplir tous les champs obligatoires.",
+        "invalid_serial": "Numéro de série de la passerelle invalide.",
+        "auth_failed": "Échec de la connexion : __message__",
+        "no_maintainer": "Un compte Installateur/Mainteneur est nécessaire pour activer ou désactiver la production d'énergie.",
+        "always_on": "Cet appareil est réglé sur « Toujours activé » et ne peut pas être désactivé.",
+        "command_failed": "Échec de la commande : __message__",
+        "save_settings_failed": "Échec de l'enregistrement des paramètres : erreur de connexion : __message__",
+        "not_metered": "Cette passerelle ne semble pas équipée de mesure (aucune pince CT de production solaire détectée). Les commandes de limite de production nécessitent une passerelle équipée de mesure."
+      },
+      "status": {
+        "on": "Activé",
+        "off": "Désactivé"
+      }
+    },
+    "inverters": {
+      "name": "Onduleurs Enphase Solar",
+      "autocomplete": {
+        "any": "Tous les onduleurs"
+      },
+      "error": {
+        "no_gateway": "Aucun Enphase Solar n'est encore associé. Veuillez d'abord associer l'Enphase Solar.",
+        "all_paired": "Tous les Enphase Solar associés ont déjà des onduleurs ajoutés."
+      }
+    },
+    "homeload": {
+      "name": "Enphase Home",
+      "error": {
+        "fields_required": "Veuillez remplir tous les champs obligatoires.",
+        "invalid_serial": "Numéro de série de la passerelle invalide.",
+        "auth_failed": "Échec de la connexion : __message__",
+        "save_settings_failed": "Échec de l'enregistrement des paramètres : erreur de connexion : __message__"
+      }
+    },
+    "solar": {
+      "name": "Enphase Solar",
+      "error": {
+        "fields_required": "Veuillez remplir tous les champs obligatoires.",
+        "invalid_serial": "Numéro de série de la passerelle invalide.",
+        "invalid_ip": "Adresse IP invalide. Saisissez l'adresse IP de la passerelle (par exemple 10.0.0.123), et non un nom d'hôte.",
+        "auth_failed": "Échec de la connexion : __message__",
+        "no_maintainer": "Un compte Installateur/Mainteneur est nécessaire pour activer ou désactiver la production d'énergie.",
+        "always_on": "Cet appareil est réglé sur « Toujours activé » et ne peut pas être désactivé.",
+        "command_failed": "Échec de la commande : __message__",
+        "save_settings_failed": "Échec de l'enregistrement des paramètres : erreur de connexion : __message__",
+        "not_metered": "Cette passerelle ne semble pas équipée de mesure (aucune pince CT de production solaire détectée). Les commandes de limite de production nécessitent une passerelle équipée de mesure.",
+        "legacy_conflict": "Non active : un ancien appareil Enphase Envoy ou Solar existe pour cette passerelle. Recréez vos Flows, puis supprimez l'ancien appareil pour activer celui-ci."
+      },
+      "status": {
+        "on": "Activé",
+        "off": "Désactivé"
+      }
+    },
+    "grid": {
+      "name": "Enphase Grid",
+      "error": {
+        "fields_required": "Veuillez remplir tous les champs obligatoires.",
+        "invalid_serial": "Numéro de série de la passerelle invalide.",
+        "invalid_ip": "Adresse IP invalide. Saisissez l'adresse IP de la passerelle (par exemple 10.0.0.123), et non un nom d'hôte.",
+        "auth_failed": "Échec de la connexion : __message__",
+        "save_settings_failed": "Échec de l'enregistrement des paramètres : erreur de connexion : __message__"
+      }
+    },
+    "battery": {
+      "name": "Batterie Enphase",
+      "error": {
+        "fields_required": "Veuillez remplir tous les champs obligatoires.",
+        "invalid_serial": "Numéro de série de la passerelle invalide.",
+        "invalid_ip": "Adresse IP invalide. Saisissez l'adresse IP de la passerelle (par exemple 10.0.0.123), et non un nom d'hôte.",
+        "auth_failed": "Échec de la connexion : __message__",
+        "save_settings_failed": "Échec de l'enregistrement des paramètres : erreur de connexion : __message__"
+      },
+      "warning": {
+        "no_battery": "Aucune batterie détectée sur cette passerelle."
+      },
+      "pair": {
+        "scope": "Surveillance uniquement : cet appareil affiche la puissance de la batterie, le niveau de charge et l'énergie. Il ne peut pas commander la batterie."
+      }
+    }
+  },
+  "inverters": {
+    "alert": {
+      "message": {
+        "underperformance": "Le pic journalier est inférieur de __difference__ % à la médiane du système",
+        "stale": "L'onduleur n'a transmis aucune donnée depuis plus de __hours__ heure(s)",
+        "mismatch": "Liste d'onduleurs incohérente : __expected__ panneaux attendus, mais __found__ trouvés"
+      }
+    }
+  },
+  "timeline": {
+    "deprecated_envoy": "L'appareil passerelle Envoy obsolète sera bientôt supprimé. Utilisez désormais l'appareil Enphase Controller Solar.",
+    "migration_2_0_envoy": "Enphase Controller 2.0 : cet appareil passerelle Envoy est obsolète. Il continue de fonctionner pendant la période de migration vers la 2.0, mais les appareils obsolètes doivent être supprimés dans la version 2.1.x (le périmètre exact n'est pas encore défini). Passez au nouvel appareil Enphase Solar et recréez vos Flows ; l'historique de l'appareil risque d'être perdu. Un seul appareil solaire par passerelle est autorisé : ouvrez l'écran d'association d'Enphase Solar, enregistrez vos paramètres pour la migration, puis supprimez cet appareil et associez Enphase Solar.",
+    "migration_2_0_gateway": "Enphase Controller 2.0 : cet ancien appareil Enphase Solar est obsolète. Il continue de fonctionner pendant la période de migration vers la 2.0, mais les appareils obsolètes doivent être supprimés dans la version 2.1.x (le périmètre exact n'est pas encore défini). Passez au nouvel appareil Enphase Solar et recréez vos Flows ; l'historique de l'appareil risque d'être perdu. Un seul appareil solaire par passerelle est autorisé : ouvrez l'écran d'association d'Enphase Solar, enregistrez vos paramètres pour la migration, puis supprimez cet appareil et associez Enphase Solar.",
+    "migration_2_0_homeload": "Enphase Controller 2.0 : cet appareil Enphase Home est obsolète. Il continue de fonctionner pendant la période de migration vers la 2.0, mais les appareils obsolètes doivent être supprimés dans la version 2.1.x (le périmètre exact n'est pas encore défini). Ajoutez le nouvel appareil Enphase Grid, recréez vos Flows, puis supprimez cet appareil. Ne gardez pas les deux trop longtemps : leurs compteurs d'énergie seraient comptés deux fois dans Homey Energy. L'historique de l'appareil risque d'être perdu."
+  },
+  "pair": {
+    "start": {
+      "title": "Connectez votre passerelle Envoy",
+      "title_inverters": "Connectez les onduleurs Enphase Solar",
+      "subtitle": "Connectez-vous à votre passerelle. Compatible avec les comptes Propriétaire standard (lecture seule) et les comptes Installateur/DIY pour le contrôle du système.",
+      "discovery_badge": "✨ Passerelle Envoy détectée automatiquement sur le réseau !",
+      "email_label": "E-mail Enphase",
+      "email_placeholder": "ex. proprietaire-ou-installateur@email.com",
+      "password_label": "Mot de passe Enphase",
+      "password_placeholder": "Votre mot de passe",
+      "serial_label": "Numéro de série de la passerelle",
+      "serial_placeholder": "ex. 122226012345",
+      "ip_label": "Adresse IP de la passerelle",
+      "ip_placeholder": "ex. 10.0.0.123",
+      "btn_authenticate": "S'authentifier",
+      "btn_add_gateway": "Ajouter Solar à Homey",
+      "btn_add_inverters": "Ajouter les onduleurs à Homey",
+      "error_required_fields": "Veuillez remplir tous les champs obligatoires.",
+      "error_auth_failed": "Échec de l'authentification. Vérifiez vos identifiants.",
+      "success_title": "Authentification réussie !",
+      "success_subtitle": "Votre compte Enphase a été validé et la passerelle locale a été connectée avec succès.",
+      "role_maintainer": "Rôle Mainteneur / Installateur",
+      "desc_maintainer": "Contrôle total activé. Vous pouvez surveiller la production et activer ou désactiver la production d'énergie.",
+      "role_owner": "Rôle Propriétaire du système",
+      "desc_owner": "Lecture seule activée. Vous pouvez surveiller l'état de la production, mais le contrôle de la production d'énergie est verrouillé.",
+      "title_homeload": "Connectez votre Enphase Home",
+      "subtitle_homeload": "Connectez-vous à votre passerelle pour ajouter l'appareil de consommation domestique (substitut de compteur P1).",
+      "warning_title": "Attention requise",
+      "warning_subtitle": "Avertissements de vérification de la passerelle :",
+      "warning_bypass_desc": "Vous pouvez ignorer ces avertissements et continuer l'ajout de l'appareil, mais certaines fonctions risquent de ne pas fonctionner.",
+      "warning_not_metered": "Cette passerelle ne semble pas équipée de mesure (aucune pince EIM de production solaire détectée). Un substitut de compteur P1 nécessite une passerelle équipée de mesure pour récupérer les données de consommation.",
+      "warning_no_consumption": "La surveillance de la consommation est désactivée ou les pinces de consommation ne sont pas installées sur cette passerelle. Les données de consommation domestique ne seront pas disponibles.",
+      "btn_ignore_continue": "Ignorer les avertissements et continuer",
+      "btn_back": "Retour",
+      "success_subtitle_homeload": "Votre compte Enphase a été validé et l'appareil Home est prêt à être ajouté.",
+      "btn_add_homeload": "Ajouter Home à Homey",
+      "title_solar": "Connectez Enphase Solar",
+      "title_grid": "Connectez Enphase Grid",
+      "subtitle_grid": "Connectez-vous à votre passerelle pour ajouter l'import et l'export réseau ainsi que la consommation domestique (substitut de compteur P1).",
+      "success_subtitle_grid": "Votre compte Enphase a été validé et l'appareil Grid est prêt à être ajouté.",
+      "btn_add_grid": "Ajouter Grid à Homey",
+      "chooser_label": "Passerelles associées",
+      "password_saved_placeholder": "Enregistré : laisser vide pour réutiliser",
+      "serial_from_ip": "Numéro de série lu depuis la passerelle à cette adresse IP",
+      "serial_corrected": "Numéro de série corrigé pour correspondre à la passerelle à cette adresse IP (__serial__)",
+      "serial_unreadable": "Le numéro de série n'a pas pu être lu depuis la passerelle, veuillez le saisir manuellement.",
+      "reuse_device": "Les identifiants d'un appareil Enphase existant sur cette passerelle ont été trouvés. Laissez le mot de passe vide pour les réutiliser.",
+      "reuse_snapshot": "Les paramètres enregistrés de votre appareil précédent ont été trouvés. Laissez le mot de passe vide pour les réutiliser.",
+      "reuse_cache": "Votre compte Enphase utilisé précédemment a été trouvé. Laissez le mot de passe vide pour le réutiliser.",
+      "warning_legacy_grid": "Un ancien appareil Enphase Home existe déjà pour cette passerelle. Si vous conservez les deux, la même énergie réseau sera comptée deux fois dans Homey Energy. Recréez vos Flows avec le nouvel appareil, puis supprimez l'ancien appareil Enphase Home.",
+      "title_battery": "Connectez la batterie Enphase",
+      "subtitle_battery": "Connectez-vous à votre passerelle pour ajouter la puissance, le niveau de charge et l'énergie de la batterie.",
+      "success_subtitle_battery": "Votre compte Enphase a été validé et l'appareil Batterie est prêt à être ajouté.",
+      "btn_add_battery": "Ajouter la batterie à Homey",
+      "warning_no_battery": "Aucune batterie n'a été détectée sur cette passerelle. Vous pouvez tout de même ajouter l'appareil, mais il n'affichera aucune donnée tant qu'une batterie ne sera pas disponible.",
+      "warning_battery_unknown": "La détection de la batterie a échoué : on ne sait donc pas si une batterie est installée. Vous pouvez tout de même ajouter l'appareil.",
+      "error_invalid_serial": "Le numéro de série doit comporter exactement 12 chiffres (chiffres uniquement).",
+      "ip_auto_detected": "Adresse IP détectée automatiquement sur votre réseau",
+      "ip_not_found": "L'adresse IP de la passerelle est introuvable sur votre réseau, veuillez la saisir manuellement.",
+      "serial_auto_detected": "Numéro de série détecté automatiquement sur votre réseau",
+      "serial_not_found": "Le numéro de série de la passerelle est introuvable sur votre réseau, veuillez le saisir manuellement.",
+      "repair_title": "Réparer la connexion à la passerelle",
+      "repair_subtitle": "Mettez à jour vos identifiants Enphase ou l'adresse IP locale de la passerelle si elles ont changé.",
+      "btn_save_changes": "Enregistrer les modifications",
+      "warning_no_gridpower_but_homepower": "La surveillance de la puissance réseau (net-consumption) n'est pas active, mais la surveillance de la consommation domestique (total-consumption) l'est. Homey peut tout de même suivre la puissance consommée par la maison.",
+      "warning_no_gridpower": "La surveillance de la puissance réseau (net-consumption) n'est pas active, ou les pinces ne sont pas installées sur cette passerelle. Homey ne pourra pas suivre l'import et l'export principal du réseau."
+    },
+    "error": {
+      "legacy_solar_conflict": "Un ancien appareil Enphase Envoy ou Solar existe déjà pour cette passerelle. Supprimez d'abord l'ancien appareil, associez à nouveau, puis recréez vos Flows avec le nouvel appareil Enphase Solar."
+    },
+    "migration": {
+      "blocked_title": "Ancien appareil Enphase détecté",
+      "blocked_body": "Un ancien appareil Enphase Envoy ou Solar existe déjà pour cette passerelle. Une seule solution solaire par passerelle est prise en charge.",
+      "step_save": "1. Enregistrez vos paramètres ci-dessous (facultatif, évite de ressaisir votre compte).",
+      "step_remove": "2. Supprimez l'ancien appareil dans Homey.",
+      "step_pair": "3. Relancez l'association d'Enphase Solar.",
+      "step_flows": "4. Recréez vos Flows avec le nouvel appareil Enphase Solar.",
+      "btn_save": "Enregistrer les paramètres pour la migration",
+      "btn_discard": "Supprimer les paramètres enregistrés",
+      "status_saved": "Paramètres enregistrés. Ils seront réutilisés lors de l'association d'Enphase Solar après la suppression de l'ancien appareil.",
+      "saved_ok": "Paramètres enregistrés. Ils seront réutilisés lors de l'association d'Enphase Solar après la suppression de l'ancien appareil.",
+      "save_no_credentials": "Aucun compte enregistré n'a été trouvé sur l'ancien appareil. Vous devrez saisir à nouveau vos identifiants de compte.",
+      "save_failed": "L'enregistrement des paramètres a échoué. Vous pouvez continuer et saisir à nouveau vos identifiants de compte.",
+      "discarded": "Paramètres enregistrés supprimés."
+    }
+  },
+  "widget": {
+    "energy_flow": {
+      "number_locale": "fr-FR",
+      "node": {
+        "solar": "Solaire",
+        "grid": "Réseau",
+        "home": "Maison",
+        "battery": "Batterie"
+      },
+      "state": {
+        "importing": "Import",
+        "exporting": "Injection",
+        "idle": "Inactif",
+        "disconnected": "Déconnecté",
+        "consuming": "Consommation",
+        "charging": "En charge",
+        "discharging": "En décharge",
+        "no_data": "Aucune donnée",
+        "outdated": "Obsolète"
+      },
+      "message": {
+        "loading": "Chargement...",
+        "retry": "Réessayer",
+        "no_gateways": {
+          "title": "Aucune passerelle trouvée",
+          "body": "Ajoutez un appareil Enphase Solar, Grid ou Batterie pour afficher le flux d'énergie."
+        },
+        "upgrade": {
+          "title": "Mise à jour de l'appareil nécessaire",
+          "body": "Cette passerelle ne dispose que d'anciens appareils. Ajoutez un appareil Enphase Solar, Grid ou Batterie pour afficher le flux d'énergie."
+        },
+        "missing": {
+          "title": "Passerelle introuvable",
+          "body": "La passerelle sélectionnée n'est plus disponible. Choisissez une autre passerelle."
+        },
+        "choose": {
+          "title": "Choisissez une passerelle",
+          "body": "Sélectionnez la passerelle que ce widget doit afficher."
+        },
+        "waiting": {
+          "title": "En attente de données",
+          "body": "Les premières mesures ne sont pas encore arrivées."
+        },
+        "error": {
+          "title": "Impossible de charger les données",
+          "body": "Les données du flux d'énergie ne sont pas disponibles pour le moment. Nouvelle tentative automatique."
+        }
+      },
+      "chooser": {
+        "placeholder": "Choisissez une passerelle...",
+        "label": "Passerelle"
+      },
+      "aria": {
+        "summary": "Flux d'énergie"
+      }
+    }
+  }
+}
