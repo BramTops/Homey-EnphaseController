@@ -9,7 +9,7 @@ Store rules, for this file and .homeychangelog.json (JSON cannot hold comments, 
 
 All notable changes to the Enphase Controller application for Homey Pro will be documented in this file, grouped by work session (day) and described in a user-centric way.
 
-## 2.0.0 (2026-10-07)
+## 2.0.0 (2026-10-12)
 
 - This release reworks several internal systems for more reliability and future updates. Unfortunately some devices will have to be re-added.
 - Adds Enphase battery monitoring.
@@ -17,6 +17,7 @@ All notable changes to the Enphase Controller application for Homey Pro will be 
 - Homey alarm support for inverter problems.
 - Adds deprecation notices to timeline for older drivers.
 - Adds French and German language support.
+- Support for unwired production meters.
 
 ## 2026-10-06
 
