@@ -1,7 +1,7 @@
 {
   "driver": {
     "envoy": {
-      "name": "Zonnepanelen (Enphase)",
+      "name": "Envoy-gateway (Legacy)",
       "error": {
         "fields_required": "Vul alstublieft alle verplichte velden in.",
         "invalid_serial": "Serienummer moet exact 12 cijfers bevatten.",
@@ -18,7 +18,7 @@
       }
     },
     "gateway": {
-      "name": "Enphase Solar",
+      "name": "Enphase Solar (Legacy)",
       "error": {
         "fields_required": "Vul alstublieft alle verplichte velden in.",
         "invalid_serial": "Ongeldig gateway serienummer.",
@@ -45,7 +45,7 @@
       }
     },
     "homeload": {
-      "name": "Enphase Home",
+      "name": "Enphase Home (Legacy)",
       "error": {
         "fields_required": "Vul alstublieft alle verplichte velden in.",
         "invalid_serial": "Ongeldig gateway serienummer.",
@@ -65,7 +65,7 @@
         "command_failed": "Opdracht mislukt: __message__",
         "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__",
         "not_metered": "Deze gateway is niet gemeten (geen zonneproductie CT-klemmen gedetecteerd). Productielimiet opties vereisen een gemeten gateway.",
-        "legacy_conflict": "Niet actief: er bestaat een ouder Enphase Envoy- of Solar-apparaat voor deze gateway. Bouw je Flows opnieuw op en verwijder daarna het oude apparaat om dit apparaat in te schakelen."
+        "legacy_conflict": "Niet actief: er bestaat een apparaat van het type Envoy-gateway (Legacy) of Enphase Solar (Legacy) voor deze gateway. Bouw je Flows opnieuw op en verwijder daarna het oude apparaat om dit apparaat in te schakelen."
       },
       "status": {
         "on": "Aan",
@@ -109,14 +109,13 @@
     }
   },
   "timeline": {
-    "deprecated_envoy": "Het verouderde Envoy-gatewayapparaat wordt binnenkort verwijderd. Gebruik voortaan het Enphase Controller Solar-apparaat.",
-    "migration_2_0_envoy": "Enphase Controller: het huidige stuurprogramma voor het Envoy Gateway (Legacy)-apparaat is verouderd en wordt in een toekomstige versie verwijderd. Verwijder het apparaat, voeg het opnieuw toe (het nieuwe stuurprogramma wordt automatisch gebruikt) en bouw de betrokken Flows opnieuw op.",
-    "migration_2_0_gateway": "Enphase Controller: het huidige stuurprogramma voor het Enphase Solar-apparaat is verouderd en wordt in een toekomstige versie verwijderd. Verwijder het apparaat, voeg het opnieuw toe (het nieuwe stuurprogramma wordt automatisch gebruikt) en bouw de betrokken Flows opnieuw op.",
-    "migration_2_0_homeload": "Enphase Controller: het huidige stuurprogramma voor het Enphase Home-apparaat is verouderd en wordt in een toekomstige versie verwijderd. Verwijder het apparaat, voeg het opnieuw toe (het nieuwe stuurprogramma wordt automatisch gebruikt) en bouw de betrokken Flows opnieuw op."
+    "migration_2_0_envoy": "Enphase Controller: het stuurprogramma voor het apparaat Envoy-gateway (Legacy) is verouderd en wordt in een toekomstige versie verwijderd. Verwijder het apparaat, voeg het opnieuw toe (het nieuwe stuurprogramma wordt automatisch gebruikt) en bouw de betrokken Flows opnieuw op.",
+    "migration_2_0_gateway": "Enphase Controller: het stuurprogramma voor het apparaat Enphase Solar (Legacy) is verouderd en wordt in een toekomstige versie verwijderd. Verwijder het apparaat, voeg het opnieuw toe (het nieuwe stuurprogramma wordt automatisch gebruikt) en bouw de betrokken Flows opnieuw op.",
+    "migration_2_0_homeload": "Enphase Controller: het stuurprogramma voor het apparaat Enphase Home (Legacy) is verouderd en wordt in een toekomstige versie verwijderd. Verwijder het apparaat, voeg het opnieuw toe (het nieuwe stuurprogramma wordt automatisch gebruikt) en bouw de betrokken Flows opnieuw op."
   },
   "pair": {
     "start": {
-      "title": "Verbind uw Envoy-gateway",
+      "title": "Verbind uw Envoy-gateway (Legacy)",
       "title_inverters": "Verbind Enphase Solar inverters",
       "subtitle": "Verbind met uw gateway. Ondersteunt standaard Eigenaar-accounts (alleen-lezen) of Installateur/DIY-accounts voor systeembeheer.",
       "discovery_badge": "✨ Envoy-gateway automatisch gedetecteerd op het netwerk!",
@@ -140,7 +139,7 @@
       "role_owner": "Systeemeigenaarsrol",
       "desc_owner": "Alleen-lezen actief. U kunt de productiestatus monitoren, maar de stroomopwekking is vergrendeld.",
       "notice_production_meter_ignored": "Er zijn geen productie-CT-klemmen gedetecteerd: de productiemeter meet alleen ruis terwijl de omvormers produceren. \"Productiemeter negeren\" is ingeschakeld, dus het zonnevermogen komt van de microomvormers. U kunt dit wijzigen in de apparaatinstellingen.",
-      "title_homeload": "Verbind uw Enphase Home",
+      "title_homeload": "Verbind uw Enphase Home (Legacy)",
       "subtitle_homeload": "Verbind met uw gateway om het huisverbruik (substituut P1-meter) apparaat toe te voegen.",
       "warning_title": "Aandacht vereist",
       "warning_subtitle": "Gateway Verificatie Waarschuwingen:",
@@ -164,7 +163,7 @@
       "reuse_device": "Accountgegevens van een bestaand Enphase-apparaat op deze gateway gevonden. Laat het wachtwoord leeg om ze te hergebruiken.",
       "reuse_snapshot": "Bewaarde instellingen van je vorige apparaat gevonden. Laat het wachtwoord leeg om ze te hergebruiken.",
       "reuse_cache": "Je eerder gebruikte Enphase-account is gevonden. Laat het wachtwoord leeg om het te hergebruiken.",
-      "warning_legacy_grid": "Er bestaat al een ouder Enphase Home-apparaat voor deze gateway. Als je beide houdt, wordt dezelfde netenergie dubbel geteld in Homey Energy. Bouw je Flows opnieuw op met het nieuwe apparaat en verwijder daarna het oude Enphase Home-apparaat.",
+      "warning_legacy_grid": "Er bestaat al een apparaat van het type Enphase Home (Legacy) voor deze gateway. Als je beide houdt, wordt dezelfde netenergie dubbel geteld in Homey Energy. Bouw je Flows opnieuw op met het nieuwe apparaat en verwijder daarna het apparaat Enphase Home (Legacy).",
       "title_battery": "Verbind Enphase Batterij",
       "subtitle_battery": "Verbind met je gateway om batterijvermogen, laadniveau en energie toe te voegen.",
       "success_subtitle_battery": "Je Enphase-account is gevalideerd en het Batterij-apparaat is klaar om te worden toegevoegd.",
@@ -183,11 +182,11 @@
       "warning_no_gridpower": "Netstroommonitoring (net-consumption) is niet actief of er zijn geen klemmen geïnstalleerd op deze gateway. Homey kan het elektriciteitsnet import/export niet registreren."
     },
     "error": {
-      "legacy_solar_conflict": "Er bestaat al een ouder Enphase Envoy- of Solar-apparaat voor deze gateway. Verwijder eerst het oude apparaat, koppel daarna opnieuw en bouw dan je Flows opnieuw op met het nieuwe Enphase Solar-apparaat."
+      "legacy_solar_conflict": "Er bestaat al een apparaat van het type Envoy-gateway (Legacy) of Enphase Solar (Legacy) voor deze gateway. Verwijder eerst het oude apparaat, koppel daarna opnieuw en bouw dan je Flows opnieuw op met het nieuwe Enphase Solar-apparaat."
     },
     "migration": {
       "blocked_title": "Ouder Enphase-apparaat gevonden",
-      "blocked_body": "Er bestaat al een ouder Enphase Envoy- of Solar-apparaat voor deze gateway. Per gateway wordt maar één solar-apparaat ondersteund.",
+      "blocked_body": "Er bestaat al een apparaat van het type Envoy-gateway (Legacy) of Enphase Solar (Legacy) voor deze gateway. Per gateway wordt maar één solar-apparaat ondersteund.",
       "step_save": "1. Bewaar hieronder je instellingen (optioneel, scheelt opnieuw invoeren van je account).",
       "step_remove": "2. Verwijder het oude apparaat in Homey.",
       "step_pair": "3. Start het koppelen van Enphase Solar opnieuw.",

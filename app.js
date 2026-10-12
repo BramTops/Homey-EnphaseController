@@ -138,19 +138,6 @@ class EnphaseController extends Homey.App {
   }
 
   /**
-   * Notify users who still have a legacy Envoy device paired (1.5.4 notice, kept for compatibility).
-   * The caller is the legacy device itself, so users without one are never notified.
-   * @returns {Promise<void>}
-   */
-  async notifyDeprecatedEnvoyDriver() {
-    return this._postNoticeOnce({
-      settingKey: 'deprecated_envoy_notice_sent',
-      messageKey: 'timeline.deprecated_envoy',
-      label: 'deprecated Envoy driver',
-    });
-  }
-
-  /**
    * Post the versioned 2.0 migration notice for a deprecated driver, once per driver id.
    * Locale key `timeline.migration_2_0_<driverId>`, guarded by app setting `migration_2_0_<driverId>_notice_sent`.
    * The caller is a device of that driver, so users without one are never notified. Message text lives in the locales.

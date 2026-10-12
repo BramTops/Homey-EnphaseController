@@ -1,7 +1,7 @@
 {
   "driver": {
     "envoy": {
-      "name": "Solarmodule (Enphase)",
+      "name": "Envoy-Gateway (Legacy)",
       "error": {
         "fields_required": "Bitte füllen Sie alle Pflichtfelder aus.",
         "invalid_serial": "Die Seriennummer muss genau 12 Ziffern haben.",
@@ -18,7 +18,7 @@
       }
     },
     "gateway": {
-      "name": "Enphase Solar",
+      "name": "Enphase Solar (Legacy)",
       "error": {
         "fields_required": "Bitte füllen Sie alle Pflichtfelder aus.",
         "invalid_serial": "Ungültige Seriennummer des Gateways.",
@@ -45,7 +45,7 @@
       }
     },
     "homeload": {
-      "name": "Enphase Home",
+      "name": "Enphase Home (Legacy)",
       "error": {
         "fields_required": "Bitte füllen Sie alle Pflichtfelder aus.",
         "invalid_serial": "Ungültige Seriennummer des Gateways.",
@@ -65,7 +65,7 @@
         "command_failed": "Befehl fehlgeschlagen: __message__",
         "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__",
         "not_metered": "Dieses Gateway scheint nicht über Messtechnik zu verfügen (keine Solar-Stromwandler erkannt). Die Steuerung der Produktionsbegrenzung erfordert ein Gateway mit Messtechnik.",
-        "legacy_conflict": "Nicht aktiv: Für dieses Gateway existiert ein älteres Enphase Envoy- oder Solar-Gerät. Bauen Sie Ihre Flows neu auf und entfernen Sie dann das alte Gerät, um dieses zu aktivieren."
+        "legacy_conflict": "Nicht aktiv: Für dieses Gateway existiert ein Gerät vom Typ Envoy-Gateway (Legacy) oder Enphase Solar (Legacy). Bauen Sie Ihre Flows neu auf und entfernen Sie dann das alte Gerät, um dieses zu aktivieren."
       },
       "status": {
         "on": "Ein",
@@ -109,14 +109,13 @@
     }
   },
   "timeline": {
-    "deprecated_envoy": "Das veraltete Envoy-Gateway-Gerät wird bald entfernt. Verwenden Sie bitte stattdessen das Gerät Enphase Controller Solar.",
-    "migration_2_0_envoy": "Enphase Controller: Der aktuelle Gerätetreiber Envoy Gateway (Legacy) ist veraltet und wird in einer zukünftigen Version entfernt. Bitte entfernen Sie das Gerät, fügen Sie es erneut hinzu (der neue Treiber wird automatisch verwendet) und bauen Sie die betroffenen Flows neu auf.",
-    "migration_2_0_gateway": "Enphase Controller: Der aktuelle Gerätetreiber Enphase Solar ist veraltet und wird in einer zukünftigen Version entfernt. Bitte entfernen Sie das Gerät, fügen Sie es erneut hinzu (der neue Treiber wird automatisch verwendet) und bauen Sie die betroffenen Flows neu auf.",
-    "migration_2_0_homeload": "Enphase Controller: Der aktuelle Gerätetreiber Enphase Home ist veraltet und wird in einer zukünftigen Version entfernt. Bitte entfernen Sie das Gerät, fügen Sie es erneut hinzu (der neue Treiber wird automatisch verwendet) und bauen Sie die betroffenen Flows neu auf."
+    "migration_2_0_envoy": "Enphase Controller: Der Gerätetreiber Envoy-Gateway (Legacy) ist veraltet und wird in einer zukünftigen Version entfernt. Bitte entfernen Sie das Gerät, fügen Sie es erneut hinzu (der neue Treiber wird automatisch verwendet) und bauen Sie die betroffenen Flows neu auf.",
+    "migration_2_0_gateway": "Enphase Controller: Der Gerätetreiber Enphase Solar (Legacy) ist veraltet und wird in einer zukünftigen Version entfernt. Bitte entfernen Sie das Gerät, fügen Sie es erneut hinzu (der neue Treiber wird automatisch verwendet) und bauen Sie die betroffenen Flows neu auf.",
+    "migration_2_0_homeload": "Enphase Controller: Der Gerätetreiber Enphase Home (Legacy) ist veraltet und wird in einer zukünftigen Version entfernt. Bitte entfernen Sie das Gerät, fügen Sie es erneut hinzu (der neue Treiber wird automatisch verwendet) und bauen Sie die betroffenen Flows neu auf."
   },
   "pair": {
     "start": {
-      "title": "Verbinden Sie Ihr Envoy-Gateway",
+      "title": "Verbinden Sie Ihr Envoy-Gateway (Legacy)",
       "title_inverters": "Enphase Solar Wechselrichter verbinden",
       "subtitle": "Verbinden Sie sich mit Ihrem Gateway. Unterstützt Standard-Eigentümerkonten (nur lesen) oder Installateur- und DIY-Konten für die Systemsteuerung.",
       "discovery_badge": "✨ Envoy-Gateway im Netzwerk automatisch erkannt!",
@@ -140,7 +139,7 @@
       "role_owner": "Rolle Systemeigentümer",
       "desc_owner": "Nur-Lese-Modus aktiv. Sie können den Produktionsstatus überwachen, die Steuerung der Stromerzeugung ist jedoch gesperrt.",
       "notice_production_meter_ignored": "Es wurden keine Produktions-Stromwandler erkannt: Der Produktionszähler misst nur Rauschen, während die Wechselrichter produzieren. „Produktionszähler ignorieren“ wurde aktiviert, daher stammt die Solarleistung von den Mikrowechselrichtern. Sie können dies in den Geräteeinstellungen ändern.",
-      "title_homeload": "Enphase Home verbinden",
+      "title_homeload": "Enphase Home (Legacy) verbinden",
       "subtitle_homeload": "Verbinden Sie sich mit Ihrem Gateway, um das Gerät für den Hausverbrauch (P1-Zählerersatz) hinzuzufügen.",
       "warning_title": "Achtung erforderlich",
       "warning_subtitle": "Warnungen zur Gateway-Überprüfung:",
@@ -164,7 +163,7 @@
       "reuse_device": "Kontodaten eines bestehenden Enphase-Geräts an diesem Gateway gefunden. Lassen Sie das Passwort leer, um sie wiederzuverwenden.",
       "reuse_snapshot": "Gespeicherte Einstellungen Ihres vorherigen Geräts gefunden. Lassen Sie das Passwort leer, um sie wiederzuverwenden.",
       "reuse_cache": "Ihr zuvor verwendetes Enphase-Konto wurde gefunden. Lassen Sie das Passwort leer, um es wiederzuverwenden.",
-      "warning_legacy_grid": "Für dieses Gateway existiert bereits ein älteres Enphase Home-Gerät. Wenn Sie beide behalten, wird dieselbe Netzenergie in Homey Energy doppelt gezählt. Bauen Sie Ihre Flows mit dem neuen Gerät neu auf und entfernen Sie dann das alte Enphase Home-Gerät.",
+      "warning_legacy_grid": "Für dieses Gateway existiert bereits ein Gerät vom Typ Enphase Home (Legacy). Wenn Sie beide behalten, wird dieselbe Netzenergie in Homey Energy doppelt gezählt. Bauen Sie Ihre Flows mit dem neuen Gerät neu auf und entfernen Sie dann das Gerät Enphase Home (Legacy).",
       "title_battery": "Enphase Batterie verbinden",
       "subtitle_battery": "Verbinden Sie sich mit Ihrem Gateway, um Batterieleistung, Ladestand und Energie hinzuzufügen.",
       "success_subtitle_battery": "Ihr Enphase-Konto wurde bestätigt und das Batteriegerät kann hinzugefügt werden.",
@@ -183,11 +182,11 @@
       "warning_no_gridpower": "Die Netzleistungsüberwachung (net-consumption) ist nicht aktiv, oder an diesem Gateway sind keine Stromwandler installiert. Homey kann Netzbezug und Netzeinspeisung nicht erfassen."
     },
     "error": {
-      "legacy_solar_conflict": "Für dieses Gateway existiert bereits ein älteres Enphase Envoy- oder Solar-Gerät. Entfernen Sie zuerst das alte Gerät, koppeln Sie erneut und bauen Sie dann Ihre Flows mit dem neuen Enphase Solar-Gerät neu auf."
+      "legacy_solar_conflict": "Für dieses Gateway existiert bereits ein Gerät vom Typ Envoy-Gateway (Legacy) oder Enphase Solar (Legacy). Entfernen Sie zuerst das alte Gerät, koppeln Sie erneut und bauen Sie dann Ihre Flows mit dem neuen Enphase Solar-Gerät neu auf."
     },
     "migration": {
       "blocked_title": "Älteres Enphase-Gerät gefunden",
-      "blocked_body": "Für dieses Gateway existiert bereits ein älteres Enphase Envoy- oder Solar-Gerät. Pro Gateway wird nur ein Solar-Gerät unterstützt.",
+      "blocked_body": "Für dieses Gateway existiert bereits ein Gerät vom Typ Envoy-Gateway (Legacy) oder Enphase Solar (Legacy). Pro Gateway wird nur ein Solar-Gerät unterstützt.",
       "step_save": "1. Speichern Sie unten Ihre Einstellungen (optional, spart das erneute Eingeben Ihres Kontos).",
       "step_remove": "2. Entfernen Sie das alte Gerät in Homey.",
       "step_pair": "3. Starten Sie die Kopplung von Enphase Solar erneut.",

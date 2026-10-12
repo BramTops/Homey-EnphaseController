@@ -9,13 +9,13 @@ Track bugs, features, improvements, ideas for Enphase Controller app.
 - Add 12-digit validation to Gateway SN login input. Prevent users entering Site ID.
 
 ### Follow-ups from 2.0 review
-- Distinct artwork for the Solar, Grid and Battery drivers; new Solar and deprecated Gateway share the name "Enphase Solar".
+- Distinct artwork for the Solar, Grid and Battery drivers; the deprecated Gateway driver still shares the Solar artwork.
 - Grid shows no home power when the system has no home consumption meter (same as Home load).
 - Battery absence is only proven by a definitive inventory answer; a 404 on `/ivp/ensemble/power` alone leaves "battery present?" unknown (home power stays empty without a consumption meter).
 - New drivers keep credential checks in device/driver code (copied from legacy); move into a single `lib/` helper, and stop returning the JWT/password to pairing views.
 - New drivers' settings forms require email/password; check whether `poll_interval` can be saved alone.
 - Prune `apiInstances` when the last device of a serial is removed; socket reuse on the fast tier; limiter slot is released at response headers (body streams after).
-- Dead code: `notifyDeprecatedEnvoyDriver` wrapper and its setting/timeline key; pre-existing unused locale keys (`pair.start.discovery_badge`, `pair.start.warning_no_consumption`, `driver.envoy.status.*`).
+- Dead code: pre-existing unused locale keys (`pair.start.discovery_badge`, `pair.start.warning_no_consumption`, `driver.envoy.status.*`).
 - `scanMdnsDirect` can return link-local (fe80) addresses.
 - Solar device (`drivers/solar/device.js`) edge cases:
   - Repair when the device never registered, the new serial conflicts and validation fails: restore picks the new serial; self-heals at the 5-minute recheck.

@@ -1,7 +1,7 @@
 {
   "driver": {
     "envoy": {
-      "name": "Panneaux solaires (Enphase)",
+      "name": "Envoy Gateway (Legacy)",
       "error": {
         "fields_required": "Veuillez remplir tous les champs obligatoires.",
         "invalid_serial": "Le numéro de série doit comporter exactement 12 chiffres.",
@@ -18,7 +18,7 @@
       }
     },
     "gateway": {
-      "name": "Enphase Solar",
+      "name": "Enphase Solar (Legacy)",
       "error": {
         "fields_required": "Veuillez remplir tous les champs obligatoires.",
         "invalid_serial": "Numéro de série de la passerelle invalide.",
@@ -45,7 +45,7 @@
       }
     },
     "homeload": {
-      "name": "Enphase Home",
+      "name": "Enphase Home (Legacy)",
       "error": {
         "fields_required": "Veuillez remplir tous les champs obligatoires.",
         "invalid_serial": "Numéro de série de la passerelle invalide.",
@@ -65,7 +65,7 @@
         "command_failed": "Échec de la commande : __message__",
         "save_settings_failed": "Échec de l'enregistrement des paramètres : erreur de connexion : __message__",
         "not_metered": "Cette passerelle ne semble pas équipée de mesure (aucune pince CT de production solaire détectée). Les commandes de limite de production nécessitent une passerelle équipée de mesure.",
-        "legacy_conflict": "Non active : un ancien appareil Enphase Envoy ou Solar existe pour cette passerelle. Recréez vos Flows, puis supprimez l'ancien appareil pour activer celui-ci."
+        "legacy_conflict": "Non active : un appareil Envoy Gateway (Legacy) ou Enphase Solar (Legacy) existe pour cette passerelle. Recréez vos Flows, puis supprimez l'ancien appareil pour activer celui-ci."
       },
       "status": {
         "on": "Activé",
@@ -110,13 +110,13 @@
   },
   "timeline": {
     "deprecated_envoy": "L'appareil passerelle Envoy obsolète sera bientôt supprimé. Utilisez désormais l'appareil Enphase Controller Solar.",
-    "migration_2_0_envoy": "Enphase Controller : le pilote actuel de l'appareil Envoy Gateway (Legacy) est obsolète et sera supprimé dans une future version. Veuillez le supprimer, rajouter l'appareil (le nouveau pilote est utilisé automatiquement) et recréer les Flows concernés.",
-    "migration_2_0_gateway": "Enphase Controller : le pilote actuel de l'appareil Enphase Solar est obsolète et sera supprimé dans une future version. Veuillez le supprimer, rajouter l'appareil (le nouveau pilote est utilisé automatiquement) et recréer les Flows concernés.",
-    "migration_2_0_homeload": "Enphase Controller : le pilote actuel de l'appareil Enphase Home est obsolète et sera supprimé dans une future version. Veuillez le supprimer, rajouter l'appareil (le nouveau pilote est utilisé automatiquement) et recréer les Flows concernés."
+    "migration_2_0_envoy": "Enphase Controller : le pilote de l'appareil Envoy Gateway (Legacy) est obsolète et sera supprimé dans une future version. Veuillez le supprimer, rajouter l'appareil (le nouveau pilote est utilisé automatiquement) et recréer les Flows concernés.",
+    "migration_2_0_gateway": "Enphase Controller : le pilote de l'appareil Enphase Solar (Legacy) est obsolète et sera supprimé dans une future version. Veuillez le supprimer, rajouter l'appareil (le nouveau pilote est utilisé automatiquement) et recréer les Flows concernés.",
+    "migration_2_0_homeload": "Enphase Controller : le pilote de l'appareil Enphase Home (Legacy) est obsolète et sera supprimé dans une future version. Veuillez le supprimer, rajouter l'appareil (le nouveau pilote est utilisé automatiquement) et recréer les Flows concernés."
   },
   "pair": {
     "start": {
-      "title": "Connectez votre passerelle Envoy",
+      "title": "Connectez votre passerelle Envoy (Legacy)",
       "title_inverters": "Connectez les onduleurs Enphase Solar",
       "subtitle": "Connectez-vous à votre passerelle. Compatible avec les comptes Propriétaire standard (lecture seule) et les comptes Installateur/DIY pour le contrôle du système.",
       "discovery_badge": "✨ Passerelle Envoy détectée automatiquement sur le réseau !",
@@ -139,7 +139,7 @@
       "desc_maintainer": "Contrôle total activé. Vous pouvez surveiller la production et activer ou désactiver la production d'énergie.",
       "role_owner": "Rôle Propriétaire du système",
       "desc_owner": "Lecture seule activée. Vous pouvez surveiller l'état de la production, mais le contrôle de la production d'énergie est verrouillé.",
-      "title_homeload": "Connectez votre Enphase Home",
+      "title_homeload": "Connectez votre Enphase Home (Legacy)",
       "subtitle_homeload": "Connectez-vous à votre passerelle pour ajouter l'appareil de consommation domestique (substitut de compteur P1).",
       "warning_title": "Attention requise",
       "warning_subtitle": "Avertissements de vérification de la passerelle :",
@@ -163,7 +163,7 @@
       "reuse_device": "Les identifiants d'un appareil Enphase existant sur cette passerelle ont été trouvés. Laissez le mot de passe vide pour les réutiliser.",
       "reuse_snapshot": "Les paramètres enregistrés de votre appareil précédent ont été trouvés. Laissez le mot de passe vide pour les réutiliser.",
       "reuse_cache": "Votre compte Enphase utilisé précédemment a été trouvé. Laissez le mot de passe vide pour le réutiliser.",
-      "warning_legacy_grid": "Un ancien appareil Enphase Home existe déjà pour cette passerelle. Si vous conservez les deux, la même énergie réseau sera comptée deux fois dans Homey Energy. Recréez vos Flows avec le nouvel appareil, puis supprimez l'ancien appareil Enphase Home.",
+      "warning_legacy_grid": "Un appareil Enphase Home (Legacy) existe déjà pour cette passerelle. Si vous conservez les deux, la même énergie réseau sera comptée deux fois dans Homey Energy. Recréez vos Flows avec le nouvel appareil, puis supprimez l'appareil Enphase Home (Legacy).",
       "title_battery": "Connectez la batterie Enphase",
       "subtitle_battery": "Connectez-vous à votre passerelle pour ajouter la puissance, le niveau de charge et l'énergie de la batterie.",
       "success_subtitle_battery": "Votre compte Enphase a été validé et l'appareil Batterie est prêt à être ajouté.",
@@ -183,11 +183,11 @@
       "notice_production_meter_ignored": "Aucune pince CT de production n'a été détectée : le compteur de production ne mesure que du bruit alors que les onduleurs produisent. « Ignorer le compteur de production » a été activé, la puissance solaire provient donc des micro-onduleurs. Vous pouvez modifier ceci dans les paramètres de l'appareil."
     },
     "error": {
-      "legacy_solar_conflict": "Un ancien appareil Enphase Envoy ou Solar existe déjà pour cette passerelle. Supprimez d'abord l'ancien appareil, associez à nouveau, puis recréez vos Flows avec le nouvel appareil Enphase Solar."
+      "legacy_solar_conflict": "Un appareil Envoy Gateway (Legacy) ou Enphase Solar (Legacy) existe déjà pour cette passerelle. Supprimez d'abord l'ancien appareil, associez à nouveau, puis recréez vos Flows avec le nouvel appareil Enphase Solar."
     },
     "migration": {
       "blocked_title": "Ancien appareil Enphase détecté",
-      "blocked_body": "Un ancien appareil Enphase Envoy ou Solar existe déjà pour cette passerelle. Une seule solution solaire par passerelle est prise en charge.",
+      "blocked_body": "Un appareil Envoy Gateway (Legacy) ou Enphase Solar (Legacy) existe déjà pour cette passerelle. Une seule solution solaire par passerelle est prise en charge.",
       "step_save": "1. Enregistrez vos paramètres ci-dessous (facultatif, évite de ressaisir votre compte).",
       "step_remove": "2. Supprimez l'ancien appareil dans Homey.",
       "step_pair": "3. Relancez l'association d'Enphase Solar.",

@@ -22,7 +22,6 @@ All notable changes to the Enphase Controller application for Homey Pro will be 
 ## 2026-10-06
 
 - Restores legacy Envoy device driver.
-- Adds warning for deprecated driver.
 
 ## 2026-08-15
 

@@ -707,7 +707,9 @@
     {
       "name": {
         "en": "Envoy Gateway (Legacy)",
-        "nl": "Envoy-gateway (Verouderd)"
+        "nl": "Envoy-gateway (Legacy)",
+        "fr": "Envoy Gateway (Legacy)",
+        "de": "Envoy-Gateway (Legacy)"
       },
       "deprecated": true,
       "images": {
@@ -818,8 +820,10 @@
     },
     {
       "name": {
-        "en": "Enphase Solar",
-        "nl": "Enphase Solar"
+        "en": "Enphase Solar (Legacy)",
+        "nl": "Enphase Solar (Legacy)",
+        "fr": "Enphase Solar (Legacy)",
+        "de": "Enphase Solar (Legacy)"
       },
       "deprecated": true,
       "images": {
@@ -1277,8 +1281,10 @@
     },
     {
       "name": {
-        "en": "Enphase Home",
-        "nl": "Enphase Home"
+        "en": "Enphase Home (Legacy)",
+        "nl": "Enphase Home (Legacy)",
+        "fr": "Enphase Home (Legacy)",
+        "de": "Enphase Home (Legacy)"
       },
       "deprecated": true,
       "images": {

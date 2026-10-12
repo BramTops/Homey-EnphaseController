@@ -1,7 +1,9 @@
 {
   "name": {
-    "en": "Enphase Solar",
-    "nl": "Enphase Solar"
+    "en": "Enphase Solar (Legacy)",
+    "nl": "Enphase Solar (Legacy)",
+    "fr": "Enphase Solar (Legacy)",
+    "de": "Enphase Solar (Legacy)"
   },
   "deprecated": true,
   "images": {

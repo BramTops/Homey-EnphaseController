@@ -1,7 +1,9 @@
 {
   "name": {
     "en": "Envoy Gateway (Legacy)",
-    "nl": "Envoy-gateway (Verouderd)"
+    "nl": "Envoy-gateway (Legacy)",
+    "fr": "Envoy Gateway (Legacy)",
+    "de": "Envoy-Gateway (Legacy)"
   },
   "deprecated": true,
   "images": {

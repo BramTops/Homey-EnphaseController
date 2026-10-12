@@ -1,7 +1,9 @@
 {
   "name": {
-    "en": "Enphase Home",
-    "nl": "Enphase Home"
+    "en": "Enphase Home (Legacy)",
+    "nl": "Enphase Home (Legacy)",
+    "fr": "Enphase Home (Legacy)",
+    "de": "Enphase Home (Legacy)"
   },
   "deprecated": true,
   "images": {

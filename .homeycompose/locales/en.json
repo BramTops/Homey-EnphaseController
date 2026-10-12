@@ -1,7 +1,7 @@
 {
   "driver": {
     "envoy": {
-      "name": "Solar panels (Enphase)",
+      "name": "Envoy Gateway (Legacy)",
       "error": {
         "fields_required": "Please fill in all the required fields.",
         "invalid_serial": "Serial number must be exactly 12 digits.",
@@ -18,7 +18,7 @@
       }
     },
     "gateway": {
-      "name": "Enphase Solar",
+      "name": "Enphase Solar (Legacy)",
       "error": {
         "fields_required": "Please fill in all the required fields.",
         "invalid_serial": "Invalid Gateway Serial Number.",
@@ -45,7 +45,7 @@
       }
     },
     "homeload": {
-      "name": "Enphase Home",
+      "name": "Enphase Home (Legacy)",
       "error": {
         "fields_required": "Please fill in all the required fields.",
         "invalid_serial": "Invalid Gateway Serial Number.",
@@ -65,7 +65,7 @@
         "command_failed": "Command failed: __message__",
         "save_settings_failed": "Failed to save settings: Connection error: __message__",
         "not_metered": "This gateway does not appear to be metered (no solar production CT clamps detected). Production limit controls require a metered gateway.",
-        "legacy_conflict": "Not active: an older Enphase Envoy or Solar device exists for this gateway. Rebuild your Flows, then remove the old device to enable this one."
+        "legacy_conflict": "Not active: an Envoy Gateway (Legacy) or Enphase Solar (Legacy) device exists for this gateway. Rebuild your Flows, then remove the old device to enable this one."
       },
       "status": {
         "on": "On",
@@ -109,14 +109,13 @@
     }
   },
   "timeline": {
-    "deprecated_envoy": "The deprecated Envoy Gateway device will be removed soon. Please start using the Enphase Controller Solar device.",
-    "migration_2_0_envoy": "Enphase Controller: the current Envoy Gateway (Legacy) device driver is deprecated and will be removed in a future version. Please remove it, re-add the device (new driver is used automatically) and rebuild applicable flows.",
-    "migration_2_0_gateway": "Enphase Controller: the current Enphase Solar device driver is deprecated and will be removed in a future version. Please remove it, re-add the device (new driver is used automatically) and rebuild applicable flows.",
-    "migration_2_0_homeload": "Enphase Controller: the current Enphase Home device driver is deprecated and will be removed in a future version. Please remove it, re-add the device (new driver is used automatically) and rebuild applicable flows."
+    "migration_2_0_envoy": "Enphase Controller: the Envoy Gateway (Legacy) device driver is deprecated and will be removed in a future version. Please remove it, re-add the device (new driver is used automatically) and rebuild applicable flows.",
+    "migration_2_0_gateway": "Enphase Controller: the Enphase Solar (Legacy) device driver is deprecated and will be removed in a future version. Please remove it, re-add the device (new driver is used automatically) and rebuild applicable flows.",
+    "migration_2_0_homeload": "Enphase Controller: the Enphase Home (Legacy) device driver is deprecated and will be removed in a future version. Please remove it, re-add the device (new driver is used automatically) and rebuild applicable flows."
   },
   "pair": {
     "start": {
-      "title": "Connect your Envoy Gateway",
+      "title": "Connect your Envoy Gateway (Legacy)",
       "title_inverters": "Connect Enphase Solar inverters",
       "subtitle": "Connect to your gateway. Supports standard Owner accounts (read-only) or Installer/DIY accounts for system control.",
       "discovery_badge": "✨ Envoy gateway auto-detected on network!",
@@ -140,7 +139,7 @@
       "role_owner": "System Owner Role",
       "desc_owner": "Read-only active. You can monitor production status, but power generation control is locked.",
       "notice_production_meter_ignored": "No production CT clamps were detected: the production meter only reads noise while the inverters produce. \"Ignore production meter\" was enabled, so solar power comes from the microinverters. You can change this in the device settings.",
-      "title_homeload": "Connect your Enphase Home",
+      "title_homeload": "Connect your Enphase Home (Legacy)",
       "subtitle_homeload": "Connect to your gateway to add the home consumption (P1 substitute) device.",
       "warning_title": "Attention Required",
       "warning_subtitle": "Gateway Verification Warnings:",
@@ -164,7 +163,7 @@
       "reuse_device": "Account details of an existing Enphase device on this gateway were found. Leave the password empty to reuse them.",
       "reuse_snapshot": "Saved settings from your previous device were found. Leave the password empty to reuse them.",
       "reuse_cache": "Your previously used Enphase account was found. Leave the password empty to reuse it.",
-      "warning_legacy_grid": "An older Enphase Home device already exists for this gateway. Keeping both counts the same grid energy twice in Homey Energy. Rebuild your Flows with the new device, then remove the old Enphase Home device.",
+      "warning_legacy_grid": "An Enphase Home (Legacy) device already exists for this gateway. Keeping both counts the same grid energy twice in Homey Energy. Rebuild your Flows with the new device, then remove the Enphase Home (Legacy) device.",
       "title_battery": "Connect Enphase Battery",
       "subtitle_battery": "Connect to your gateway to add battery power, charge level and energy.",
       "success_subtitle_battery": "Your Enphase account was validated and the battery device is ready to be added.",
@@ -183,11 +182,11 @@
       "warning_no_gridpower": "Grid power monitoring (net-consumption) is not active or clamps are not installed on this gateway. Homey will not be able to track main grid import/export."
     },
     "error": {
-      "legacy_solar_conflict": "An older Enphase Envoy or Solar device already exists for this gateway. Remove the old device first, pair again, and then rebuild your Flows with the new Enphase Solar device."
+      "legacy_solar_conflict": "An Envoy Gateway (Legacy) or Enphase Solar (Legacy) device already exists for this gateway. Remove the old device first, pair again, and then rebuild your Flows with the new Enphase Solar device."
     },
     "migration": {
       "blocked_title": "Older Enphase device found",
-      "blocked_body": "An older Enphase Envoy or Solar device already exists for this gateway. Only one solar device per gateway is supported.",
+      "blocked_body": "An Envoy Gateway (Legacy) or Enphase Solar (Legacy) device already exists for this gateway. Only one solar device per gateway is supported.",
       "step_save": "1. Save your settings below (optional, saves retyping your account).",
       "step_remove": "2. Remove the old device in Homey.",
       "step_pair": "3. Start pairing Enphase Solar again.",

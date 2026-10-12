@@ -7,70 +7,104 @@
   },
   "1.0.0": {
     "en": "Initial app release.",
-    "nl": "Eerste release."
+    "nl": "Eerste release.",
+    "fr": "Version initiale de l'application.",
+    "de": "Erste Version der App."
   },
   "1.1.0": {
     "en": "Updates app store listing. \nImproved compatibility with other Enphase apps. \nClearer pairing instructions. \nMore readable status metrics. \nAdds metered gateway status. \nMore reliable connection checks. \nEasier connection via manual IP. \nSupports IPv6 networks. \nSupport for all account types.",
-    "nl": "Updates app store-vermelding. \nWerkt beter samen met andere Enphase-apps. \nDuidelijkere koppelinstructies. \nDuidelijkere status-metingen. \nVoegt status van metered gateway toe. \nBetrouwbaardere verbindingscontroles. \nGemakkelijker verbinden via handmatig IP. \nOndersteunt IPv6-netwerken. \nOndersteuning voor alle accounttypen."
+    "nl": "Updates app store-vermelding. \nWerkt beter samen met andere Enphase-apps. \nDuidelijkere koppelinstructies. \nDuidelijkere status-metingen. \nVoegt status van metered gateway toe. \nBetrouwbaardere verbindingscontroles. \nGemakkelijker verbinden via handmatig IP. \nOndersteunt IPv6-netwerken. \nOndersteuning voor alle accounttypen.",
+    "fr": "Met à jour la fiche de l'app store. \nCompatibilité améliorée avec les autres apps Enphase. \nInstructions d'association plus claires. \nMesures d'état plus lisibles. \nAjoute l'état de la passerelle mesurée. \nVérifications de connexion plus fiables. \nConnexion plus simple via IP manuelle. \nPrend en charge les réseaux IPv6. \nPrise en charge de tous les types de compte.",
+    "de": "Aktualisiert den App-Store-Eintrag. \nVerbesserte Kompatibilität mit anderen Enphase-Apps. \nKlarere Kopplungsanleitung. \nLesbarere Statuswerte. \nFügt den Status des Gateways mit Messung hinzu. \nZuverlässigere Verbindungsprüfungen. \nEinfachere Verbindung über manuelle IP. \nUnterstützt IPv6-Netzwerke. \nUnterstützung für alle Kontotypen."
   },
   "1.2.0": {
     "en": "Adds \"Energy today\" (kWh) status metric. \nMore reliable pairing process. \nImproved compatibility with other Enphase apps. \nImproved gateway connection stability. \nReduced memory and cpu usage.",
-    "nl": "Voegt \"Energie vandaag\" (kWh) status-meting toe. \nBetrouwbaarder koppelingsproces. \nVerbeterde compatibiliteit met andere Enphase-apps. \nVerbeterde stabiliteit van de gateway-verbinding. \nMinder geheugen- en CPU-gebruik."
+    "nl": "Voegt \"Energie vandaag\" (kWh) status-meting toe. \nBetrouwbaarder koppelingsproces. \nVerbeterde compatibiliteit met andere Enphase-apps. \nVerbeterde stabiliteit van de gateway-verbinding. \nMinder geheugen- en CPU-gebruik.",
+    "fr": "Ajoute la mesure d'état « Énergie aujourd'hui » (kWh). \nProcessus d'association plus fiable. \nCompatibilité améliorée avec les autres apps Enphase. \nStabilité de la connexion à la passerelle améliorée. \nUtilisation réduite de la mémoire et du processeur.",
+    "de": "Fügt den Statuswert „Energie heute“ (kWh) hinzu. \nZuverlässigerer Kopplungsvorgang. \nVerbesserte Kompatibilität mit anderen Enphase-Apps. \nVerbesserte Stabilität der Gateway-Verbindung. \nGeringerer Speicher- und CPU-Verbrauch."
   },
   "1.2.1": {
     "en": "Prevents negative night-time solar readings. \nReplaces default icons.",
-    "nl": "Voorkomt negatieve zonnepaneelmetingen in de nacht. \nVervangt standaard iconen."
+    "nl": "Voorkomt negatieve zonnepaneelmetingen in de nacht. \nVervangt standaard iconen.",
+    "fr": "Empêche les valeurs solaires négatives la nuit. \nRemplace les icônes par défaut.",
+    "de": "Verhindert negative Solarwerte in der Nacht. \nErsetzt die Standardsymbole."
   },
   "1.3.0": {
     "en": "Monitors individual solar microinverters. \nAlerts when panels are underperfoming or go offline. \nImproved gateway IP & SN detection.",
-    "nl": "Monitort individuele zonnepaneel omvormers. \nMeldt wanneer panelen slecht presteren of offline gaan. \nVerbeterde gateway IP & SN detectie."
+    "nl": "Monitort individuele zonnepaneel omvormers. \nMeldt wanneer panelen slecht presteren of offline gaan. \nVerbeterde gateway IP & SN detectie.",
+    "fr": "Surveille les micro-onduleurs solaires individuellement. \nAlerte lorsque des panneaux sous-performent ou passent hors ligne. \nDétection améliorée de l'IP et du numéro de série de la passerelle.",
+    "de": "Überwacht einzelne Solar-Mikrowechselrichter. \nMeldet, wenn Module unterdurchschnittlich arbeiten oder offline gehen. \nVerbesserte Erkennung von Gateway-IP und Seriennummer."
   },
   "1.3.1": {
     "en": "Fix bug in authentication flow.",
-    "nl": "Fout in authenticatie-flow opgelost."
+    "nl": "Fout in authenticatie-flow opgelost.",
+    "fr": "Correction d'un bug dans le processus d'authentification.",
+    "de": "Fehler im Authentifizierungsablauf behoben."
   },
   "1.3.2": {
     "en": "Configure underperforming inverter threshold. \nInstant feedback clearing alerts.",
-    "nl": "Stel onderprestatie-drempel omvormers in. \nDirecte feedback bij wissen alarmen."
+    "nl": "Stel onderprestatie-drempel omvormers in. \nDirecte feedback bij wissen alarmen.",
+    "fr": "Seuil de sous-performance des onduleurs configurable. \nRetour immédiat lors de l'effacement des alertes.",
+    "de": "Schwellenwert für leistungsschwache Wechselrichter konfigurierbar. \nSofortige Rückmeldung beim Löschen von Warnungen."
   },
   "1.3.3": {
     "en": "Improved login troubleshooting.",
-    "nl": "Verbeterde foutopsporing bij inloggen."
+    "nl": "Verbeterde foutopsporing bij inloggen.",
+    "fr": "Meilleur dépannage lors de la connexion.",
+    "de": "Verbesserte Fehlerbehebung bei der Anmeldung."
   },
   "1.3.4": {
     "en": "Improved authentication stability.",
-    "nl": "Verbeterde stabiliteit van de authenticatie."
+    "nl": "Verbeterde stabiliteit van de authenticatie.",
+    "fr": "Stabilité de l'authentification améliorée.",
+    "de": "Verbesserte Stabilität der Authentifizierung."
   },
   "1.3.5": {
     "en": "Added support for metered gateway readings.",
-    "nl": "Ondersteuning voor metered gateway toegevoegd."
+    "nl": "Ondersteuning voor metered gateway toegevoegd.",
+    "fr": "Prise en charge des relevés de la passerelle mesurée ajoutée.",
+    "de": "Unterstützung für Messwerte von Gateways mit Messung hinzugefügt."
   },
   "1.3.6": {
     "en": "Adds home electricity usage monitoring. \nTracks grid imports and exports. \nImproves pairing wizard dark mode.",
-    "nl": "Voegt monitoring van huisverbruik toe. \nMonitort import en export stroomnet. \nVerbetert donkere modus bij koppelen."
+    "nl": "Voegt monitoring van huisverbruik toe. \nMonitort import en export stroomnet. \nVerbetert donkere modus bij koppelen.",
+    "fr": "Ajoute la surveillance de la consommation électrique du foyer. \nSuit les imports et exports du réseau. \nAmélioration du mode sombre de l'assistant d'association.",
+    "de": "Fügt die Überwachung des Haushaltsstromverbrauchs hinzu. \nErfasst Netzbezug und Netzeinspeisung. \nVerbessert den Dunkelmodus im Kopplungsassistenten."
   },
   "1.4.0": {
     "en": "More consistent device naming and setting grouping.",
-    "nl": "Consistentere naamgeving van apparaten en instellingengroepering."
+    "nl": "Consistentere naamgeving van apparaten en instellingengroepering.",
+    "fr": "Nommage des appareils et regroupement des réglages plus cohérents.",
+    "de": "Einheitlichere Gerätebenennung und Gruppierung der Einstellungen."
   },
   "1.5.0": {
     "en": "Adds solar production limiting. \nEnables net export limits.",
-    "nl": "Voegt limieten voor zonneproductie toe. \nOndersteunt limieten voor teruglevering."
+    "nl": "Voegt limieten voor zonneproductie toe. \nOndersteunt limieten voor teruglevering.",
+    "fr": "Ajoute la limitation de la production solaire. \nActive les limites d'export réseau.",
+    "de": "Fügt die Begrenzung der Solarproduktion hinzu. \nAktiviert Einspeiselimits."
   },
   "1.5.1": {
     "en": "Tests production limiting support. \nFalls back to standard control. \nFixes rapid control changes.",
-    "nl": "Test ondersteuning voor productielimieten. \nValt terug op standaardbesturing. \nHerstelt snelle besturingswijzigingen."
+    "nl": "Test ondersteuning voor productielimieten. \nValt terug op standaardbesturing. \nHerstelt snelle besturingswijzigingen.",
+    "fr": "Teste la prise en charge de la limitation de production. \nRepasse au contrôle standard en cas de besoin. \nCorrige les changements de contrôle rapides.",
+    "de": "Testet die Unterstützung der Produktionsbegrenzung. \nFällt auf die Standardsteuerung zurück. \nBehebt schnelle Steuerungswechsel."
   },
   "1.5.2": {
     "en": "Fixes production limit errors. \nImproves meter detection.",
-    "nl": "Herstelt fouten bij productielimieten. \nVerbetert meterdetectie."
+    "nl": "Herstelt fouten bij productielimieten. \nVerbetert meterdetectie.",
+    "fr": "Corrige les erreurs de limite de production. \nAméliore la détection des compteurs.",
+    "de": "Behebt Fehler bei Produktionslimits. \nVerbessert die Zählererkennung."
   },
   "1.5.3": {
     "en": "Adds an \"Always on\" setting. \nRemoves unused legacy Envoy device driver.",
-    "nl": "Voegt instelling 'Altijd aan' toe. \nVerwijdert ongebruikte oude Envoy-apparaatdriver."
+    "nl": "Voegt instelling 'Altijd aan' toe. \nVerwijdert ongebruikte oude Envoy-apparaatdriver.",
+    "fr": "Ajoute un réglage « Toujours activé ». \nSupprime l'ancien pilote d'appareil Envoy inutilisé.",
+    "de": "Fügt die Einstellung „Immer eingeschaltet“ hinzu. \nEntfernt den nicht verwendeten alten Envoy-Gerätetreiber."
   },
   "1.5.4": {
-    "en": "Restores legacy Envoy device driver. \nAdds warning for deprecated driver.",
-    "nl": "Herstelt oude Envoy-apparaatdriver. \nWaarschuwt voor verouderde driver."
+    "en": "Restores legacy Envoy device driver.",
+    "nl": "Herstelt oude Envoy-apparaatdriver.",
+    "fr": "Rétablit l'ancien pilote d'appareil Envoy.",
+    "de": "Stellt den alten Envoy-Gerätetreiber wieder her."
   }
 }
