@@ -110,9 +110,9 @@
   },
   "timeline": {
     "deprecated_envoy": "L'appareil passerelle Envoy obsolète sera bientôt supprimé. Utilisez désormais l'appareil Enphase Controller Solar.",
-    "migration_2_0_envoy": "Enphase Controller 2.0 : cet appareil passerelle Envoy est obsolète. Il continue de fonctionner pendant la période de migration vers la 2.0, mais les appareils obsolètes doivent être supprimés dans la version 2.1.x (le périmètre exact n'est pas encore défini). Passez au nouvel appareil Enphase Solar et recréez vos Flows ; l'historique de l'appareil risque d'être perdu. Un seul appareil solaire par passerelle est autorisé : ouvrez l'écran d'association d'Enphase Solar, enregistrez vos paramètres pour la migration, puis supprimez cet appareil et associez Enphase Solar.",
-    "migration_2_0_gateway": "Enphase Controller 2.0 : cet ancien appareil Enphase Solar est obsolète. Il continue de fonctionner pendant la période de migration vers la 2.0, mais les appareils obsolètes doivent être supprimés dans la version 2.1.x (le périmètre exact n'est pas encore défini). Passez au nouvel appareil Enphase Solar et recréez vos Flows ; l'historique de l'appareil risque d'être perdu. Un seul appareil solaire par passerelle est autorisé : ouvrez l'écran d'association d'Enphase Solar, enregistrez vos paramètres pour la migration, puis supprimez cet appareil et associez Enphase Solar.",
-    "migration_2_0_homeload": "Enphase Controller 2.0 : cet appareil Enphase Home est obsolète. Il continue de fonctionner pendant la période de migration vers la 2.0, mais les appareils obsolètes doivent être supprimés dans la version 2.1.x (le périmètre exact n'est pas encore défini). Ajoutez le nouvel appareil Enphase Grid, recréez vos Flows, puis supprimez cet appareil. Ne gardez pas les deux trop longtemps : leurs compteurs d'énergie seraient comptés deux fois dans Homey Energy. L'historique de l'appareil risque d'être perdu."
+    "migration_2_0_envoy": "Enphase Controller : le pilote actuel de l'appareil Envoy Gateway (Legacy) est obsolète et sera supprimé dans une future version. Veuillez le supprimer, rajouter l'appareil (le nouveau pilote est utilisé automatiquement) et recréer les Flows concernés.",
+    "migration_2_0_gateway": "Enphase Controller : le pilote actuel de l'appareil Enphase Solar est obsolète et sera supprimé dans une future version. Veuillez le supprimer, rajouter l'appareil (le nouveau pilote est utilisé automatiquement) et recréer les Flows concernés.",
+    "migration_2_0_homeload": "Enphase Controller : le pilote actuel de l'appareil Enphase Home est obsolète et sera supprimé dans une future version. Veuillez le supprimer, rajouter l'appareil (le nouveau pilote est utilisé automatiquement) et recréer les Flows concernés."
   },
   "pair": {
     "start": {
@@ -179,7 +179,8 @@
       "repair_subtitle": "Mettez à jour vos identifiants Enphase ou l'adresse IP locale de la passerelle si elles ont changé.",
       "btn_save_changes": "Enregistrer les modifications",
       "warning_no_gridpower_but_homepower": "La surveillance de la puissance réseau (net-consumption) n'est pas active, mais la surveillance de la consommation domestique (total-consumption) l'est. Homey peut tout de même suivre la puissance consommée par la maison.",
-      "warning_no_gridpower": "La surveillance de la puissance réseau (net-consumption) n'est pas active, ou les pinces ne sont pas installées sur cette passerelle. Homey ne pourra pas suivre l'import et l'export principal du réseau."
+      "warning_no_gridpower": "La surveillance de la puissance réseau (net-consumption) n'est pas active, ou les pinces ne sont pas installées sur cette passerelle. Homey ne pourra pas suivre l'import et l'export principal du réseau.",
+      "notice_production_meter_ignored": "Aucune pince CT de production n'a été détectée : le compteur de production ne mesure que du bruit alors que les onduleurs produisent. « Ignorer le compteur de production » a été activé, la puissance solaire provient donc des micro-onduleurs. Vous pouvez modifier ceci dans les paramètres de l'appareil."
     },
     "error": {
       "legacy_solar_conflict": "Un ancien appareil Enphase Envoy ou Solar existe déjà pour cette passerelle. Supprimez d'abord l'ancien appareil, associez à nouveau, puis recréez vos Flows avec le nouvel appareil Enphase Solar."

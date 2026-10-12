@@ -25,6 +25,7 @@ class SolarDriver extends Homey.Driver {
       deviceNameKey: 'driver.solar.name',
       errorPrefix: 'driver.solar',
       allowProductionLimitProbe: true,
+      detectUnwiredProductionMeter: true,
       blockLegacySolar: true,
       reuseKey: 'solar',
     });

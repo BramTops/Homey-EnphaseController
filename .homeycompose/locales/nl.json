@@ -139,6 +139,7 @@
       "desc_maintainer": "Volledige controle actief. U kunt de productie monitoren en de stroomopwekking in- en uitschakelen.",
       "role_owner": "Systeemeigenaarsrol",
       "desc_owner": "Alleen-lezen actief. U kunt de productiestatus monitoren, maar de stroomopwekking is vergrendeld.",
+      "notice_production_meter_ignored": "Er zijn geen productie-CT-klemmen gedetecteerd: de productiemeter meet alleen ruis terwijl de omvormers produceren. \"Productiemeter negeren\" is ingeschakeld, dus het zonnevermogen komt van de microomvormers. U kunt dit wijzigen in de apparaatinstellingen.",
       "title_homeload": "Verbind uw Enphase Home",
       "subtitle_homeload": "Verbind met uw gateway om het huisverbruik (substituut P1-meter) apparaat toe te voegen.",
       "warning_title": "Aandacht vereist",

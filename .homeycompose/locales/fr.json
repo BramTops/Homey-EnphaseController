@@ -139,6 +139,7 @@
       "desc_maintainer": "Contrôle total activé. Vous pouvez surveiller la production et activer ou désactiver la production d'énergie.",
       "role_owner": "Rôle Propriétaire du système",
       "desc_owner": "Lecture seule activée. Vous pouvez surveiller l'état de la production, mais le contrôle de la production d'énergie est verrouillé.",
+      "notice_production_meter_ignored": "Aucune pince CT de production n'a été détectée : le compteur de production ne mesure que du bruit alors que les onduleurs produisent. « Ignorer le compteur de production » a été activé, la puissance solaire provient donc des micro-onduleurs. Vous pouvez modifier ceci dans les paramètres de l'appareil.",
       "title_homeload": "Connectez votre Enphase Home",
       "subtitle_homeload": "Connectez-vous à votre passerelle pour ajouter l'appareil de consommation domestique (substitut de compteur P1).",
       "warning_title": "Attention requise",

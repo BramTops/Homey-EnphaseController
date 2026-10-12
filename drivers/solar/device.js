@@ -30,8 +30,11 @@ class SolarDevice extends Homey.Device {
     // Retrieve stored store values and set class properties
     const initialToken = this.getStoreValue('enphase_token');
     this.isMaintainer = !!this.getStoreValue('is_maintainer');
-    this.isMetered = !!this.getStoreValue('is_metered');
-    this.productionLimiting = !!this.getStoreValue('production_limiting');
+    // "Ignore production meter" (preset at pairing for gateways with a production meter but no CT clamps): the
+    // gateway then counts as unmetered, also before the first poll has updated the stored value.
+    this.ignoreProductionMeter = !!settings.ignore_production_meter;
+    this.isMetered = !!this.getStoreValue('is_metered') && !this.ignoreProductionMeter;
+    this.productionLimiting = !!this.getStoreValue('production_limiting') && !this.ignoreProductionMeter;
 
     this.log(`Initializing device: SN ${settings.envoy_serial}, IP ${settings.envoy_ip}`);
     this.log(`Initial role: ${this.isMaintainer ? 'Maintainer / Installer' : 'System Owner'}`);
@@ -799,8 +802,19 @@ class SolarDevice extends Homey.Device {
     let todayDay = this.getStoreValue('today_day');
     let todayStartKwh = this.getStoreValue('today_start_kwh');
 
-    if (todayDay !== currentDay || typeof todayStartKwh !== 'number') {
-      this.log(`New day detected. Resetting today's start energy meter to: ${prodData.kwhLifetime} kWh (previous day: ${todayDay}, current day: ${currentDay})`);
+    // The baseline belongs to one lifetime counter (production meter or inverter totals; they differ by orders of
+    // magnitude). A switch between them (setting "Ignore production meter") re-baselines like a new day. A baseline
+    // saved before the source was recorded is adopted as is.
+    const source = prodData.solarSource || null;
+    const todaySource = this.getStoreValue('today_source');
+    const sourceChanged = !!source && !!todaySource && todaySource !== source;
+    if (source && todaySource !== source) {
+      await this.setStoreValue('today_source', source).catch(this.error);
+    }
+
+    if (todayDay !== currentDay || typeof todayStartKwh !== 'number' || sourceChanged) {
+      this.log(`New day or counter source detected. Resetting today's start energy meter to: ${prodData.kwhLifetime} kWh `
+        + `(previous day: ${todayDay}, current day: ${currentDay}, source: ${todaySource} -> ${source})`);
       todayDay = currentDay;
       todayStartKwh = prodData.kwhLifetime;
       await this.setStoreValue('today_day', todayDay).catch(this.error);
@@ -1041,6 +1055,16 @@ class SolarDevice extends Homey.Device {
       } catch (err) {
         this.error('Failed to validate new settings:', err.message);
         throw new Error(this.homey.__('driver.solar.error.save_settings_failed', { message: err.message }));
+      }
+    }
+
+    // "Ignore production meter": the app scheduler reads the flag from this device, so the next poll switches the
+    // solar source (and with it the metered state, controls and energy baseline).
+    if (changedKeys.includes('ignore_production_meter')) {
+      this.ignoreProductionMeter = !!newSettings.ignore_production_meter;
+      this.log(`"Ignore production meter" setting changed to: ${this.ignoreProductionMeter}`);
+      if (!this.conflicted && this.registeredSerial) {
+        this.homey.app.triggerImmediatePoll(this.registeredSerial);
       }
     }
 

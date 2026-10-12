@@ -1766,6 +1766,23 @@
               "value": false
             },
             {
+              "id": "ignore_production_meter",
+              "type": "checkbox",
+              "label": {
+                "en": "Ignore production meter",
+                "nl": "Productiemeter negeren",
+                "fr": "Ignorer le compteur de production",
+                "de": "Produktionszähler ignorieren"
+              },
+              "hint": {
+                "en": "Only enable this when the gateway reports a production meter but no production CT clamps are installed, so solar power stays near 0 W while the inverters produce. Pairing presets this when it detects the situation. Consequences: power and energy come from the microinverters (updated about every 5 minutes instead of live); the gateway counts as unmetered, so production limiting and its controls are unavailable and on/off responds slower; values derived from solar power, such as home consumption without a consumption CT, follow the microinverters too; and energy today restarts when this changes. Do not enable this when production CT clamps are installed.",
+                "nl": "Schakel dit alleen in als de gateway een productiemeter meldt maar er geen productie-CT-klemmen zijn geïnstalleerd, waardoor het zonnevermogen rond 0 W blijft terwijl de omvormers produceren. Bij het koppelen wordt dit vooraf ingesteld als de situatie wordt herkend. Gevolgen: vermogen en energie komen van de microomvormers (ongeveer elke 5 minuten bijgewerkt in plaats van live); de gateway geldt als niet gemeten, dus productiebeperking en bijbehorende bediening zijn niet beschikbaar en aan/uit reageert trager; waarden die uit het zonnevermogen worden afgeleid, zoals woningverbruik zonder verbruiks-CT, volgen ook de microomvormers; en energie vandaag begint opnieuw bij deze wijziging. Schakel dit niet in als er productie-CT-klemmen zijn geïnstalleerd.",
+                "fr": "À activer uniquement si la passerelle signale un compteur de production alors qu'aucune pince CT de production n'est installée, de sorte que la puissance solaire reste proche de 0 W pendant que les onduleurs produisent. Le jumelage préconfigure cette option lorsqu'il détecte cette situation. Conséquences : la puissance et l'énergie proviennent des micro-onduleurs (mises à jour environ toutes les 5 minutes au lieu du direct) ; la passerelle est considérée comme non mesurée, donc la limitation de production et ses commandes sont indisponibles et la commande marche/arrêt réagit plus lentement ; les valeurs dérivées de la puissance solaire, comme la consommation du foyer sans pince CT de consommation, suivent aussi les micro-onduleurs ; et l'énergie du jour redémarre à chaque modification. Ne pas activer si des pinces CT de production sont installées.",
+                "de": "Nur aktivieren, wenn das Gateway einen Produktionszähler meldet, aber keine Produktions-Stromwandler installiert sind, sodass die Solarleistung bei etwa 0 W bleibt, während die Wechselrichter produzieren. Beim Koppeln wird dies voreingestellt, wenn die Situation erkannt wird. Folgen: Leistung und Energie stammen von den Mikrowechselrichtern (etwa alle 5 Minuten aktualisiert statt live); das Gateway gilt als ohne Messung, daher sind Produktionsbegrenzung und ihre Steuerung nicht verfügbar und Ein/Aus reagiert langsamer; aus der Solarleistung abgeleitete Werte, etwa der Hausverbrauch ohne Verbrauchs-Stromwandler, folgen ebenfalls den Mikrowechselrichtern; und die Energie heute beginnt bei einer Änderung neu. Nicht aktivieren, wenn Produktions-Stromwandler installiert sind."
+              },
+              "value": false
+            },
+            {
               "id": "pel_offset",
               "type": "number",
               "label": {

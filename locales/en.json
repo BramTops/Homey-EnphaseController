@@ -103,9 +103,9 @@
   },
   "timeline": {
     "deprecated_envoy": "The deprecated Envoy Gateway device will be removed soon. Please start using the Enphase Controller Solar device.",
-    "migration_2_0_envoy": "Enphase Controller 2.0: this Envoy Gateway device is deprecated. It keeps working during the 2.0 migration window, but deprecated devices are planned for removal in 2.1.x (exact scope not decided yet). Please move to the new Enphase Solar device and rebuild your Flows; device history may be lost. Only one solar device per gateway is allowed: open the Enphase Solar pairing screen, save your settings for migration, then remove this device and pair Enphase Solar.",
-    "migration_2_0_gateway": "Enphase Controller 2.0: this older Enphase Solar device is deprecated. It keeps working during the 2.0 migration window, but deprecated devices are planned for removal in 2.1.x (exact scope not decided yet). Please move to the new Enphase Solar device and rebuild your Flows; device history may be lost. Only one solar device per gateway is allowed: open the Enphase Solar pairing screen, save your settings for migration, then remove this device and pair Enphase Solar.",
-    "migration_2_0_homeload": "Enphase Controller 2.0: this Enphase Home device is deprecated. It keeps working during the 2.0 migration window, but deprecated devices are planned for removal in 2.1.x (exact scope not decided yet). Please add the new Enphase Grid device, rebuild your Flows, then remove this device. Do not keep both for long: their energy totals would be counted twice in Homey Energy. Device history may be lost."
+    "migration_2_0_envoy": "Enphase Controller: the current Envoy Gateway (Legacy) device driver is deprecated and will be removed in a future version. Please remove it, re-add the device (new driver is used automatically) and rebuild applicable flows.",
+    "migration_2_0_gateway": "Enphase Controller: the current Enphase Solar device driver is deprecated and will be removed in a future version. Please remove it, re-add the device (new driver is used automatically) and rebuild applicable flows.",
+    "migration_2_0_homeload": "Enphase Controller: the current Enphase Home device driver is deprecated and will be removed in a future version. Please remove it, re-add the device (new driver is used automatically) and rebuild applicable flows."
   },
   "pair": {
     "start": {
@@ -172,7 +172,8 @@
       "success_subtitle_battery": "Your Enphase account was validated and the battery device is ready to be added.",
       "btn_add_battery": "Add Battery to Homey",
       "warning_no_battery": "No battery was detected on this gateway. You can still add the device, but it will not show any data until a battery is available.",
-      "warning_battery_unknown": "Battery detection failed, so it is unknown whether a battery is installed. You can still add the device."
+      "warning_battery_unknown": "Battery detection failed, so it is unknown whether a battery is installed. You can still add the device.",
+      "notice_production_meter_ignored": "No production CT clamps were detected: the production meter only reads noise while the inverters produce. \"Ignore production meter\" was enabled, so solar power comes from the microinverters. You can change this in the device settings."
     },
     "error": {
       "legacy_solar_conflict": "An older Enphase Envoy or Solar device already exists for this gateway. Remove the old device first, pair again, and then rebuild your Flows with the new Enphase Solar device."

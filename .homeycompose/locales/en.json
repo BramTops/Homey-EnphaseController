@@ -139,6 +139,7 @@
       "desc_maintainer": "Full control active. You can monitor production and toggle power generation on and off.",
       "role_owner": "System Owner Role",
       "desc_owner": "Read-only active. You can monitor production status, but power generation control is locked.",
+      "notice_production_meter_ignored": "No production CT clamps were detected: the production meter only reads noise while the inverters produce. \"Ignore production meter\" was enabled, so solar power comes from the microinverters. You can change this in the device settings.",
       "title_homeload": "Connect your Enphase Home",
       "subtitle_homeload": "Connect to your gateway to add the home consumption (P1 substitute) device.",
       "warning_title": "Attention Required",

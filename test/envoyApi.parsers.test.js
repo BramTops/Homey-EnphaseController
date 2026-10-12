@@ -192,12 +192,16 @@ test.describe('checkMeterStatus', () => {
       production: METERED_PRODUCTION,
       metersConfig: [meter(1, 'production'), meter(2, 'net-consumption', 'disabled'), meter(3, 'total-consumption')],
     });
-    assert.deepEqual(await api.checkMeterStatus(), { isMetered: true, hasGridpower: false, hasHomepower: true });
+    assert.deepEqual(await api.checkMeterStatus(), {
+      isMetered: true, hasGridpower: false, hasHomepower: true, meterWatts: 3100.5, inverterWatts: 2900,
+    });
   });
 
   test('a generic consumption meter switches both grid and home on or off together', async () => {
     const on = apiWith({ production: UNMETERED_PRODUCTION, metersConfig: [meter(9, 'consumption')] });
-    assert.deepEqual(await on.checkMeterStatus(), { isMetered: false, hasGridpower: true, hasHomepower: true });
+    assert.deepEqual(await on.checkMeterStatus(), {
+      isMetered: false, hasGridpower: true, hasHomepower: true, meterWatts: null, inverterWatts: 1500,
+    });
     const off = apiWith({ production: METERED_PRODUCTION, metersConfig: [meter(9, 'consumption', 'disabled')] });
     const status = await off.checkMeterStatus();
     assert.equal(status.hasGridpower, false);

@@ -139,6 +139,7 @@
       "desc_maintainer": "Volle Steuerung aktiv. Sie können die Produktion überwachen und die Stromerzeugung ein- und ausschalten.",
       "role_owner": "Rolle Systemeigentümer",
       "desc_owner": "Nur-Lese-Modus aktiv. Sie können den Produktionsstatus überwachen, die Steuerung der Stromerzeugung ist jedoch gesperrt.",
+      "notice_production_meter_ignored": "Es wurden keine Produktions-Stromwandler erkannt: Der Produktionszähler misst nur Rauschen, während die Wechselrichter produzieren. „Produktionszähler ignorieren“ wurde aktiviert, daher stammt die Solarleistung von den Mikrowechselrichtern. Sie können dies in den Geräteeinstellungen ändern.",
       "title_homeload": "Enphase Home verbinden",
       "subtitle_homeload": "Verbinden Sie sich mit Ihrem Gateway, um das Gerät für den Hausverbrauch (P1-Zählerersatz) hinzuzufügen.",
       "warning_title": "Achtung erforderlich",

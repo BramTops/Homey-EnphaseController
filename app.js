@@ -862,7 +862,7 @@ class EnphaseController extends Homey.App {
             }
           }
         }
-        prodData = await api.getProductionData();
+        prodData = await api.getProductionData({ ignoreProductionMeter: this._ignoresProductionMeter(rt) });
         try {
           rt.model.recordProduction(api.lastProduction, Date.now());
         } catch (err) {
@@ -927,9 +927,20 @@ class EnphaseController extends Homey.App {
   // Fast tier and background refreshes
   // ---------------------------------------------------------------------------------------------------------------
 
+  /**
+   * Gateway-wide "Ignore production meter" (solar device setting, duck-typed so other drivers simply lack it).
+   * Evaluated per poll from the registered devices, so a changed setting applies on the next tick.
+   * @private
+   */
+  _ignoresProductionMeter(rt) {
+    return [...rt.devices.keys()].some((d) => d.ignoreProductionMeter === true);
+  }
+
   /** Feed the cached meters configuration (shared with the slow tier's TTL cache) to the model. */
   _syncMetersConfig(rt, api) {
-    rt.model.setMetersConfig(api.cachedMeters, api.metersConfigAbsent, api.cachedMetersAt);
+    rt.model.setMetersConfig(api.cachedMeters, api.metersConfigAbsent, api.cachedMetersAt, {
+      ignoreProduction: this._ignoresProductionMeter(rt),
+    });
   }
 
   /**
