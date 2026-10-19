@@ -4,6 +4,7 @@ const net = require('net');
 const Homey = require('homey');
 const EnvoyApi = require('../../lib/EnvoyApi');
 const PairingHelper = require('../../lib/PairingHelper');
+const { PhaseCapabilities, SOLAR_PHASE_GROUPS } = require('../../lib/phaseCapabilities');
 
 // Declaration for the central polling manager: slow production telemetry plus the fast meter/production snapshot.
 const REGISTRATION = { telemetry: 'production', fast: true, sources: ['meters', 'production'] };
@@ -119,6 +120,8 @@ class SolarDevice extends Homey.Device {
     this.pendingState = null;
     this.stateApplying = false;
     this.destroyed = false;
+    this.lastState = null;
+    this.phases = new PhaseCapabilities(this, SOLAR_PHASE_GROUPS, settings.phase_capabilities);
 
     // Same-serial legacy solar device? Decide before any control capability/listener is enabled.
     await this.syncRegistration(settings.envoy_serial, { register: false });
@@ -301,6 +304,8 @@ class SolarDevice extends Homey.Device {
         } catch (err) {
           this.error('Failed to apply solar state:', err.message);
         }
+        this.lastState = next;
+        await this.phases.update(next);
       }
     } finally {
       this.stateApplying = false;
@@ -1066,6 +1071,12 @@ class SolarDevice extends Homey.Device {
       if (!this.conflicted && this.registeredSerial) {
         this.homey.app.triggerImmediatePoll(this.registeredSerial);
       }
+    }
+
+    // "Per-phase values": add or remove the L1/L2/L3 capabilities right away, from the latest snapshot.
+    if (changedKeys.includes('phase_capabilities')) {
+      this.phases.setEnabled(newSettings.phase_capabilities);
+      this.phases.update(this.lastState).catch(this.error);
     }
 
     // Registration, conflict recovery and the requested update interval depend on the *applied* settings, which

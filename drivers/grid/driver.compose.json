@@ -234,6 +234,23 @@
           "min": 5,
           "max": 120,
           "units": "s"
+        },
+        {
+          "id": "phase_capabilities",
+          "type": "checkbox",
+          "label": {
+            "en": "Per-phase values",
+            "nl": "Waarden per fase",
+            "fr": "Valeurs par phase",
+            "de": "Werte pro Phase"
+          },
+          "hint": {
+            "en": "For 3-phase systems with a grid meter: adds grid power and grid voltage for each phase (L1, L2, L3), plus home power per phase when it can be determined (a home consumption meter, or no battery). Has no effect on single-phase systems. Turning this off removes these values and their history.",
+            "nl": "Voor 3-fase systemen met een netmeter: voegt netvermogen en netspanning per fase toe (L1, L2, L3), plus huisverbruik per fase als dat te bepalen is (een verbruiksmeter, of geen batterij). Heeft geen effect op 1-fase systemen. Uitschakelen verwijdert deze waarden en hun geschiedenis.",
+            "fr": "Pour les systèmes triphasés avec compteur réseau : ajoute la puissance et la tension réseau de chaque phase (L1, L2, L3), ainsi que la consommation domestique par phase lorsqu'elle peut être déterminée (compteur de consommation, ou pas de batterie). Sans effet sur les systèmes monophasés. La désactivation supprime ces valeurs et leur historique.",
+            "de": "Für 3-Phasen-Systeme mit Netzzähler: fügt Netzleistung und Netzspannung je Phase hinzu (L1, L2, L3), dazu den Hausverbrauch je Phase, wenn er sich bestimmen lässt (Verbrauchszähler oder keine Batterie). Hat bei 1-Phasen-Systemen keine Wirkung. Beim Ausschalten werden diese Werte und ihr Verlauf entfernt."
+          },
+          "value": false
         }
       ]
     }

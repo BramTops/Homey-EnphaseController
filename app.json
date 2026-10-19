@@ -16,10 +16,10 @@
     "de": "Enphase Controller"
   },
   "description": {
-    "en": "Monitor solar production, grid import and export, home consumption, and Enphase battery power and charge level. Control solar production, set custom limits, and restrict grid export. View live energy flows in a dashboard widget. The widget requires a new Solar, Grid, or Battery device.",
-    "nl": "Monitor zonneproductie, netafname en teruglevering, huisverbruik en het vermogen en laadniveau van Enphase-batterijen. Bestuur zonneproductie, stel limieten in en beperk net-teruglevering. Bekijk energiestromen live in een dashboardwidget. De widget vereist een nieuw Solar-, Grid- of Batterij-apparaat.",
-    "fr": "Surveillez la production solaire, l'import et l'export réseau, la consommation domestique, ainsi que la puissance et le niveau de charge des batteries Enphase. Contrôlez la production solaire, définissez des limites personnalisées et restreignez l'export vers le réseau. Affichez les flux d'énergie en direct dans un widget de tableau de bord. Le widget nécessite un nouvel appareil Solar, Grid ou Batterie.",
-    "de": "Überwachen Sie die Solarproduktion, Netzbezug und Netzeinspeisung, den Hausverbrauch sowie Leistung und Ladestand von Enphase-Batterien. Steuern Sie die Solarproduktion, legen Sie eigene Grenzen fest und begrenzen Sie die Netzeinspeisung. Zeigen Sie Energieflüsse live in einem Dashboard-Widget an. Das Widget erfordert ein neues Solar-, Grid- oder Batterie-Gerät."
+    "en": "Monitor your Enphase solar production, individual inverters, battery power and state of charge (SoC), and grid import and export. Control solar production, set custom limits, and restrict grid exports.",
+    "nl": "Monitor de zonneproductie van je Enphase-systeem, afzonderlijke omvormers, batterijvermogen en laadstatus (SoC), en netafname en teruglevering. Regel de zonneproductie, stel aangepaste limieten in en beperk teruglevering aan het net.",
+    "fr": "Surveillez la production solaire de votre système Enphase, chaque onduleur, la puissance et le niveau de charge (SoC) de la batterie, ainsi que l’importation et l’exportation du réseau. Contrôlez la production solaire, définissez des limites personnalisées et limitez l’exportation vers le réseau.",
+    "de": "Überwachen Sie die Solarproduktion Ihrer Enphase-Anlage, einzelne Wechselrichter, Batterieleistung und Ladezustand (SoC) sowie Netzbezug und Netzeinspeisung. Steuern Sie die Solarproduktion, legen Sie individuelle Grenzwerte fest und begrenzen Sie die Netzeinspeisung."
   },
   "category": [
     "energy"
@@ -103,6 +103,21 @@
   "author": {
     "name": "Bram Tops",
     "email": "bramtops@outlook.com"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Niels de Klerk"
+      }
+    ],
+    "translators": []
+  },
+  "contributing": {
+    "donate": {
+      "githubSponsors": {
+        "username": "BramTops"
+      }
+    }
   },
   "homeyCommunityTopicId": 155720,
   "support": "https://community.homey.app/t/app-pro-enphase-controller/155720",
@@ -1273,6 +1288,23 @@
               "min": 5,
               "max": 120,
               "units": "s"
+            },
+            {
+              "id": "phase_capabilities",
+              "type": "checkbox",
+              "label": {
+                "en": "Per-phase values",
+                "nl": "Waarden per fase",
+                "fr": "Valeurs par phase",
+                "de": "Werte pro Phase"
+              },
+              "hint": {
+                "en": "For 3-phase systems with a grid meter: adds grid power and grid voltage for each phase (L1, L2, L3), plus home power per phase when it can be determined (a home consumption meter, or no battery). Has no effect on single-phase systems. Turning this off removes these values and their history.",
+                "nl": "Voor 3-fase systemen met een netmeter: voegt netvermogen en netspanning per fase toe (L1, L2, L3), plus huisverbruik per fase als dat te bepalen is (een verbruiksmeter, of geen batterij). Heeft geen effect op 1-fase systemen. Uitschakelen verwijdert deze waarden en hun geschiedenis.",
+                "fr": "Pour les systèmes triphasés avec compteur réseau : ajoute la puissance et la tension réseau de chaque phase (L1, L2, L3), ainsi que la consommation domestique par phase lorsqu'elle peut être déterminée (compteur de consommation, ou pas de batterie). Sans effet sur les systèmes monophasés. La désactivation supprime ces valeurs et leur historique.",
+                "de": "Für 3-Phasen-Systeme mit Netzzähler: fügt Netzleistung und Netzspannung je Phase hinzu (L1, L2, L3), dazu den Hausverbrauch je Phase, wenn er sich bestimmen lässt (Verbrauchszähler oder keine Batterie). Hat bei 1-Phasen-Systemen keine Wirkung. Beim Ausschalten werden diese Werte und ihr Verlauf entfernt."
+              },
+              "value": false
             }
           ]
         }
@@ -1826,6 +1858,23 @@
               "min": 5,
               "max": 120,
               "units": "s"
+            },
+            {
+              "id": "phase_capabilities",
+              "type": "checkbox",
+              "label": {
+                "en": "Per-phase values",
+                "nl": "Waarden per fase",
+                "fr": "Valeurs par phase",
+                "de": "Werte pro Phase"
+              },
+              "hint": {
+                "en": "For 3-phase systems with a production meter: adds solar power for each phase (L1, L2, L3). Has no effect on single-phase systems. Turning this off removes these values and their history.",
+                "nl": "Voor 3-fase systemen met een productiemeter: voegt het zonnevermogen per fase toe (L1, L2, L3). Heeft geen effect op 1-fase systemen. Uitschakelen verwijdert deze waarden en hun geschiedenis.",
+                "fr": "Pour les systèmes triphasés avec compteur de production : ajoute la puissance solaire de chaque phase (L1, L2, L3). Sans effet sur les systèmes monophasés. La désactivation supprime ces valeurs et leur historique.",
+                "de": "Für 3-Phasen-Systeme mit Produktionszähler: fügt die Solarleistung je Phase hinzu (L1, L2, L3). Hat bei 1-Phasen-Systemen keine Wirkung. Beim Ausschalten werden diese Werte und ihr Verlauf entfernt."
+              },
+              "value": false
             }
           ]
         }

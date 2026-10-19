@@ -77,6 +77,12 @@ Array of meters matched by `eid`; each has `activePower` (W, signed), `actEnergy
 * Net-consumption `activePower`: **+ import, - export**. Used by this app. nklerk also uses + = import but its own source comment says it was never verified against a clear import/export event, so treat the sign as plausible, not proven.
 * Production meter `activePower` can be slightly negative at night; clamp to 0.
 
+**Per phase (`channels[]`).** On a 3-phase gateway each meter's `channels` has one entry per phase with its own `activePower` and `voltage` (plus `current`, `pwrFactor` and energy counters). Observed (pull request #4 of this repo, one IQ Gateway Metered, 3-phase, firmware D8.3.5289, 2026-08-16): per-phase `activePower` of the production and net-consumption meters matched `/ivp/livedata/status` within about 10 W (5035 W PV: 1888 / 242 / 2904 W against 1888 / 237 / 2910 W), and the channels sum to the meter total. nklerk's system (section Evidence labels) is also 3-phase but this was not checked against its data.
+* The app maps channel index 0, 1, 2 to L1, L2, L3. That order is **assumed**, not documented; the gateway does not label the phases. A meter with fewer than two channels (or none) counts as single-phase. A split-phase (two-leg) system would show two channels; (unverified: no sample).
+* Same signs as the totals: net-consumption + import, - export. Solar per phase is clamped to 0 like the total.
+* Voltage is read from the net-consumption meter only. Whether the production meter's channel voltages equal it is (unverified).
+* **Home per phase.** A total-consumption meter has its own channels and is used as is (clamped to 0). Without one, the app derives `max(0, solar + grid)` per phase, as the gateway does for its own aggregate (observed in PR #4: 444 W derived against 428 W reported by livedata, within a polling interval), and **only when the system is known to have no battery**. No local source for per-phase battery power is established: `/ivp/ensemble/power` reports one value per battery unit without phases (section 5.1), a storage meter's `channels` are (unverified), and the per-phase `storage` block of `/ivp/livedata/status` has never been seen on a system with a battery. Subtracting the battery from a single phase, or evenly, would be a guess, so there is no per-phase home value with a battery and no total-consumption meter.
+
 ### 3.3 `GET /production.json` - aggregate (established)
 ```json
 {
@@ -102,6 +108,7 @@ Per-inverter last report and maximum reported watts; `lastReportDate` is epoch s
 
 ### 3.5 Other local endpoints in the Enphase brief (not used by the app)
 * `GET /ivp/livedata/status` - live meter data in **milliwatts**: `meters.soc`, `enc_agg_soc`, `enc_agg_energy`, `acb_agg_soc`, `backup_soc`, `main_relay_state`, `gen_relay_state`, and `pv` / `storage` / `grid` / `load` / `generator` blocks with `agg_p_mw`, `agg_s_mva` (and per-phase `_ph_a/b/c_`). In the brief's sample, `pv` 329549 and `load` 108749 give `storage.agg_p_mw` = -220800: storage **negative while charging, positive while discharging**, which matches the raw `/ivp/ensemble/power` sign below. Also returns MQTT/connection state and counters.
+  * Observed (pull request #4 of this repo, IQ Gateway Metered, 3-phase, firmware D8.3.5289, 2026-08-16; not independently confirmed): with `sc_stream` reporting `disabled` and the notice "Last available status data shown. Live stream not enabled.", the payload is still refreshed: polled every 15 s, `last_update` advanced by exactly 15 s with the per-phase values moving. The stream toggle controls the MQTT push, not the snapshot refresh. The call took 0.16-0.18 s for 3.6 kB, against 1.06-2.04 s for `/production.json` on the same gateway. Not used by the app: the per-phase PV and grid values it offers are already in the `channels` of `/ivp/meters/readings` (section 3.2), which the fast tier fetches anyway. Its `load` block is the one thing not available there, and the app derives that itself.
 * `GET /ivp/meters/reports/consumption` - active/reactive/apparent power and cumulative energy of the load circuits (`cumulative` plus per-line `lines`, `reportType` `net-consumption`). Updates every 5 minutes.
 
 ---
@@ -134,6 +141,8 @@ Source for the two endpoints below: **observed in nklerk/nl.nielsdeklerk.enphase
 * **Sign (raw): positive = discharging, negative = charging.** Confirmed by nklerk against the Enlighten live view once (raw -842 W = "charging 0.9 kW"); consistent with the Enphase brief's `livedata` sample (section 3.5).
 * Not established: a watts-only field for older firmware. nklerk falls back to `realPower` and assumes watts (a guess, no real fixture). Earlier notes also list `real_power_w` under the *inventory* endpoint with the same sign, but no source shows it: (unverified).
 * Aggregation: nklerk sums power over devices and averages `soc` unweighted. No per-battery capacity is read from this endpoint.
+
+Per-unit values only: no per-phase battery power is reported here. Which phase an IQ Battery feeds on a 3-phase installation is not known to this app.
 
 ### 5.2 `GET /ivp/ensemble/inventory` - device inventory (observed)
 Array of groups `{ "type": "...", "devices": [...] }`.

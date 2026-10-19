@@ -289,6 +289,23 @@
           "min": 5,
           "max": 120,
           "units": "s"
+        },
+        {
+          "id": "phase_capabilities",
+          "type": "checkbox",
+          "label": {
+            "en": "Per-phase values",
+            "nl": "Waarden per fase",
+            "fr": "Valeurs par phase",
+            "de": "Werte pro Phase"
+          },
+          "hint": {
+            "en": "For 3-phase systems with a production meter: adds solar power for each phase (L1, L2, L3). Has no effect on single-phase systems. Turning this off removes these values and their history.",
+            "nl": "Voor 3-fase systemen met een productiemeter: voegt het zonnevermogen per fase toe (L1, L2, L3). Heeft geen effect op 1-fase systemen. Uitschakelen verwijdert deze waarden en hun geschiedenis.",
+            "fr": "Pour les systèmes triphasés avec compteur de production : ajoute la puissance solaire de chaque phase (L1, L2, L3). Sans effet sur les systèmes monophasés. La désactivation supprime ces valeurs et leur historique.",
+            "de": "Für 3-Phasen-Systeme mit Produktionszähler: fügt die Solarleistung je Phase hinzu (L1, L2, L3). Hat bei 1-Phasen-Systemen keine Wirkung. Beim Ausschalten werden diese Werte und ihr Verlauf entfernt."
+          },
+          "value": false
         }
       ]
     }
