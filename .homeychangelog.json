@@ -6,10 +6,10 @@
     "de": "Diese Version überarbeitet mehrere interne Systeme für mehr Zuverlässigkeit und künftige Updates. Leider müssen einige Geräte erneut hinzugefügt werden. \nFügt die Überwachung von Enphase-Batterien hinzu. \nFügt ein animiertes Energiefluss-Widget hinzu (nur für gemessene Systeme). \nUnterstützung für Homey-Alarme bei Wechselrichterproblemen. \nFügt Hinweise zur Veralterung in der Zeitleiste für ältere Treiber hinzu. \nFügt Unterstützung für Französisch und Deutsch hinzu. \nUnterstützung für nicht angeschlossene Produktionszähler."
   },
   "2.0.1": {
-    "en": "Fixes daily energy resetting at wrong time.",
-    "nl": "Herstelt dagelijkse energie die op verkeerd tijdstip reset.",
-    "fr": "Corrige la réinitialisation de l'énergie quotidienne à une mauvaise heure.",
-    "de": "Behebt das Zurücksetzen der Tagesenergie zur falschen Zeit."
+    "en": "Shows solar power per phase (optional). \nShows grid power and voltage per phase (optional). \nShows home power per phase (optional). \nFixes daily energy resetting at wrong time.",
+    "nl": "Toont zonnevermogen per fase (optioneel). \nToont netvermogen en spanning per fase (optioneel). \nToont huisverbruik per fase (optioneel). \nHerstelt dagelijkse energie die op verkeerd tijdstip reset.",
+    "fr": "Affiche la puissance solaire par phase (facultatif). \nAffiche la puissance et la tension du réseau par phase (facultatif). \nAffiche la consommation du foyer par phase (facultatif). \nCorrige la réinitialisation de l'énergie quotidienne à une mauvaise heure.",
+    "de": "Zeigt Solarleistung pro Phase (optional). \nZeigt Netzleistung und Spannung pro Phase (optional). \nZeigt den Hausverbrauch pro Phase (optional). \nBehebt das Zurücksetzen der Tagesenergie zur falschen Zeit."
   },
   "1.0.0": {
     "en": "Initial app release.",

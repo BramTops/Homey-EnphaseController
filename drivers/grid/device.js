@@ -3,6 +3,7 @@
 const net = require('net');
 const Homey = require('homey');
 const EnvoyApi = require('../../lib/EnvoyApi');
+const { PhaseCapabilities, GRID_PHASE_GROUPS } = require('../../lib/phaseCapabilities');
 
 // Declaration for the central polling manager: slow production telemetry plus the fast meter/production snapshot.
 const REGISTRATION = { telemetry: 'production', fast: true, sources: ['meters', 'production'] };
@@ -101,6 +102,8 @@ class GridDevice extends Homey.Device {
     this.pendingState = null;
     this.stateApplying = false;
     this.destroyed = false;
+    this.lastState = null;
+    this.phases = new PhaseCapabilities(this, GRID_PHASE_GROUPS, settings.phase_capabilities);
 
     // Register with App-level polling manager
     this.registerWithApp(settings.envoy_serial);
@@ -163,6 +166,8 @@ class GridDevice extends Homey.Device {
         } catch (err) {
           this.error('Failed to apply grid state:', err.message);
         }
+        this.lastState = next;
+        await this.phases.update(next);
       }
     } finally {
       this.stateApplying = false;
@@ -439,6 +444,12 @@ class GridDevice extends Homey.Device {
         this.error('Failed to validate new settings:', err.message);
         throw new Error(this.homey.__('driver.grid.error.save_settings_failed', { message: err.message }));
       }
+    }
+
+    // "Per-phase values": add or remove the L1/L2/L3 capabilities right away, from the latest snapshot.
+    if (changedKeys.includes('phase_capabilities')) {
+      this.phases.setEnabled(newSettings.phase_capabilities);
+      this.phases.update(this.lastState).catch(this.error);
     }
 
     // Registration and the requested update interval depend on the *applied* settings, which Homey only persists
