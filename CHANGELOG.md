@@ -9,6 +9,10 @@ Store rules, for this file and .homeychangelog.json (JSON cannot hold comments, 
 
 All notable changes to the Enphase Controller application for Homey Pro will be documented in this file, grouped by work session (day) and described in a user-centric way.
 
+## 2.0.1 (2026-10-19)
+
+- Fixes daily energy resetting at wrong time.
+
 ## 2.0.0 (2026-10-12)
 
 - This release reworks several internal systems for more reliability and future updates. Unfortunately some devices will have to be re-added.

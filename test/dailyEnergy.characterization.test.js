@@ -272,10 +272,10 @@ test.describe('app.getLocalDayOfMonth (current behavior)', () => {
 });
 
 test.describe('which clock each driver uses for its day (current behavior)', () => {
-  // The wiring between "what day is it" and the daily baseline is the code stage 1 changes. solar and grid use the
-  // PROCESS clock (`new Date().getDate()`, UTC on Homey Pro, to be confirmed on hardware); inverters ask the app for
-  // the day in Homey's timezone. Each fake exposes a Homey-timezone day (SENTINEL) that is deliberately unlike any
-  // real day of month, so it is clear which source reached the stored value.
+  // The wiring between "what day is it" and the daily baseline. Every driver asks the app for the day in Homey's
+  // timezone; the process clock is UTC on Homey Pro and would reset the counters at UTC midnight instead of local
+  // midnight. Each fake exposes a Homey-timezone day (SENTINEL) that is deliberately unlike any real day of month, so
+  // it is clear which source reached the stored value.
   const SENTINEL = 99;
 
   const homeyWithLocalDay = () => ({
@@ -289,7 +289,7 @@ test.describe('which clock each driver uses for its day (current behavior)', () 
     flow: { getDeviceTriggerCard: () => null },
   });
 
-  test('grid.updateTelemetry baselines on the process-clock day, not the Homey-timezone day', async (t) => {
+  test('grid.updateTelemetry baselines on the Homey-timezone day, not the process-clock day', async (t) => {
     t.mock.timers.enable({ apis: ['Date'], now: new Date('2026-01-14T23:30:00Z').getTime() });
     const dev = fakeDevice();
     Object.assign(dev, {
@@ -308,13 +308,12 @@ test.describe('which clock each driver uses for its day (current behavior)', () 
       hasGridpower: true,
       isMetered: true,
     });
-    assert.equal(dev.store.today_day_gridpower_import, new Date().getDate());
-    assert.equal(dev.store.today_day_gridpower_export, new Date().getDate());
-    assert.notEqual(dev.store.today_day_gridpower_import, SENTINEL);
-    assert.equal(dev.homey.app.localDayCalls, 0);
+    assert.equal(dev.store.today_day_gridpower_import, SENTINEL);
+    assert.equal(dev.store.today_day_gridpower_export, SENTINEL);
+    assert.notEqual(dev.store.today_day_gridpower_import, new Date().getDate());
   });
 
-  test('grid.updateTelemetry gives the home counters the same process-clock day', async (t) => {
+  test('grid.updateTelemetry gives the home counters the same Homey-timezone day', async (t) => {
     t.mock.timers.enable({ apis: ['Date'], now: new Date('2026-01-14T23:30:00Z').getTime() });
     const dev = fakeDevice();
     Object.assign(dev, {
@@ -336,12 +335,11 @@ test.describe('which clock each driver uses for its day (current behavior)', () 
       hasGridpower: true,
       isMetered: true,
     });
-    const day = new Date().getDate();
-    assert.equal(dev.store.today_day_homepower_import, day);
-    assert.equal(dev.store.today_day_homepower_export, day);
+    assert.equal(dev.store.today_day_homepower_import, SENTINEL);
+    assert.equal(dev.store.today_day_homepower_export, SENTINEL);
   });
 
-  test('solar.updateTelemetry baselines on the process-clock day, not the Homey-timezone day', async (t) => {
+  test('solar.updateTelemetry baselines on the Homey-timezone day, not the process-clock day', async (t) => {
     t.mock.timers.enable({ apis: ['Date'], now: new Date('2026-01-14T23:30:00Z').getTime() });
     const dev = fakeDevice();
     Object.assign(dev, {
@@ -357,9 +355,8 @@ test.describe('which clock each driver uses for its day (current behavior)', () 
       updateDeviceCapabilities: async () => { },
     });
     await SolarDevice.prototype.updateTelemetry.call(dev, { kwhLifetime: 1000, isMetered: false }, false, null);
-    assert.equal(dev.store.today_day, new Date().getDate());
-    assert.notEqual(dev.store.today_day, SENTINEL);
-    assert.equal(dev.homey.app.localDayCalls, 0);
+    assert.equal(dev.store.today_day, SENTINEL);
+    assert.notEqual(dev.store.today_day, new Date().getDate());
   });
 
   test('inverters.updateTelemetry uses the Homey-timezone day for new records and for the daily reset', async () => {

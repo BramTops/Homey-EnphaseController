@@ -239,7 +239,7 @@ class GridDevice extends Homey.Device {
     this.log('Updating grid/home telemetry with data received from central poll...');
 
     // Calculate daily energy consumption for grid (imported and exported)
-    const currentDay = new Date().getDate();
+    const currentDay = await this.homey.app.getLocalDayOfMonth();
     const gridpowerEnergyTodayImported = await this.calculateDailyEnergy(prodData.gridpowerKwhImported, currentDay, '_gridpower_import');
     const gridpowerEnergyTodayExported = await this.calculateDailyEnergy(prodData.gridpowerKwhExported, currentDay, '_gridpower_export');
 

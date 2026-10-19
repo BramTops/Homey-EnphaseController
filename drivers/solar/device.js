@@ -745,7 +745,7 @@ class SolarDevice extends Homey.Device {
     }
 
     // Step 2: Calculate daily energy production
-    const currentDay = new Date().getDate();
+    const currentDay = await this.homey.app.getLocalDayOfMonth();
     const energyToday = await this.calculateDailyEnergy(prodData, currentDay);
 
     // Step 3: Update and save metered status if changed

@@ -5,6 +5,12 @@
     "fr": "Cette version restructure plusieurs systèmes internes pour plus de fiabilité et de futures mises à jour. Malheureusement, certains appareils devront être ajoutés à nouveau. \nAjoute la surveillance des batteries Enphase. \nAjoute un widget de flux d'énergie animé (uniquement pour les systèmes mesurés). \nPrise en charge des alarmes Homey pour les problèmes d'onduleurs. \nAjoute des avis d'obsolescence à la chronologie pour les anciens pilotes. \nAjoute la prise en charge du français et de l'allemand. \nPrise en charge des compteurs de production non câblés.",
     "de": "Diese Version überarbeitet mehrere interne Systeme für mehr Zuverlässigkeit und künftige Updates. Leider müssen einige Geräte erneut hinzugefügt werden. \nFügt die Überwachung von Enphase-Batterien hinzu. \nFügt ein animiertes Energiefluss-Widget hinzu (nur für gemessene Systeme). \nUnterstützung für Homey-Alarme bei Wechselrichterproblemen. \nFügt Hinweise zur Veralterung in der Zeitleiste für ältere Treiber hinzu. \nFügt Unterstützung für Französisch und Deutsch hinzu. \nUnterstützung für nicht angeschlossene Produktionszähler."
   },
+  "2.0.1": {
+    "en": "Fixes daily energy resetting at wrong time.",
+    "nl": "Herstelt dagelijkse energie die op verkeerd tijdstip reset.",
+    "fr": "Corrige la réinitialisation de l'énergie quotidienne à une mauvaise heure.",
+    "de": "Behebt das Zurücksetzen der Tagesenergie zur falschen Zeit."
+  },
   "1.0.0": {
     "en": "Initial app release.",
     "nl": "Eerste release.",
