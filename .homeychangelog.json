@@ -5,6 +5,12 @@
     "fr": "Cette version restructure plusieurs systèmes internes pour plus de fiabilité et de futures mises à jour. Malheureusement, certains appareils devront être ajoutés à nouveau. \nAjoute la surveillance des batteries Enphase. \nAjoute un widget de flux d'énergie animé (uniquement pour les systèmes mesurés). \nPrise en charge des alarmes Homey pour les problèmes d'onduleurs. \nAjoute des avis d'obsolescence à la chronologie pour les anciens pilotes. \nAjoute la prise en charge du français et de l'allemand. \nPrise en charge des compteurs de production non câblés.",
     "de": "Diese Version überarbeitet mehrere interne Systeme für mehr Zuverlässigkeit und künftige Updates. Leider müssen einige Geräte erneut hinzugefügt werden. \nFügt die Überwachung von Enphase-Batterien hinzu. \nFügt ein animiertes Energiefluss-Widget hinzu (nur für gemessene Systeme). \nUnterstützung für Homey-Alarme bei Wechselrichterproblemen. \nFügt Hinweise zur Veralterung in der Zeitleiste für ältere Treiber hinzu. \nFügt Unterstützung für Französisch und Deutsch hinzu. \nUnterstützung für nicht angeschlossene Produktionszähler."
   },
+  "2.0.2": {
+    "en": "Widget visual update. \nWidget now supports external sources. \nAdds widget settings for min/max power.",
+    "nl": "Visuele update van de widget. \nWidget ondersteunt nu externe bronnen. \nVoegt widgetinstellingen voor min/maxvermogen toe.",
+    "fr": "Amélioration visuelle du widget. \nLe widget accepte désormais des sources externes. \nPuissance min/max configurable dans le widget.",
+    "de": "Widget optisch überarbeitet. \nWidget unterstützt jetzt externe Quellen. \nMinimale und maximale Leistung einstellbar."
+  },
   "2.0.1": {
     "en": "Shows solar power per phase (optional). \nShows grid power and voltage per phase (optional). \nShows home power per phase (optional). \nFixes daily energy resetting at wrong time.",
     "nl": "Toont zonnevermogen per fase (optioneel). \nToont netvermogen en spanning per fase (optioneel). \nToont huisverbruik per fase (optioneel). \nHerstelt dagelijkse energie die op verkeerd tijdstip reset.",

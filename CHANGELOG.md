@@ -9,6 +9,12 @@ Store rules, for this file and .homeychangelog.json (JSON cannot hold comments, 
 
 All notable changes to the Enphase Controller application for Homey Pro will be documented in this file, grouped by work session (day) and described in a user-centric way.
 
+## 2.0.2 (2026-10-22)
+
+- Widget visual update.
+- Widget now supports external sources.
+- Adds widget settings for min/max power.
+
 ## 2.0.1 (2026-10-19)
 
 - Shows solar power per phase (optional).
