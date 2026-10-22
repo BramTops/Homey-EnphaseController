@@ -31,6 +31,7 @@
 // Data model: the widget only reads app state snapshots,
 // via the widget API (GET /gateways, GET /state/:serial) plus the realtime
 // events 'enphase:flow' and 'enphase:gateways'. It never talks to a gateway.
+// Snapshot fields may come from the gateway or from user Flow cards (source 'flow'; see lib/widgetFeed.js).
 // Everything drawn is an allocation of the aggregate readings, not a measurement
 // of individual source-to-load paths.
 // eslint-disable-next-line no-unused-vars
@@ -40,19 +41,22 @@ function onHomeyReady(Homey) {
   const KEY_PREFIX = 'widget.energy_flow.';
 
   // --- Tunables -------------------------------------------------------------
-  const MIN_W = 20; // below this a flow carries no particles
-  const GRID_IDLE_W = 50; // grid below this reads "Idle" and draws no band
-  const BATTERY_IDLE_W = MIN_W;
-  // Power that maps to a full-width, full-speed band (everyday flows are 0-2 kW).
-  const MAX_W = 4000;
-  const SCALE_EXP = 0.85;
+  // The flow deadzone (below it a flow carries no particles; grid and battery read "Idle") and the full-scale
+  // power (maps to a full-width, full-speed band) are widget settings: config.deadzoneW / config.maxW.
+  // Exponent < 1 compresses the scale so changes at the low end move the visuals more than the same change at the high end.
+  const SCALE_EXP = 0.7;
   const MAX_PARTICLES_PER_EDGE = 40;
   const MAX_PARTICLES_TOTAL = 120;
   const MIN_FRAME_MS = 33; // ~30 fps is plenty for a dashboard widget
   const TICK_MS = 5000; // staleness / theme re-evaluation while visible
   const STALE_INTERVALS = 3; // stale after at most three expected update intervals
   const STALE_SLACK_MS = 5000;
+  // Values pushed by user Flows arrive only on change; same window as FLOW_STALE_MS in lib/widgetFeed.js.
+  const FLOW_STALE_MS = 10 * 60 * 1000;
+  const SOC_STALE_MS = 90 * 60 * 1000;
   const READY_TIMEOUT_MS = 8000;
+  // Visuals ease toward each new reading (exponential smoothing) instead of jumping; ~95% settled after 3 * tau.
+  const TWEEN_TAU_S = 0.7;
 
   // English fallbacks, used only if the locale lookup does not resolve a key.
   const FALLBACK = {
@@ -106,6 +110,8 @@ function onHomeyReady(Homey) {
     speedMul: 1.0,
     trailLength: 10, // in 60 fps frames; converted to time so it is frame-rate independent
     particleOpacity: 0.90,
+    maxW: 5000, // power that maps to a full-width, full-speed band
+    deadzoneW: 25, // flows at or below this draw nothing
   };
   function clampNum(v, min, max, dflt) {
     const n = Number(v);
@@ -119,63 +125,32 @@ function onHomeyReady(Homey) {
       config.speedMul = clampNum(s.particleSpeed, 10, 400, 100) / 100;
       config.trailLength = Math.round(clampNum(s.trailLength, 2, 40, 10));
       config.particleOpacity = clampNum(s.particleOpacity, 0, 100, 90) / 100;
+      config.maxW = clampNum(s.maxPower, 500, 20000, 5000);
+      config.deadzoneW = Math.min(clampNum(s.deadzone, 0, 500, 25), config.maxW - 1);
     } catch (e) { /* keep current values */ }
   }
 
-  // --- Layouts --------------------------------------------------------------
-  // Chosen from the set of visible nodes. Coordinates are normalised [0..1]
+  // --- Layout ---------------------------------------------------------------
+  // Fixed orientation: solar on top, grid left, battery right, home at the bottom. Every node keeps its slot
+  // whether or not the others are visible, so nothing jumps when solar or battery data appears. Grid and home are
+  // always visible; solar and battery only appear once they have data. Coordinates are normalised [0..1]
   // waypoints (source -> destination); interior corners are rounded at layout time.
-  const LAYOUTS = {
-    'solar,grid,home,battery': {
-      nodes: {
-        solar: [0.5, 0.15], grid: [0.15, 0.48], home: [0.85, 0.48], battery: [0.5, 0.83],
-      },
-      routes: {
-        'solar-battery': [[0.5, 0.15], [0.5, 0.83]],
-        'solar-home': [[0.5, 0.15], [0.85, 0.15], [0.85, 0.48]],
-        'solar-grid': [[0.5, 0.15], [0.15, 0.15], [0.15, 0.48]],
-        'grid-home': [[0.15, 0.48], [0.85, 0.48]],
-        'grid-battery': [[0.15, 0.48], [0.15, 0.83], [0.5, 0.83]],
-        'battery-home': [[0.5, 0.83], [0.85, 0.83], [0.85, 0.48]],
-      },
-    },
-    'solar,grid,home': {
-      nodes: { solar: [0.5, 0.2], grid: [0.15, 0.68], home: [0.85, 0.68] },
-      routes: {
-        'solar-grid': [[0.5, 0.2], [0.15, 0.2], [0.15, 0.68]],
-        'solar-home': [[0.5, 0.2], [0.85, 0.2], [0.85, 0.68]],
-        'grid-home': [[0.15, 0.68], [0.85, 0.68]],
-      },
-    },
-    'solar,home,battery': {
-      nodes: { solar: [0.18, 0.4], home: [0.82, 0.4], battery: [0.5, 0.84] },
-      routes: {
-        'solar-home': [[0.18, 0.4], [0.82, 0.4]],
-        'solar-battery': [[0.18, 0.4], [0.18, 0.84], [0.5, 0.84]],
-        'battery-home': [[0.5, 0.84], [0.82, 0.84], [0.82, 0.4]],
-      },
-    },
-    'solar,grid,battery': {
-      nodes: { solar: [0.18, 0.4], grid: [0.82, 0.4], battery: [0.5, 0.84] },
-      routes: {
-        'solar-grid': [[0.18, 0.4], [0.82, 0.4]],
-        'solar-battery': [[0.18, 0.4], [0.18, 0.84], [0.5, 0.84]],
-        'grid-battery': [[0.82, 0.4], [0.82, 0.84], [0.5, 0.84]],
-      },
-    },
-    'solar,grid': {
-      nodes: { solar: [0.2, 0.45], grid: [0.8, 0.45] },
-      routes: { 'solar-grid': [[0.2, 0.45], [0.8, 0.45]] },
-    },
-    'solar,home': {
-      nodes: { solar: [0.2, 0.45], home: [0.8, 0.45] },
-      routes: { 'solar-home': [[0.2, 0.45], [0.8, 0.45]] },
-    },
-    'solar,battery': {
-      nodes: { solar: [0.2, 0.45], battery: [0.8, 0.45] },
-      routes: { 'solar-battery': [[0.2, 0.45], [0.8, 0.45]] },
-    },
-    solar: { nodes: { solar: [0.5, 0.45] }, routes: {} },
+  // Row heights are tuned so the white texts line up in two rows at the default 300 px height (icon radius 30):
+  // solar's value, the grid tariff and the battery % share one baseline, and the grid, battery and home values share
+  // another. See drawNodeText for the offsets (value below an icon, tariff/% above it, home's value above its icon).
+  const Y_SOLAR = 0.15;
+  const Y_SIDES = 0.477; // grid and battery
+  const Y_HOME = 0.847;
+  const SLOTS = {
+    solar: [0.5, Y_SOLAR], grid: [0.15, Y_SIDES], battery: [0.85, Y_SIDES], home: [0.5, Y_HOME],
+  };
+  const ROUTES = {
+    'solar-home': [[0.5, Y_SOLAR], [0.5, Y_HOME]],
+    'solar-battery': [[0.5, Y_SOLAR], [0.85, Y_SOLAR], [0.85, Y_SIDES]],
+    'solar-grid': [[0.5, Y_SOLAR], [0.15, Y_SOLAR], [0.15, Y_SIDES]],
+    'grid-battery': [[0.15, Y_SIDES], [0.85, Y_SIDES]],
+    'grid-home': [[0.15, Y_SIDES], [0.15, Y_HOME], [0.5, Y_HOME]],
+    'battery-home': [[0.85, Y_SIDES], [0.85, Y_HOME], [0.5, Y_HOME]],
   };
   const NODE_ORDER = ['solar', 'grid', 'home', 'battery'];
 
@@ -206,7 +181,12 @@ function onHomeyReady(Homey) {
   let layoutKey = '';
   let layout = null;
   const edgeGeom = {}; // route key -> { flat, cum, total }
-  const edgeState = {}; // "from>to" -> { geomKey, reversed, color, halfWidth, speed, lineWidth, particles }
+  // "from>to" -> { geomKey, reversed, color, particles, alpha, tgt, halfWidth, speed, lineWidth }
+  // halfWidth/speed/lineWidth/alpha are the eased values being drawn; `tgt` holds where they are heading.
+  // Particles carry their own fade `a` (and `dying` while fading out) so counts change without popping.
+  const edgeState = {};
+  const shown = { power: {}, soc: { cur: null, tgt: null } }; // eased node readings: id -> { cur, tgt }
+  let settling = false; // true while any eased value has not reached its target
 
   let gateways = null; // null until the first successful /gateways answer
   let gatewaysFailed = false;
@@ -264,19 +244,34 @@ function onHomeyReady(Homey) {
       kw1: nf({ maximumFractionDigits: 1 }),
       kw0: nf({ maximumFractionDigits: 0 }),
       pct: nf({ style: 'percent', maximumFractionDigits: 0 }),
+      price: nf({ minimumFractionDigits: 2, maximumFractionDigits: 3 }),
     };
   }
+  // Split into the number and its unit so the drawn text can de-emphasise the unit: { value: '1,2', unit: 'kW' }.
   function formatPower(w) {
     const abs = Math.abs(w);
     if (abs >= 1000) {
       const kw = abs / 1000;
       const f = kw < 10 ? numberFormats.kw2 : (kw < 100 ? numberFormats.kw1 : numberFormats.kw0);
-      return `${f.format(kw)} kW`;
+      return { value: f.format(kw), unit: 'kW' };
     }
-    return `${numberFormats.w.format(Math.round(abs))} W`;
+    return { value: numberFormats.w.format(Math.round(abs)), unit: 'W' };
   }
+  // Split at the decimal separator so the drawn text can emphasise the decimals: { head: '€ 0,', decimals: '24' }.
+  function formatPrice(price) {
+    const parts = numberFormats.price.formatToParts(price);
+    const at = parts.findIndex((p) => p.type === 'fraction');
+    const join = (list) => list.map((p) => p.value).join('');
+    if (at < 0) return { head: `€ ${join(parts)}`, decimals: '' };
+    return { head: `€ ${join(parts.slice(0, at))}`, decimals: join(parts.slice(at)) };
+  }
+  // Split into the number and the percent sign (with any locale spacing): { value: '80', unit: '%' }.
   function formatSoc(soc) {
-    return numberFormats.pct.format(Math.max(0, Math.min(100, soc)) / 100);
+    const parts = numberFormats.pct.formatToParts(Math.max(0, Math.min(100, soc)) / 100);
+    const at = parts.findIndex((p) => p.type === 'percentSign');
+    const join = (list) => list.map((p) => p.value).join('');
+    if (at < 0) return { value: join(parts), unit: '' };
+    return { value: join(parts.slice(0, at)), unit: join(parts.slice(at)) };
   }
 
   // --- Colour / theme -------------------------------------------------------
@@ -413,9 +408,15 @@ function onHomeyReady(Homey) {
 
   function setLayout(visibleIds) {
     const key = NODE_ORDER.filter((id) => visibleIds.includes(id)).join(',');
-    if (key === layoutKey || !LAYOUTS[key]) return;
+    if (key === layoutKey) return;
     layoutKey = key;
-    layout = LAYOUTS[key];
+    layout = { nodes: {}, routes: {} };
+    visibleIds.forEach((id) => {
+      layout.nodes[id] = SLOTS[id];
+    });
+    Object.keys(ROUTES).forEach((route) => {
+      if (route.split('-').every((id) => layout.nodes[id])) layout.routes[route] = ROUTES[route];
+    });
     computeLayout();
   }
 
@@ -447,9 +448,10 @@ function onHomeyReady(Homey) {
     const meta = snap.fields && snap.fields[name];
     const source = meta && meta.source;
     if (source === 'persisted') return Infinity;
+    if (source === 'flow') return name === 'soc' ? SOC_STALE_MS : FLOW_STALE_MS;
     if (source === 'derived' && depth < 1) {
       // A derived value is only as fresh as its slowest input.
-      const inputs = ['solarW', 'gridW', 'batteryW']
+      const inputs = ['solarW', 'gridW', 'homeW', 'batteryW']
         .filter((n) => snap.fields[n] && snap.fields[n].source !== 'derived')
         .map((n) => staleAfterMs(n, snap, depth + 1));
       if (inputs.length) return Math.max(...inputs);
@@ -496,42 +498,66 @@ function onHomeyReady(Homey) {
     const gridStatus = readField(rx, 'gridStatus');
     const disconnected = gridStatus.status === 'ok' && gridStatus.value === 'disconnected';
 
+    // Grid and home are always drawn (their Enphase devices, or CT clamps, may not exist; a Flow can fill them).
+    // Solar and battery are optional: drawn only once they are known to exist, never as a placeholder 0.
+    // Solar exists once it has a reading, or had one that is now outdated (the gateway nulls outdated values).
     const vis = {
-      solar: true,
-      grid: !(meta.gridW && meta.gridW.status === 'absent' && num(snap.gridW) === null),
-      home: !(meta.homeW && meta.homeW.status === 'absent' && num(snap.homeW) === null),
-      battery: !(has.battery === false
-        || (has.battery !== true && meta.batteryW && meta.batteryW.status === 'absent')),
+      solar: solar.status === 'ok' || solar.status === 'stale' || (!!meta.solarW && meta.solarW.status === 'stale'),
+      grid: true,
+      home: true,
+      battery: has.battery === true,
     };
 
     const nodes = {};
+    // `raw` is the watts reading the eased on-screen value counts toward (null when there is no usable reading).
     // Solar
     nodes.solar = solar.status === 'ok'
-      ? { ok: true, value: formatPower(solar.value), label: tr('node.solar') }
-      : { ok: false, value: '--', label: statusLabel(solar.status) };
+      ? {
+        ok: true, ...formatPower(solar.value), raw: solar.value, label: tr('node.solar'),
+      }
+      : {
+        ok: false, value: '--', raw: null, label: statusLabel(solar.status),
+      };
     // Grid
     if (disconnected) {
-      nodes.grid = { ok: false, value: '--', label: tr('state.disconnected') };
+      nodes.grid = {
+        ok: false, value: '--', raw: null, label: tr('state.disconnected'),
+      };
     } else if (grid.status === 'ok') {
       let label = tr('state.idle');
-      if (grid.value >= GRID_IDLE_W) label = tr('state.importing');
-      else if (grid.value <= -GRID_IDLE_W) label = tr('state.exporting');
-      nodes.grid = { ok: true, value: formatPower(grid.value), label };
+      if (grid.value >= config.deadzoneW) label = tr('state.importing');
+      else if (grid.value <= -config.deadzoneW) label = tr('state.exporting');
+      // Tariff for the direction the grid is flowing (import while idle), only once a Flow has supplied one.
+      const tariff = snap.tariff || {};
+      const price = num(grid.value <= -config.deadzoneW ? tariff.export : tariff.import);
+      nodes.grid = {
+        ok: true, ...formatPower(grid.value), raw: grid.value, label, tariff: price === null ? null : formatPrice(price),
+      };
     } else {
-      nodes.grid = { ok: false, value: '--', label: statusLabel(grid.status) };
+      nodes.grid = {
+        ok: false, value: '--', raw: null, label: statusLabel(grid.status),
+      };
     }
     // Home
     nodes.home = home.status === 'ok'
-      ? { ok: true, value: formatPower(home.value), label: tr('state.consuming') }
-      : { ok: false, value: '--', label: statusLabel(home.status) };
+      ? {
+        ok: true, ...formatPower(home.value), raw: home.value, label: tr('state.consuming'),
+      }
+      : {
+        ok: false, value: '--', raw: null, label: statusLabel(home.status),
+      };
     // Battery
     if (batt.status === 'ok') {
       let label = tr('state.idle');
-      if (batt.value >= BATTERY_IDLE_W) label = tr('state.charging');
-      else if (batt.value <= -BATTERY_IDLE_W) label = tr('state.discharging');
-      nodes.battery = { ok: true, value: formatPower(batt.value), label };
+      if (batt.value >= config.deadzoneW) label = tr('state.charging');
+      else if (batt.value <= -config.deadzoneW) label = tr('state.discharging');
+      nodes.battery = {
+        ok: true, ...formatPower(batt.value), raw: batt.value, label,
+      };
     } else {
-      nodes.battery = { ok: false, value: '--', label: statusLabel(batt.status) };
+      nodes.battery = {
+        ok: false, value: '--', raw: null, label: statusLabel(batt.status),
+      };
     }
     nodes.battery.soc = soc.status === 'ok' ? Math.max(0, Math.min(100, soc.value)) : null;
 
@@ -539,7 +565,7 @@ function onHomeyReady(Homey) {
     // unknown/stale data are not drawn. Greedy priority matching keeps every node's
     // displayed in/out within its own reading, so displayed power is conserved (the
     // allocation is an estimate: aggregate readings do not identify individual paths).
-    const gridActive = grid.status === 'ok' && !disconnected && Math.abs(grid.value) >= GRID_IDLE_W;
+    const gridActive = grid.status === 'ok' && !disconnected && Math.abs(grid.value) >= config.deadzoneW;
     const flows = computeFlows({
       solarW: solar.status === 'ok' ? solar.value : 0,
       gridW: gridActive ? grid.value : 0,
@@ -548,7 +574,7 @@ function onHomeyReady(Homey) {
     });
 
     const summary = NODE_ORDER.filter((id) => vis[id])
-      .map((id) => `${tr(`node.${id}`)}: ${nodes[id].value} ${nodes[id].label}`)
+      .map((id) => `${tr(`node.${id}`)}: ${nodes[id].value}${nodes[id].unit || ''} ${nodes[id].label}`)
       .join(', ');
     return {
       vis, nodes, flows, summary,
@@ -556,9 +582,9 @@ function onHomeyReady(Homey) {
   }
 
   function loadFraction(watts) {
-    const w = Math.min(Math.abs(watts), MAX_W);
-    if (w < MIN_W) return 0;
-    return (w / MAX_W) ** SCALE_EXP;
+    const w = Math.min(Math.abs(watts), config.maxW);
+    if (w < config.deadzoneW) return 0;
+    return (w / config.maxW) ** SCALE_EXP;
   }
 
   function computeFlows({
@@ -566,7 +592,7 @@ function onHomeyReady(Homey) {
   }) {
     const flows = [];
     const push = (from, to, watts, color) => {
-      if (watts > MIN_W) {
+      if (watts > config.deadzoneW) {
         flows.push({
           from, to, watts, color,
         });
@@ -619,26 +645,103 @@ function onHomeyReady(Homey) {
       const stateKey = `${f.from}>${f.to}`;
       active[stateKey] = true;
       let st = edgeState[stateKey];
-      if (!st) {
-        st = { particles: [] }; edgeState[stateKey] = st;
+      const isNew = !st;
+      if (isNew) {
+        st = { particles: [], alpha: 0 }; edgeState[stateKey] = st;
       }
       st.geomKey = resolved.key;
       st.reversed = resolved.reversed;
       st.color = colors[f.color] || colors.grid;
-      st.halfWidth = Math.min(lerp(1.5, R * 0.95, lf), cornerR * 0.85);
-      // Route fractions per second (the reference used per-frame values at ~60 fps).
-      st.speed = lerp(0.12, 0.84, lf);
-      st.lineWidth = lerp(1.0, 2.8, lf);
+      st.tgt = {
+        halfWidth: Math.min(lerp(1.5, R * 0.95, lf), cornerR * 0.85),
+        // Route fractions per second (the reference used per-frame values at ~60 fps).
+        speed: lerp(0.12, 0.84, lf),
+        lineWidth: lerp(1.0, 2.8, lf),
+        alpha: 1,
+      };
+      if (isNew) {
+        st.halfWidth = st.tgt.halfWidth;
+        st.speed = st.tgt.speed;
+        st.lineWidth = st.tgt.lineWidth;
+      }
       const desired = Math.max(2, Math.floor(count * scale));
       const ps = st.particles;
-      while (ps.length < desired) {
-        ps.push({ t: Math.random(), offset: Math.random() * 2 - 1, speedMul: 0.85 + Math.random() * 0.3 });
+      // Surplus particles fade out, missing ones revive a fading one or fade in. A new edge fades in as a whole.
+      let live = 0;
+      ps.forEach((p) => {
+        if (!p.dying) live += 1;
+      });
+      for (let i = ps.length - 1; i >= 0 && live > desired; i -= 1) {
+        if (!ps[i].dying) {
+          ps[i].dying = true; live -= 1;
+        }
       }
-      if (ps.length > desired) ps.length = desired;
+      for (let i = 0; i < ps.length && live < desired; i += 1) {
+        if (ps[i].dying) {
+          ps[i].dying = false; live += 1;
+        }
+      }
+      while (live < desired) {
+        ps.push({
+          t: Math.random(), offset: Math.random() * 2 - 1, speedMul: 0.85 + Math.random() * 0.3, a: isNew ? 1 : 0, dying: false,
+        });
+        live += 1;
+      }
     });
+    // Flows that ended fade out; stepTweens drops them once invisible.
     Object.keys(edgeState).forEach((k) => {
-      if (!active[k]) delete edgeState[k];
+      if (!active[k]) edgeState[k].tgt.alpha = 0;
     });
+  }
+
+  // Ease the displayed power / SoC toward the latest reading. A node without a usable reading snaps (it shows "--").
+  function syncShown(m) {
+    NODE_ORDER.forEach((id) => {
+      const { raw } = m.nodes[id];
+      const s = shown.power[id] || (shown.power[id] = { cur: null, tgt: null });
+      s.tgt = raw;
+      if (raw === null || s.cur === null) s.cur = raw;
+    });
+    const { soc } = m.nodes.battery;
+    shown.soc.tgt = soc;
+    if (soc === null || shown.soc.cur === null) shown.soc.cur = soc;
+  }
+
+  // --- Easing ---------------------------------------------------------------
+  function approach(cur, tgt, k, eps) {
+    const d = tgt - cur;
+    return Math.abs(d) <= eps ? tgt : cur + d * k;
+  }
+
+  // Advance every eased value by dt seconds; sets `settling` while anything is still moving.
+  // Reduced motion snaps straight to the targets.
+  function stepTweens(dt) {
+    const k = reducedMotion ? 1 : 1 - Math.exp(-dt / TWEEN_TAU_S);
+    let moving = false;
+    const ease = (obj, key, tgt, eps) => {
+      const next = approach(obj[key], tgt, k, eps);
+      if (next !== tgt) moving = true;
+      obj[key] = next;
+    };
+    Object.keys(edgeState).forEach((key) => {
+      const st = edgeState[key];
+      ease(st, 'halfWidth', st.tgt.halfWidth, 0.05);
+      ease(st, 'speed', st.tgt.speed, 0.002);
+      ease(st, 'lineWidth', st.tgt.lineWidth, 0.02);
+      ease(st, 'alpha', st.tgt.alpha, 0.01);
+      if (st.tgt.alpha === 0 && st.alpha === 0) {
+        delete edgeState[key];
+        return;
+      }
+      st.particles.forEach((p) => ease(p, 'a', p.dying ? 0 : 1, 0.02));
+      st.particles = st.particles.filter((p) => !(p.dying && p.a === 0));
+    });
+    NODE_ORDER.forEach((id) => {
+      const s = shown.power[id];
+      if (s && s.cur !== null) ease(s, 'cur', s.tgt, 0.5);
+    });
+    if (shown.soc.cur !== null) ease(shown.soc, 'cur', shown.soc.tgt, 0.05);
+    settling = moving;
   }
 
   // --- Rendering ------------------------------------------------------------
@@ -650,7 +753,7 @@ function onHomeyReady(Homey) {
       const st = edgeState[k];
       const geom = edgeGeom[st.geomKey];
       if (!geom) return;
-      ctx.strokeStyle = rgba(st.color, config.trackOpacity);
+      ctx.strokeStyle = rgba(st.color, config.trackOpacity * st.alpha);
       ctx.lineWidth = Math.max(4, st.halfWidth * 1.8);
       ctx.beginPath();
       const f = geom.flat;
@@ -696,13 +799,14 @@ function onHomeyReady(Homey) {
         ctx.beginPath();
         ctx.moveTo(head.x, head.y);
         for (let i = 1; i < pts.length; i += 1) ctx.lineTo(pts[i].x, pts[i].y);
+        const opacity = config.particleOpacity * st.alpha * p.a;
         if (tail.x === head.x && tail.y === head.y) {
-          ctx.globalAlpha = config.particleOpacity;
+          ctx.globalAlpha = opacity;
           ctx.strokeStyle = rgba(st.color, 1);
         } else {
           const g = ctx.createLinearGradient(tail.x, tail.y, head.x, head.y);
           g.addColorStop(0, rgba(st.color, 0));
-          g.addColorStop(1, rgba(st.color, config.particleOpacity));
+          g.addColorStop(1, rgba(st.color, opacity));
           ctx.globalAlpha = 1;
           ctx.strokeStyle = g;
         }
@@ -778,33 +882,66 @@ function onHomeyReady(Homey) {
     const valueFont = Math.max(11, Math.round(R * 0.62));
     const labelFont = Math.max(10, Math.round(R * 0.42));
     const lineGap = Math.max(12, Math.round(R * 0.62));
+    // Emphasised (value) and de-emphasised (unit / currency) text runs.
+    const big = { font: valueFont, weight: '600', color: colors.text };
+    const small = { font: labelFont, weight: '500', color: colors.sub };
     const lines = [
-      {
-        text: node.value, font: valueFont, weight: '600', color: node.ok ? colors.text : colors.sub,
-      },
+      { runs: [{ ...big, color: node.ok ? colors.text : colors.sub, text: node.value }, { ...small, text: node.unit || '' }] },
       {
         text: node.label, font: labelFont, weight: '500', color: colors.sub,
       },
     ];
+    let aboveLines = [];
     if (id === 'battery' && node.soc !== null) {
-      lines.push({
-        text: formatSoc(node.soc), font: labelFont, weight: '600', color: colors.battery,
-      });
+      const soc = formatSoc(node.soc);
+      aboveLines = [{ runs: [{ ...big, text: soc.value }, { ...small, text: soc.unit }] }];
+    } else if (id === 'grid' && node.tariff) {
+      aboveLines = [{ runs: [{ ...small, text: node.tariff.head }, { ...big, text: node.tariff.decimals }] }];
     }
     ctx.textAlign = 'center';
-    const drawLine = (ln, y) => {
-      ctx.font = `${ln.weight} ${ln.font}px ${fontFamily}`;
-      ctx.fillStyle = rgba(ln.color, 1);
-      fillTextClamped(ln.text, c.x, y);
+    const setFont = (run) => {
+      ctx.font = `${run.weight} ${run.font}px ${fontFamily}`;
+      ctx.fillStyle = rgba(run.color, 1);
     };
-    const above = layout.nodes[id][1] > 0.75;
-    if (above) {
+    const drawLine = (ln, y) => {
+      if (!ln.runs) {
+        setFont(ln);
+        fillTextClamped(ln.text, c.x, y); return;
+      }
+      // Several runs on one shared baseline, centred together.
+      const widths = ln.runs.map((run) => {
+        setFont(run);
+        return ctx.measureText(run.text).width;
+      });
+      const total = widths.reduce((a, b) => a + b, 0);
+      let x = Math.max(2, Math.min(W - total - 2, c.x - total / 2));
+      // `y` is the middle of the largest run; mixed sizes only line up on the alphabetic baseline.
+      const baseline = y + Math.max(...ln.runs.map((run) => run.font)) * 0.35;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      ln.runs.forEach((run, i) => {
+        setFont(run);
+        ctx.fillText(run.text, x, baseline);
+        x += widths[i];
+      });
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+    };
+    const margin = Math.round(R * 0.7);
+    if (aboveLines.length) {
+      let y = c.y - R - Math.max(0, margin - Math.round(R * 0.12));
+      aboveLines.forEach((ln) => {
+        drawLine(ln, y); y -= lineGap;
+      });
+    }
+    const bodyAbove = layout.nodes[id][1] > 0.75;
+    if (bodyAbove) {
       let y = c.y - R - Math.round(R * 0.35);
       for (let i = lines.length - 1; i >= 0; i -= 1) {
         drawLine(lines[i], y); y -= lineGap;
       }
     } else {
-      let y = c.y + R + Math.round(R * 0.7);
+      let y = c.y + R + margin;
       lines.forEach((ln) => {
         drawLine(ln, y); y += lineGap;
       });
@@ -815,7 +952,11 @@ function onHomeyReady(Homey) {
     ctx.textBaseline = 'middle';
     NODE_ORDER.forEach((id) => {
       if (!model.vis[id] || !layout.nodes[id]) return;
-      const node = model.nodes[id];
+      const base = model.nodes[id];
+      const s = shown.power[id];
+      const node = { ...base };
+      if (base.raw !== null && s && s.cur !== null) Object.assign(node, formatPower(s.cur));
+      if (id === 'battery' && base.soc !== null && shown.soc.cur !== null) node.soc = shown.soc.cur;
       const c = nodeXY(id);
       ctx.globalAlpha = 1;
       ctx.fillStyle = colors.nodeBg;
@@ -846,6 +987,11 @@ function onHomeyReady(Homey) {
     return !document.hidden && !reducedMotion && viewMode === 'flow' && Object.keys(edgeState).length > 0;
   }
 
+  // Keep drawing while particles move or eased values are still settling (the latter also applies with reduced motion).
+  function needsFrames() {
+    return isAnimating() || (!document.hidden && viewMode === 'flow' && settling);
+  }
+
   function frame(now) {
     rafId = 0;
     if (document.hidden) {
@@ -857,9 +1003,10 @@ function onHomeyReady(Homey) {
     }
     const dt = Math.min(0.1, elapsed / 1000); // clamp after pauses/background throttling
     lastFrame = now;
+    if (viewMode === 'flow') stepTweens(dt);
     if (isAnimating()) advanceParticles(dt);
     draw();
-    if (isAnimating()) rafId = requestAnimationFrame(frame);
+    if (needsFrames()) rafId = requestAnimationFrame(frame);
     else lastFrame = 0;
   }
 
@@ -953,6 +1100,8 @@ function onHomeyReady(Homey) {
       model = buildModel(latest[selected]);
       setLayout(NODE_ORDER.filter((id) => model.vis[id]));
       applyFlows(model.flows);
+      syncShown(model);
+      settling = true; // targets may have moved; the next frame re-evaluates
       canvas.setAttribute('aria-label', `${tr('aria.summary')} - ${model.summary}`);
       canvas.hidden = false;
     } else {
@@ -960,6 +1109,9 @@ function onHomeyReady(Homey) {
       Object.keys(edgeState).forEach((k) => {
         delete edgeState[k];
       });
+      shown.power = {};
+      shown.soc = { cur: null, tgt: null };
+      settling = false;
       canvas.hidden = true;
       showMessage(viewMode);
     }

@@ -2237,6 +2237,44 @@
           "value": 90,
           "min": 0,
           "max": 100
+        },
+        {
+          "id": "maxPower",
+          "type": "number",
+          "title": {
+            "en": "Full-scale power (W)",
+            "nl": "Maximaal vermogen (W)",
+            "fr": "Puissance maximale (W)",
+            "de": "Maximale Leistung (W)"
+          },
+          "hint": {
+            "en": "Power at which a flow is drawn at full width and speed. Higher values make flows look smaller.",
+            "nl": "Vermogen waarbij een stroom op volle breedte en snelheid wordt getekend. Hogere waarden laten stromen kleiner ogen.",
+            "fr": "Puissance à laquelle un flux est dessiné à pleine largeur et vitesse. Des valeurs élevées rendent les flux plus petits.",
+            "de": "Leistung, bei der ein Fluss in voller Breite und Geschwindigkeit gezeichnet wird. Höhere Werte lassen Flüsse kleiner wirken."
+          },
+          "value": 5000,
+          "min": 500,
+          "max": 20000
+        },
+        {
+          "id": "deadzone",
+          "type": "number",
+          "title": {
+            "en": "Deadzone (W)",
+            "nl": "Dode zone (W)",
+            "fr": "Zone morte (W)",
+            "de": "Totzone (W)"
+          },
+          "hint": {
+            "en": "Flows at or below this power are not drawn.",
+            "nl": "Stromen met dit vermogen of lager worden niet getekend.",
+            "fr": "Les flux dont la puissance est inférieure ou égale à cette valeur ne sont pas dessinés.",
+            "de": "Flüsse mit dieser Leistung oder weniger werden nicht gezeichnet."
+          },
+          "value": 25,
+          "min": 0,
+          "max": 500
         }
       ],
       "api": {
