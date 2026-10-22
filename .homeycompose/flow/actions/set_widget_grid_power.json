@@ -1,0 +1,42 @@
+{
+  "title": {
+    "en": "Set grid power in widget",
+    "nl": "Netvermogen in widget instellen",
+    "fr": "Définir la puissance réseau du widget",
+    "de": "Netzleistung im Widget setzen"
+  },
+  "titleFormatted": {
+    "en": "Set grid power of [[gateway]] in widget to [[power]] W",
+    "nl": "Zet netvermogen van [[gateway]] in widget op [[power]] W",
+    "fr": "Définir la puissance réseau de [[gateway]] dans le widget sur [[power]] W",
+    "de": "Netzleistung von [[gateway]] im Widget auf [[power]] W setzen"
+  },
+  "hint": {
+    "en": "Only changes the Energy flow widget. Use it when the grid power comes from another device, such as a P1 meter. Positive = importing from the grid; negative = exporting.",
+    "nl": "Wijzigt alleen de energiestroomwidget. Gebruik dit als het netvermogen van een ander apparaat komt, zoals een P1-meter. Positief = afname van het net; negatief = teruglevering.",
+    "fr": "Ne modifie que le widget de flux d'énergie. À utiliser quand la puissance réseau provient d'un autre appareil, comme un compteur P1. Positif = soutirage du réseau ; négatif = injection.",
+    "de": "Ändert nur das Energiefluss-Widget. Verwenden, wenn die Netzleistung von einem anderen Gerät stammt, z. B. einem P1-Zähler. Positiv = Bezug aus dem Netz; negativ = Einspeisung."
+  },
+  "args": [
+    {
+      "name": "gateway",
+      "type": "autocomplete",
+      "placeholder": {
+        "en": "Gateway",
+        "nl": "Gateway",
+        "fr": "Passerelle",
+        "de": "Gateway"
+      }
+    },
+    {
+      "name": "power",
+      "type": "number",
+      "placeholder": {
+        "en": "Power (W)",
+        "nl": "Vermogen (W)",
+        "fr": "Puissance (W)",
+        "de": "Leistung (W)"
+      }
+    }
+  ]
+}

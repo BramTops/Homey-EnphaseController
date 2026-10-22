@@ -1,0 +1,42 @@
+{
+  "title": {
+    "en": "Set home power in widget",
+    "nl": "Huisvermogen in widget instellen",
+    "fr": "Définir la puissance du foyer du widget",
+    "de": "Hausleistung im Widget setzen"
+  },
+  "titleFormatted": {
+    "en": "Set home power of [[gateway]] in widget to [[power]] W",
+    "nl": "Zet huisvermogen van [[gateway]] in widget op [[power]] W",
+    "fr": "Définir la puissance du foyer de [[gateway]] dans le widget sur [[power]] W",
+    "de": "Hausleistung von [[gateway]] im Widget auf [[power]] W setzen"
+  },
+  "hint": {
+    "en": "Only changes the Energy flow widget. Use it when the home consumption comes from another device. Positive = consuming; negative values show as 0. Without it, home is calculated from solar, grid and battery.",
+    "nl": "Wijzigt alleen de energiestroomwidget. Gebruik dit als het huisverbruik van een ander apparaat komt. Positief = verbruik; negatieve waarden tonen als 0. Zonder deze kaart wordt thuis berekend uit zon, net en batterij.",
+    "fr": "Ne modifie que le widget de flux d'énergie. À utiliser quand la consommation du foyer provient d'un autre appareil. Positif = consommation ; les valeurs négatives s'affichent comme 0. Sans cela, le foyer est calculé à partir du solaire, du réseau et de la batterie.",
+    "de": "Ändert nur das Energiefluss-Widget. Verwenden, wenn der Hausverbrauch von einem anderen Gerät stammt. Positiv = Verbrauch; negative Werte werden als 0 angezeigt. Ohne diese Karte wird das Haus aus Solar, Netz und Batterie berechnet."
+  },
+  "args": [
+    {
+      "name": "gateway",
+      "type": "autocomplete",
+      "placeholder": {
+        "en": "Gateway",
+        "nl": "Gateway",
+        "fr": "Passerelle",
+        "de": "Gateway"
+      }
+    },
+    {
+      "name": "power",
+      "type": "number",
+      "placeholder": {
+        "en": "Power (W)",
+        "nl": "Vermogen (W)",
+        "fr": "Puissance (W)",
+        "de": "Leistung (W)"
+      }
+    }
+  ]
+}

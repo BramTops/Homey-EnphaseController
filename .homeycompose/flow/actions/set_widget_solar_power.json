@@ -1,0 +1,42 @@
+{
+  "title": {
+    "en": "Set solar power in widget",
+    "nl": "Zonnevermogen in widget instellen",
+    "fr": "Définir la puissance solaire du widget",
+    "de": "Solarleistung im Widget setzen"
+  },
+  "titleFormatted": {
+    "en": "Set solar power of [[gateway]] in widget to [[power]] W",
+    "nl": "Zet zonnevermogen van [[gateway]] in widget op [[power]] W",
+    "fr": "Définir la puissance solaire de [[gateway]] dans le widget sur [[power]] W",
+    "de": "Solarleistung von [[gateway]] im Widget auf [[power]] W setzen"
+  },
+  "hint": {
+    "en": "Only changes the Energy flow widget. Use it when the solar power comes from another device. Positive = producing; negative values show as 0.",
+    "nl": "Wijzigt alleen de energiestroomwidget. Gebruik dit als het zonnevermogen van een ander apparaat komt. Positief = opwekken; negatieve waarden tonen als 0.",
+    "fr": "Ne modifie que le widget de flux d'énergie. À utiliser quand la puissance solaire provient d'un autre appareil. Positif = production ; les valeurs négatives s'affichent comme 0.",
+    "de": "Ändert nur das Energiefluss-Widget. Verwenden, wenn die Solarleistung von einem anderen Gerät stammt. Positiv = Erzeugung; negative Werte werden als 0 angezeigt."
+  },
+  "args": [
+    {
+      "name": "gateway",
+      "type": "autocomplete",
+      "placeholder": {
+        "en": "Gateway",
+        "nl": "Gateway",
+        "fr": "Passerelle",
+        "de": "Gateway"
+      }
+    },
+    {
+      "name": "power",
+      "type": "number",
+      "placeholder": {
+        "en": "Power (W)",
+        "nl": "Vermogen (W)",
+        "fr": "Puissance (W)",
+        "de": "Leistung (W)"
+      }
+    }
+  ]
+}

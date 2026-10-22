@@ -1,0 +1,54 @@
+{
+  "title": {
+    "en": "Set tariffs in widget",
+    "nl": "Tarieven in widget instellen",
+    "fr": "Définir les tarifs du widget",
+    "de": "Tarife im Widget setzen"
+  },
+  "titleFormatted": {
+    "en": "Set tariffs of [[gateway]] in widget to import [[import_price]] and export [[export_price]]",
+    "nl": "Zet tarieven van [[gateway]] in widget op afname [[import_price]] en teruglevering [[export_price]]",
+    "fr": "Définir les tarifs de [[gateway]] dans le widget sur soutirage [[import_price]] et injection [[export_price]]",
+    "de": "Tarife von [[gateway]] im Widget auf Bezug [[import_price]] und Einspeisung [[export_price]] setzen"
+  },
+  "hint": {
+    "en": "Only changes the Energy flow widget. Prices per kWh in euros, e.g. 0.24. The widget shows the import tariff above the grid while importing and the export tariff while exporting.",
+    "nl": "Wijzigt alleen de energiestroomwidget. Prijzen per kWh in euro, bijv. 0,24. De widget toont boven het net het afnametarief bij afname en het terugleveringstarief bij teruglevering.",
+    "fr": "Ne modifie que le widget de flux d'énergie. Prix par kWh en euros, p. ex. 0.24. Le widget affiche au-dessus du réseau le tarif de soutirage en cas de soutirage et le tarif d'injection en cas d'injection.",
+    "de": "Ändert nur das Energiefluss-Widget. Preise pro kWh in Euro, z. B. 0.24. Das Widget zeigt über dem Netz beim Bezug den Bezugstarif und bei Einspeisung den Einspeisetarif."
+  },
+  "args": [
+    {
+      "name": "gateway",
+      "type": "autocomplete",
+      "placeholder": {
+        "en": "Gateway",
+        "nl": "Gateway",
+        "fr": "Passerelle",
+        "de": "Gateway"
+      }
+    },
+    {
+      "name": "import_price",
+      "type": "number",
+      "step": 0.001,
+      "placeholder": {
+        "en": "Import (€/kWh)",
+        "nl": "Afname (€/kWh)",
+        "fr": "Soutirage (€/kWh)",
+        "de": "Bezug (€/kWh)"
+      }
+    },
+    {
+      "name": "export_price",
+      "type": "number",
+      "step": 0.001,
+      "placeholder": {
+        "en": "Export (€/kWh)",
+        "nl": "Teruglevering (€/kWh)",
+        "fr": "Injection (€/kWh)",
+        "de": "Einspeisung (€/kWh)"
+      }
+    }
+  ]
+}

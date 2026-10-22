@@ -4,6 +4,7 @@ const Homey = require('homey');
 const EnvoyApi = require('./lib/EnvoyApi');
 const PairingHelper = require('./lib/PairingHelper');
 const { GatewayEnergyModel, monoMs } = require('./lib/energyModel');
+const { WidgetFeed } = require('./lib/widgetFeed');
 
 // Central polling loop and device registration manager.
 // Current drivers: solar, grid, battery, inverters. The envoy, gateway and homeload drivers are deprecated but stay
@@ -45,6 +46,14 @@ const UNAVAILABLE_GRACE_MS = 30 * 60 * 1000;
 const KNOWN_SOURCES = ['meters', 'production', 'batteryPower', 'inventory'];
 const EVENT_FLOW = 'enphase:flow';
 const EVENT_GATEWAYS = 'enphase:gateways';
+// Flow action card id -> widget snapshot field (see lib/widgetFeed.js)
+const WIDGET_FLOW_CARDS = {
+  set_widget_solar_power: 'solarW',
+  set_widget_grid_power: 'gridW',
+  set_widget_home_power: 'homeW',
+  set_widget_battery_power: 'batteryW',
+  set_widget_battery_soc: 'soc',
+};
 
 const settle = (promise) => promise.then(
   (value) => ({
@@ -66,6 +75,9 @@ class EnphaseController extends Homey.App {
     this._noticePromises = new Map();
     this._gatewaysJson = null;
     this._timezone = 'UTC';
+    // Widget-only values pushed by Flow cards. Never fed to devices or the energy model.
+    this.widgetFeed = new WidgetFeed();
+    this._registerWidgetFlowCards();
     this.log('Enphase Controller has been initialized');
 
     // Drop stale gateway-migration snapshots (credentials saved for a removal-first migration that never completed)
@@ -498,6 +510,7 @@ class EnphaseController extends Homey.App {
         this.error(`[Manager] Failed to persist battery energy for serial ${serial}:`, err.message);
       }
       this.gateways.delete(serial);
+      this.widgetFeed.clear(serial);
     } else {
       rt.wantsSnapshots = this._wantsSnapshots(rt);
       if (![...rt.devices.values()].some((e) => e.snapshot)) rt.latest = null;
@@ -1114,7 +1127,88 @@ class EnphaseController extends Homey.App {
     for (const [device, entry] of rt.devices) {
       if (entry.snapshot) this._deliver(device, state);
     }
-    this._realtime(EVENT_FLOW, state);
+    this._emitWidgetState(rt);
+  }
+
+  /** Emit `enphase:flow`: the latest snapshot with the widget-only Flow values laid over it. @private */
+  _emitWidgetState(rt) {
+    const state = this.getLatestState(rt.serial);
+    if (state) this._realtime(EVENT_FLOW, state);
+  }
+
+  /**
+   * Register the widget Flow action cards. They only write to the widget overlay (lib/widgetFeed.js); the value
+   * a user wires in is cached until the next one arrives and competes with the gateway's own reading on recency.
+   * @private
+   */
+  _registerWidgetFlowCards() {
+    Object.entries(WIDGET_FLOW_CARDS).forEach(([cardId, field]) => {
+      try {
+        const card = this.homey.flow.getActionCard(cardId);
+        card.registerArgumentAutocompleteListener('gateway', async (query) => this._widgetGatewayOptions(query));
+        card.registerRunListener(async (args) => {
+          const serial = args && args.gateway ? args.gateway.id : null;
+          const key = field === 'soc' ? 'soc' : 'power';
+          const value = args ? args[key] : null;
+          this.setWidgetValue(serial, field, value);
+          return true;
+        });
+      } catch (err) {
+        this.error(`Failed to register ${cardId} flow card:`, err.message);
+      }
+    });
+    try {
+      const card = this.homey.flow.getActionCard('set_widget_tariff');
+      card.registerArgumentAutocompleteListener('gateway', async (query) => this._widgetGatewayOptions(query));
+      card.registerRunListener(async (args) => {
+        const serial = args && args.gateway ? args.gateway.id : null;
+        this.setWidgetTariff(serial, args ? args.import_price : null, args ? args.export_price : null);
+        return true;
+      });
+    } catch (err) {
+      this.error('Failed to register set_widget_tariff flow card:', err.message);
+    }
+  }
+
+  /** Autocomplete options for the widget Flow cards: the gateways the widget can show. @private */
+  _widgetGatewayOptions(query) {
+    const needle = String(query || '').trim().toLowerCase();
+    return this.getKnownGateways()
+      .filter((g) => g.widgetEligible)
+      .filter((g) => !needle || g.serial.includes(needle) || g.name.toLowerCase().includes(needle))
+      .map((g) => ({ id: g.serial, name: g.name, description: g.serial }));
+  }
+
+  /**
+   * Cache a Flow-provided power value for the widget and push it to open widgets.
+   * Invalid values (null, NaN, text) and unknown gateways are ignored; they never clear an existing value.
+   * @param {string} serial - Gateway serial
+   * @param {'solarW'|'gridW'|'homeW'|'batteryW'|'soc'} field
+   * @param {number} value - Watts for power fields; percentage for SoC
+   * @returns {boolean} Whether the value was accepted
+   */
+  setWidgetValue(serial, field, value) {
+    const rt = this.gateways ? this.gateways.get(serial) : null;
+    if (!rt) return false;
+    if (!this.widgetFeed.set(serial, field, value, Date.now())) return false;
+    this._emitWidgetState(rt);
+    return true;
+  }
+
+  /**
+   * Cache the import and export tariff (price per kWh) for the widget and push it to open widgets.
+   * An invalid price is ignored and never clears a cached one.
+   * @param {string} serial - Gateway serial
+   * @param {number} importPrice
+   * @param {number} exportPrice
+   * @returns {boolean} Whether at least one price was accepted
+   */
+  setWidgetTariff(serial, importPrice, exportPrice) {
+    const rt = this.gateways ? this.gateways.get(serial) : null;
+    if (!rt) return false;
+    if (!this.widgetFeed.setTariff(serial, importPrice, exportPrice)) return false;
+    this._emitWidgetState(rt);
+    return true;
   }
 
   /** Deliver a snapshot to one device without letting a sync throw or a slow handler affect others. */
@@ -1137,13 +1231,15 @@ class EnphaseController extends Homey.App {
   }
 
   /**
-   * Latest state snapshot for a gateway serial.
+   * Latest state snapshot for a gateway serial, as the widget sees it: widget-only Flow values (setWidgetValue) are
+   * laid over it. Devices keep getting the raw snapshot.
    * @param {string} serial - Gateway serial
    * @returns {Object|null} Frozen snapshot, or null before the first publication / without snapshot devices
    */
   getLatestState(serial) {
     const rt = this.gateways ? this.gateways.get(serial) : null;
-    return rt && rt.latest ? rt.latest : null;
+    if (!rt || !rt.latest) return null;
+    return this.widgetFeed.merge(serial, rt.latest, Date.now());
   }
 
   /**

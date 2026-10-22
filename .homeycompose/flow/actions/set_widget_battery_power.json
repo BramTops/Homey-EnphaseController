@@ -1,0 +1,42 @@
+{
+  "title": {
+    "en": "Set battery power in widget",
+    "nl": "Batterijvermogen in widget instellen",
+    "fr": "Définir la puissance de la batterie du widget",
+    "de": "Batterieleistung im Widget setzen"
+  },
+  "titleFormatted": {
+    "en": "Set battery power of [[gateway]] in widget to [[power]] W",
+    "nl": "Zet batterijvermogen van [[gateway]] in widget op [[power]] W",
+    "fr": "Définir la puissance de la batterie de [[gateway]] dans le widget sur [[power]] W",
+    "de": "Batterieleistung von [[gateway]] im Widget auf [[power]] W setzen"
+  },
+  "hint": {
+    "en": "Only changes the Energy flow widget. Use it when the battery power comes from another device. Positive = charging; negative = discharging.",
+    "nl": "Wijzigt alleen de energiestroomwidget. Gebruik dit als het batterijvermogen van een ander apparaat komt. Positief = laden; negatief = ontladen.",
+    "fr": "Ne modifie que le widget de flux d'énergie. À utiliser quand la puissance de la batterie provient d'un autre appareil. Positif = charge ; négatif = décharge.",
+    "de": "Ändert nur das Energiefluss-Widget. Verwenden, wenn die Batterieleistung von einem anderen Gerät stammt. Positiv = Laden; negativ = Entladen."
+  },
+  "args": [
+    {
+      "name": "gateway",
+      "type": "autocomplete",
+      "placeholder": {
+        "en": "Gateway",
+        "nl": "Gateway",
+        "fr": "Passerelle",
+        "de": "Gateway"
+      }
+    },
+    {
+      "name": "power",
+      "type": "number",
+      "placeholder": {
+        "en": "Power (W)",
+        "nl": "Vermogen (W)",
+        "fr": "Puissance (W)",
+        "de": "Leistung (W)"
+      }
+    }
+  ]
+}

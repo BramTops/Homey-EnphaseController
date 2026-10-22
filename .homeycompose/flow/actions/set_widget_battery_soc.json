@@ -1,0 +1,42 @@
+{
+  "title": {
+    "en": "Set battery SoC in widget",
+    "nl": "Batterij-SoC in widget instellen",
+    "fr": "Définir le SoC de la batterie dans le widget",
+    "de": "Batterie-Ladezustand im Widget setzen"
+  },
+  "titleFormatted": {
+    "en": "Set battery SoC of [[gateway]] in widget to [[soc]]%",
+    "nl": "Zet batterij-SoC van [[gateway]] in widget op [[soc]]%",
+    "fr": "Définir le SoC de la batterie de [[gateway]] dans le widget à [[soc]] %",
+    "de": "Batterie-Ladezustand von [[gateway]] im Widget auf [[soc]] % setzen"
+  },
+  "hint": {
+    "en": "Only changes the Energy flow widget. Use it when the battery charge level comes from another device. Enter a value from 0 to 100.",
+    "nl": "Wijzigt alleen de energiestroomwidget. Gebruik dit als het batterijniveau van een ander apparaat komt. Vul een waarde van 0 tot 100 in.",
+    "fr": "Ne modifie que le widget de flux d'énergie. À utiliser lorsque le niveau de charge de la batterie provient d'un autre appareil. Saisissez une valeur de 0 à 100.",
+    "de": "Ändert nur das Energiefluss-Widget. Verwenden, wenn der Ladezustand von einem anderen Gerät stammt. Einen Wert von 0 bis 100 eingeben."
+  },
+  "args": [
+    {
+      "name": "gateway",
+      "type": "autocomplete",
+      "placeholder": {
+        "en": "Gateway",
+        "nl": "Gateway",
+        "fr": "Passerelle",
+        "de": "Gateway"
+      }
+    },
+    {
+      "name": "soc",
+      "type": "number",
+      "placeholder": {
+        "en": "SoC (%)",
+        "nl": "SoC (%)",
+        "fr": "SoC (%)",
+        "de": "SoC (%)"
+      }
+    }
+  ]
+}
