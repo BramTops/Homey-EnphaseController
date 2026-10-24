@@ -118,5 +118,8 @@
     "nl": "Herstelt oude Envoy-apparaatdriver.",
     "fr": "Rétablit l'ancien pilote d'appareil Envoy.",
     "de": "Stellt den alten Envoy-Gerätetreiber wieder her."
+  },
+  "2.0.3": {
+    "en": "Widget tweaks"
   }
 }
