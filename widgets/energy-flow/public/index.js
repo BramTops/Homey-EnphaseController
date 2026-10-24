@@ -708,18 +708,29 @@ function onHomeyReady(Homey) {
   }
 
   // --- Easing ---------------------------------------------------------------
-  function approach(cur, tgt, k, eps) {
-    const d = tgt - cur;
-    return Math.abs(d) <= eps ? tgt : cur + d * k;
+  function approach(obj, key, tgt, dt, eps) {
+    const cur = obj[key];
+    const omega = 2 / TWEEN_TAU_S;
+    const offset = cur - tgt;
+    const velocity = obj[`${key}Velocity`] || 0;
+    const c = velocity + omega * offset;
+    const decay = Math.exp(-omega * dt);
+    const next = tgt + (offset + c * dt) * decay;
+    const nextVelocity = (velocity - omega * c * dt) * decay;
+    if (Math.abs(next - tgt) <= eps) {
+      obj[`${key}Velocity`] = 0;
+      return tgt;
+    }
+    obj[`${key}Velocity`] = nextVelocity;
+    return next;
   }
 
   // Advance every eased value by dt seconds; sets `settling` while anything is still moving.
   // Reduced motion snaps straight to the targets.
   function stepTweens(dt) {
-    const k = reducedMotion ? 1 : 1 - Math.exp(-dt / TWEEN_TAU_S);
     let moving = false;
     const ease = (obj, key, tgt, eps) => {
-      const next = approach(obj[key], tgt, k, eps);
+      const next = reducedMotion ? tgt : approach(obj, key, tgt, dt, eps);
       if (next !== tgt) moving = true;
       obj[key] = next;
     };
