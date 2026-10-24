@@ -53,7 +53,7 @@ function onHomeyReady(Homey) {
   const STALE_SLACK_MS = 5000;
   // Values pushed by user Flows arrive only on change; same window as FLOW_STALE_MS in lib/widgetFeed.js.
   const FLOW_STALE_MS = 10 * 60 * 1000;
-  const SOC_STALE_MS = 90 * 60 * 1000;
+  const SOC_STALE_MS = 25 * 60 * 60 * 1000;
   const READY_TIMEOUT_MS = 8000;
   // Visuals ease toward each new reading (exponential smoothing) instead of jumping; ~95% settled after 3 * tau.
   const TWEEN_TAU_S = 0.7;
