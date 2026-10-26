@@ -1,4 +1,16 @@
 {
+  "2.0.4": {
+    "en": "Updated app store metadata.",
+    "nl": "App storegegevens bijgewerkt.",
+    "fr": "Métadonnées de la boutique mises à jour.",
+    "de": "App-Store-Metadaten aktualisiert."
+  },
+  "2.0.3": {
+    "en": "Widget improvements.",
+    "nl": "Widgetverbeteringen.",
+    "fr": "Améliorations du widget.",
+    "de": "Widget-Verbesserungen."
+  },
   "2.0.0": {
     "en": "This release reworks several internal systems for more reliability and future updates. Unfortunately some devices will have to be re-added. \nAdds Enphase battery monitoring. \nAdds animated energy flow widget (only for metered systems). \nHomey alarm support for inverter problems. \nAdds deprecation notices to timeline for older drivers. \nAdds French and German language support. \nSupport for unwired production meters.",
     "nl": "Deze release herstructureert verschillende interne systemen voor meer betrouwbaarheid en toekomstige updates. Helaas moeten sommige apparaten opnieuw worden toegevoegd. \nVoegt Enphase-batterijbewaking toe. \nVoegt een geanimeerde energiestroomwidget toe (alleen voor gemeten systemen). \nOndersteuning voor Homey-alarm bij omvormerproblemen. \nVoegt verouderingsmeldingen toe aan de tijdlijn voor oudere drivers. \nVoegt ondersteuning voor Frans en Duits toe. \nOndersteuning voor niet-aangesloten productiemeters.",

@@ -9,6 +9,14 @@ Store rules, for this file and .homeychangelog.json (JSON cannot hold comments, 
 
 All notable changes to the Enphase Controller application for Homey Pro will be documented in this file, grouped by work session (day) and described in a user-centric way.
 
+## 2.0.4 (2026-10-27)
+
+- Updated app store metadata.
+
+## 2.0.3 (2026-10-22)
+
+- Widget improvements.
+
 ## 2.0.2 (2026-10-22)
 
 - Widget visual update.
