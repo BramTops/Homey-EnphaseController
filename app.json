@@ -16,10 +16,10 @@
     "de": "Enphase Controller"
   },
   "description": {
-    "en": "Monitor your Enphase solar production, individual inverters, battery power and state of charge (SoC), and grid import and export. Control solar production, set custom limits, and restrict grid exports.",
-    "nl": "Monitor de zonneproductie van je Enphase-systeem, afzonderlijke omvormers, batterijvermogen en laadstatus (SoC), en netafname en teruglevering. Regel de zonneproductie, stel aangepaste limieten in en beperk teruglevering aan het net.",
-    "fr": "Surveillez la production solaire de votre système Enphase, chaque onduleur, la puissance et le niveau de charge (SoC) de la batterie, ainsi que l’importation et l’exportation du réseau. Contrôlez la production solaire, définissez des limites personnalisées et limitez l’exportation vers le réseau.",
-    "de": "Überwachen Sie die Solarproduktion Ihrer Enphase-Anlage, einzelne Wechselrichter, Batterieleistung und Ladezustand (SoC) sowie Netzbezug und Netzeinspeisung. Steuern Sie die Solarproduktion, legen Sie individuelle Grenzwerte fest und begrenzen Sie die Netzeinspeisung."
+    "en": "See the watts. Set the rules.",
+    "nl": "Zie de watts. Stel de regels.",
+    "fr": "Voyez les watts. Fixez les règles.",
+    "de": "Watt im Blick. Regeln in der Hand."
   },
   "category": [
     "energy"

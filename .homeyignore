@@ -9,3 +9,6 @@ node_modules/
 .homeybuild/
 env.json
 test/
+
+# Widget preview source screenshots (reference only)
+widgets/*/preview-*-screenshot.png

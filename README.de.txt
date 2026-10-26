@@ -1,7 +1,3 @@
-Überwachen Sie Solarproduktion, Netzbezug und Netzeinspeisung, Hausverbrauch, einzelne Mikro-Wechselrichter sowie Leistung und Ladestand der Batterie Ihrer Enphase-Systeme. Das Widget Energiefluss zeigt live die Leistung zwischen Solar, Netz, Haus und Batterie. Die Batterieüberwachung ist nur lesend; die Solarproduktion kann gesteuert werden.
+Wissen Sie, wohin Ihre Sonne geht, und entscheiden Sie, was als Nächstes passiert. Enphase Controller macht aus Solaranlage, Batterie und Stromnetz ein Live-Bild in Homey und lässt Sie eingreifen, indem Sie Produktion oder Einspeisung begrenzen, wenn es darauf ankommt. Außerdem behält die App Ihre Module im Blick, während Sie Ihren Tag leben: Wenn eines weniger leistet oder verstummt, kann Homey Sie warnen, lange bevor es sich auf Ihrer Rechnung zeigt.
 
-Diese App integriert sich gut in den Energie-Tab von Homey und nutzt die neuesten energiebezogenen Funktionen.
-
-Das Widget zeigt automatisch Daten Ihres Enphase-Systems an, darunter Solarproduktion, Netzleistung sowie das Laden und Entladen der Batterie.\nÜber Flow-Karten können Sie auch Werte anderer Geräte bereitstellen, sodass das Widget mit jeder Hardwarekombination funktioniert. Der Energieverbrauch des Hauses wird automatisch aus den übrigen Messwerten berechnet oder kann direkt über eine Flow-Karte festgelegt werden. Konfigurieren Sie das Widget, um Darstellung und Energieeinstellungen anzupassen.
-
-Überwachungs- und Steuerungsfunktionen hängen von der Gateway-Hardware, dem Kontozugriff und den installierten Verbrauchs-Stromwandlern ab; die App erkennt dies automatisch. Siehe den Community-Link „Forum besuchen“ unten.
+Das Energy-Flow-Widget funktioniert sogar mit Geräten anderer Marken, sodass Sie ein vollständiges Bild Ihres Zuhauses zusammenstellen können. Welche Funktionen verfügbar sind, hängt von Ihrem Gateway und Ihrer Hardware ab.
