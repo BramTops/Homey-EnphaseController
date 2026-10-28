@@ -4,6 +4,7 @@
 Store rules, for this file and .homeychangelog.json (JSON cannot hold comments, so they are kept here):
 - Non-technical and outcome-focused: no jargon, variables or config details.
 - 3-7 words per line.
+- Only major and minor releases get an entry (new features are always a minor). Patch releases are not logged here or in .homeychangelog.json.
 - .homeychangelog.json: no "- " prefixes, items separated by " \n", both `en` and `nl`.
 -->
 

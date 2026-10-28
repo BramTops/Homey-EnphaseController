@@ -5,6 +5,7 @@ const EnvoyApi = require('./lib/EnvoyApi');
 const PairingHelper = require('./lib/PairingHelper');
 const { GatewayEnergyModel, monoMs } = require('./lib/energyModel');
 const { WidgetFeed } = require('./lib/widgetFeed');
+const { shouldLogAgain } = require('./lib/helpers');
 
 // Central polling loop and device registration manager.
 // Current drivers: solar, grid, battery, inverters. The envoy, gateway and homeload drivers are deprecated but stay
@@ -44,6 +45,9 @@ const METERS_CONFIG_RETRY_MS = 30000;
 // gateway/network errors must not flip devices unavailable (and fire Flows)
 const UNAVAILABLE_GRACE_MS = 30 * 60 * 1000;
 const KNOWN_SOURCES = ['meters', 'production', 'batteryPower', 'inventory'];
+// Instantaneous power fields whose skipped (stale/unknown) readings are logged, and how often a stale one repeats
+const POWER_FIELDS = ['solarW', 'gridW', 'homeW'];
+const STALE_LOG_REPEAT_MS = 5 * 60 * 1000;
 const EVENT_FLOW = 'enphase:flow';
 const EVENT_GATEWAYS = 'enphase:gateways';
 // Flow action card id -> widget snapshot field (see lib/widgetFeed.js)
@@ -585,6 +589,7 @@ class EnphaseController extends Homey.App {
       latest: null,
       consecutiveMaintainerFailures: 0,
       errLog: new Map(),
+      skipLog: new Map(),
     };
   }
 
@@ -1123,11 +1128,44 @@ class EnphaseController extends Homey.App {
       return;
     }
     rt.latest = state;
+    this._logSkippedReadings(rt, state);
 
     for (const [device, entry] of rt.devices) {
       if (entry.snapshot) this._deliver(device, state);
     }
     this._emitWidgetState(rt);
+  }
+
+  /**
+   * Diagnostics for power readings the devices will not show: a stale or unknown field keeps its last capability value,
+   * so say why (age against the freshness limit). Logged when the situation changes and, while stale, every 5 minutes;
+   * a recovery is logged once.
+   * @private
+   */
+  _logSkippedReadings(rt, state) {
+    try {
+      if (!rt.skipLog) rt.skipLog = new Map();
+      for (const name of POWER_FIELDS) {
+        const f = state.fields && state.fields[name];
+        if (!f) continue;
+        if (f.status === 'fresh') {
+          if (rt.skipLog.delete(name)) this.log(`[Manager] Serial ${rt.serial}: ${name} reading is fresh again (source ${f.source}).`);
+          continue;
+        }
+        if (f.status !== 'stale' && f.status !== 'unknown') {
+          rt.skipLog.delete(name);
+          continue;
+        }
+        const signature = `${f.status}/${f.source}`;
+        if (!shouldLogAgain(rt.skipLog, name, signature, state.ts, f.status === 'stale' ? STALE_LOG_REPEAT_MS : Infinity)) continue;
+        const age = typeof f.observedAt === 'number' ? `${Math.round((state.ts - f.observedAt) / 1000)} s old` : 'no reading yet';
+        const limit = typeof f.staleAfterMs === 'number' ? `, fresh only up to ${Math.round(f.staleAfterMs / 1000)} s` : '';
+        this.log(`[Manager] Serial ${rt.serial}: ${name} reading skipped (${f.status}, source ${f.source || 'none'}, ${age}${limit}); keeping the last value.`);
+      }
+    } catch (err) {
+      // Diagnostics must never break publication
+      this.error(`[Manager] Failed to log skipped readings for serial ${rt.serial}:`, err.message);
+    }
   }
 
   /** Emit `enphase:flow`: the latest snapshot with the widget-only Flow values laid over it. @private */

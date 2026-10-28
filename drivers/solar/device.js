@@ -5,6 +5,7 @@ const Homey = require('homey');
 const EnvoyApi = require('../../lib/EnvoyApi');
 const PairingHelper = require('../../lib/PairingHelper');
 const { PhaseCapabilities, SOLAR_PHASE_GROUPS } = require('../../lib/phaseCapabilities');
+const { shouldLogAgain } = require('../../lib/helpers');
 
 // Declaration for the central polling manager: slow production telemetry plus the fast meter/production snapshot.
 const REGISTRATION = { telemetry: 'production', fast: true, sources: ['meters', 'production'] };
@@ -320,7 +321,15 @@ class SolarDevice extends Homey.Device {
     // Null/stale fields keep the last good capability value; they are never written as zero.
     if (field.status !== 'fresh' || typeof watts !== 'number' || !Number.isFinite(watts)) return;
     if (typeof field.observedAt !== 'number' || !Number.isFinite(field.observedAt)) return;
-    if (field.observedAt < this.lastSolarObservedAt) return;
+    if (field.observedAt < this.lastSolarObservedAt) {
+      // An older sample than the last accepted one (e.g. the source switched): keep the value, but say so.
+      if (!this.skipLogged) this.skipLogged = new Map();
+      if (shouldLogAgain(this.skipLogged, 'solarW', field.source || '', Date.now(), 5 * 60 * 1000)) {
+        const behind = Math.round((this.lastSolarObservedAt - field.observedAt) / 1000);
+        this.log(`Solar power reading skipped: source ${field.source} is ${behind} s older than the last accepted reading.`);
+      }
+      return;
+    }
     this.lastSolarObservedAt = field.observedAt;
 
     if (this.getCapabilityValue('measure_power') !== watts) {

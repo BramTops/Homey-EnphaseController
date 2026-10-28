@@ -4,6 +4,7 @@ const net = require('net');
 const Homey = require('homey');
 const EnvoyApi = require('../../lib/EnvoyApi');
 const { PhaseCapabilities, GRID_PHASE_GROUPS } = require('../../lib/phaseCapabilities');
+const { shouldLogAgain } = require('../../lib/helpers');
 
 // Declaration for the central polling manager: slow production telemetry plus the fast meter/production snapshot.
 const REGISTRATION = { telemetry: 'production', fast: true, sources: ['meters', 'production'] };
@@ -185,7 +186,15 @@ class GridDevice extends Homey.Device {
     if (!field || field.status !== 'fresh') return null;
     if (typeof value !== 'number' || !Number.isFinite(value)) return null;
     if (typeof field.observedAt !== 'number' || !Number.isFinite(field.observedAt)) return null;
-    if (field.observedAt < this[lastKey]) return null;
+    if (field.observedAt < this[lastKey]) {
+      // An older sample than the last accepted one (e.g. the source switched): keep the value, but say so.
+      if (!this.skipLogged) this.skipLogged = new Map();
+      if (shouldLogAgain(this.skipLogged, name, field.source || '', Date.now(), 5 * 60 * 1000)) {
+        const behind = Math.round((this[lastKey] - field.observedAt) / 1000);
+        this.log(`${name} reading skipped: source ${field.source} is ${behind} s older than the last accepted reading.`);
+      }
+      return null;
+    }
     this[lastKey] = field.observedAt;
     return field.observedAt;
   }

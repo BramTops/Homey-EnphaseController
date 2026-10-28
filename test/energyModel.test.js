@@ -369,6 +369,72 @@ test.describe('GatewayEnergyModel snapshot', () => {
     assert.equal(at(last + 900001).fields.solarW.status, 'stale');
   });
 
+  test('solar falls back to the slow tier when the production CT reading is stale or missing', () => {
+    const m = modelWith();
+    m.setFastIntervalMs(15000);
+    const slow = (t, w) => ({
+      solar: {
+        w, kWh: 1, observedAt: t, source: 'eim',
+      },
+    });
+    m.recordProduction(slow(NOW, 40), NOW);
+    // No meter reading yet: the fresh production.json value is shown instead of nothing.
+    let snap = m.snapshot(NOW, { fastIntervalSeconds: 15 });
+    assert.equal(snap.solarW, 40);
+    assert.equal(snap.fields.solarW.source, 'production');
+    // A fresh CT reading wins.
+    m.recordMeters([reading(704643328, { activePower: 55, timestamp: NOW / 1000 })], NOW);
+    snap = m.snapshot(NOW, { fastIntervalSeconds: 15 });
+    assert.equal(snap.solarW, 55);
+    assert.equal(snap.fields.solarW.source, 'meters');
+    // The CT reading goes stale while production.json keeps arriving.
+    m.recordProduction(slow(NOW + 100000, 30), NOW + 100000);
+    snap = m.snapshot(NOW + 100000, { fastIntervalSeconds: 15 });
+    assert.equal(snap.solarW, 30);
+    assert.equal(snap.fields.solarW.source, 'production');
+  });
+
+  test('solar stays null with status stale when neither the CT nor the slow tier is fresh', () => {
+    const m = modelWith();
+    m.setFastIntervalMs(15000);
+    m.recordMeters([reading(704643328, { timestamp: NOW / 1000 })], NOW);
+    const snap = m.snapshot(NOW + 1000000, { fastIntervalSeconds: 15 });
+    assert.equal(snap.solarW, null);
+    assert.equal(snap.fields.solarW.status, 'stale');
+  });
+
+  test('each meter role goes stale on its own measured cadence', () => {
+    const m = modelWith();
+    m.setFastIntervalMs(15000);
+    const both = (t, prodT) => m.recordMeters([
+      reading(704643328, { timestamp: prodT / 1000 }),
+      reading(704643584, { timestamp: t / 1000 }),
+    ], t);
+    // Net refreshes every 60 s, production only every 300 s.
+    both(NOW, NOW);
+    for (let i = 1; i <= 5; i++) both(NOW + (i * 60000), i === 5 ? NOW + 300000 : NOW);
+    const last = NOW + 300000;
+    const snap = m.snapshot(last + 100000, { fastIntervalSeconds: 15 });
+    // Net (60 s cadence, limit 180 s) is 100 s old: fresh. Production (300 s cadence, limit 900 s) is 100 s old: fresh.
+    assert.equal(snap.fields.gridW.status, 'fresh');
+    assert.equal(snap.fields.solarW.status, 'fresh');
+    assert.ok(snap.fields.solarW.staleAfterMs > snap.fields.gridW.staleAfterMs);
+    assert.equal(m.snapshot(last + 190000, { fastIntervalSeconds: 15 }).fields.gridW.status, 'stale');
+    assert.equal(m.snapshot(last + 190000, { fastIntervalSeconds: 15 }).fields.solarW.status, 'fresh');
+  });
+
+  test('fields report the age limit of their reading, null when derived', () => {
+    const m = modelWith([meter(1, 'production'), meter(2, 'net-consumption')]);
+    m.setFastIntervalMs(15000);
+    m.recordInventory([{ type: 'PCU', devices: [] }], NOW);
+    m.recordMeters([reading(1, { timestamp: NOW / 1000 }), reading(2, { timestamp: NOW / 1000 })], NOW);
+    const snap = m.snapshot(NOW, { fastIntervalSeconds: 15 });
+    assert.equal(snap.fields.solarW.staleAfterMs, 45000);
+    assert.equal(snap.fields.gridW.staleAfterMs, 45000);
+    assert.equal(snap.fields.homeW.source, 'derived');
+    assert.equal(snap.fields.homeW.staleAfterMs, null);
+  });
+
   test('battery: absent when the inventory proves none (valid zero), unknown otherwise', () => {
     const m = modelWith();
     assert.equal(m.snapshot(NOW, { fastIntervalSeconds: 15 }).fields.batteryW.status, 'unknown');
