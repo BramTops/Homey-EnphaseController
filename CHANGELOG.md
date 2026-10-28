@@ -4,11 +4,14 @@
 Store rules, for this file and .homeychangelog.json (JSON cannot hold comments, so they are kept here):
 - Non-technical and outcome-focused: no jargon, variables or config details.
 - 3-7 words per line.
-- Only major and minor releases get an entry (new features are always a minor). Patch releases are not logged here or in .homeychangelog.json.
 - .homeychangelog.json: no "- " prefixes, items separated by " \n", both `en` and `nl`.
 -->
 
 All notable changes to the Enphase Controller application for Homey Pro will be documented in this file, grouped by work session (day) and described in a user-centric way.
+
+## 2.0.5 (2026-10-28)
+
+- Fixes solar power not updating.
 
 ## 2.0.4 (2026-10-27)
 

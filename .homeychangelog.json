@@ -1,4 +1,10 @@
 {
+  "2.0.5": {
+    "en": "Fixes solar power not updating.",
+    "nl": "Zonnevermogen wordt weer bijgewerkt.",
+    "fr": "Corrige la mise à jour solaire.",
+    "de": "Behebt ausbleibende Solarleistung-Aktualisierung."
+  },
   "2.0.4": {
     "en": "Updated app store metadata.",
     "nl": "App storegegevens bijgewerkt.",
