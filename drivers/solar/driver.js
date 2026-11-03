@@ -188,7 +188,8 @@ class SolarDriver extends Homey.Driver {
         };
       } catch (err) {
         this.error('Authentication test failed during repair:', err.message);
-        throw new Error(this.homey.__('driver.solar.error.auth_failed', { message: err.message }));
+        const key = err.code === EnvoyApi.CREDENTIALS_REJECTED ? 'credentials_rejected' : 'auth_failed';
+        throw new Error(this.homey.__(`driver.solar.error.${key}`, { message: err.message }));
       }
     });
 

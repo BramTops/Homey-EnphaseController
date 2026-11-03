@@ -23,6 +23,7 @@
         "fields_required": "Please fill in all the required fields.",
         "invalid_serial": "Invalid Gateway Serial Number.",
         "auth_failed": "Connection failed: __message__",
+        "credentials_rejected": "Enphase did not accept this email address and password. Check for typos.",
         "no_maintainer": "You need an Installer/Maintainer account to enable or disable power production.",
         "always_on": "This device is set to 'Always on' and cannot be turned off.",
         "command_failed": "Command failed: __message__",
@@ -60,6 +61,7 @@
         "invalid_serial": "Invalid gateway serial number.",
         "invalid_ip": "Invalid IP address. Enter the gateway's IP address (for example 10.0.0.123), not a hostname.",
         "auth_failed": "Connection failed: __message__",
+        "credentials_rejected": "Enphase did not accept this email address and password. Check for typos.",
         "no_maintainer": "You need an Installer/Maintainer account to enable or disable power production.",
         "always_on": "This device is set to 'Always on' and cannot be turned off.",
         "command_failed": "Command failed: __message__",
@@ -79,6 +81,7 @@
         "invalid_serial": "Invalid gateway serial number.",
         "invalid_ip": "Invalid IP address. Enter the gateway's IP address (for example 10.0.0.123), not a hostname.",
         "auth_failed": "Connection failed: __message__",
+        "credentials_rejected": "Enphase did not accept this email address and password. Check for typos.",
         "save_settings_failed": "Failed to save settings: Connection error: __message__"
       }
     },
@@ -89,6 +92,7 @@
         "invalid_serial": "Invalid gateway serial number.",
         "invalid_ip": "Invalid IP address. Enter the gateway's IP address (for example 10.0.0.123), not a hostname.",
         "auth_failed": "Connection failed: __message__",
+        "credentials_rejected": "Enphase did not accept this email address and password. Check for typos.",
         "save_settings_failed": "Failed to save settings: Connection error: __message__"
       },
       "warning": {

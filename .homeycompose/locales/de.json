@@ -23,6 +23,7 @@
         "fields_required": "Bitte füllen Sie alle Pflichtfelder aus.",
         "invalid_serial": "Ungültige Seriennummer des Gateways.",
         "auth_failed": "Verbindung fehlgeschlagen: __message__",
+        "credentials_rejected": "Enphase hat diese E-Mail-Adresse und dieses Passwort nicht akzeptiert. Bitte auf Tippfehler prüfen.",
         "no_maintainer": "Sie benötigen ein Installateur- oder Wartungskonto, um die Stromproduktion ein- oder auszuschalten.",
         "always_on": "Dieses Gerät ist auf „Immer eingeschaltet“ gestellt und kann nicht ausgeschaltet werden.",
         "command_failed": "Befehl fehlgeschlagen: __message__",
@@ -60,6 +61,7 @@
         "invalid_serial": "Ungültige Seriennummer des Gateways.",
         "invalid_ip": "Ungültige IP-Adresse. Geben Sie die IP-Adresse des Gateways ein (z. B. 10.0.0.123), keinen Hostnamen.",
         "auth_failed": "Verbindung fehlgeschlagen: __message__",
+        "credentials_rejected": "Enphase hat diese E-Mail-Adresse und dieses Passwort nicht akzeptiert. Bitte auf Tippfehler prüfen.",
         "no_maintainer": "Sie benötigen ein Installateur- oder Wartungskonto, um die Stromproduktion ein- oder auszuschalten.",
         "always_on": "Dieses Gerät ist auf „Immer eingeschaltet“ gestellt und kann nicht ausgeschaltet werden.",
         "command_failed": "Befehl fehlgeschlagen: __message__",
@@ -79,6 +81,7 @@
         "invalid_serial": "Ungültige Seriennummer des Gateways.",
         "invalid_ip": "Ungültige IP-Adresse. Geben Sie die IP-Adresse des Gateways ein (z. B. 10.0.0.123), keinen Hostnamen.",
         "auth_failed": "Verbindung fehlgeschlagen: __message__",
+        "credentials_rejected": "Enphase hat diese E-Mail-Adresse und dieses Passwort nicht akzeptiert. Bitte auf Tippfehler prüfen.",
         "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__"
       }
     },
@@ -89,6 +92,7 @@
         "invalid_serial": "Ungültige Seriennummer des Gateways.",
         "invalid_ip": "Ungültige IP-Adresse. Geben Sie die IP-Adresse des Gateways ein (z. B. 10.0.0.123), keinen Hostnamen.",
         "auth_failed": "Verbindung fehlgeschlagen: __message__",
+        "credentials_rejected": "Enphase hat diese E-Mail-Adresse und dieses Passwort nicht akzeptiert. Bitte auf Tippfehler prüfen.",
         "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__"
       },
       "warning": {

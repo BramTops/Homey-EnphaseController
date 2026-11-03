@@ -304,7 +304,8 @@ class BatteryDevice extends Homey.Device {
         this.log('Settings validated successfully. Token updated.');
       } catch (err) {
         this.error('Failed to validate new settings:', err.message);
-        throw new Error(this.homey.__('driver.battery.error.save_settings_failed', { message: err.message }));
+        const key = err.code === EnvoyApi.CREDENTIALS_REJECTED ? 'credentials_rejected' : 'save_settings_failed';
+        throw new Error(this.homey.__(`driver.battery.error.${key}`, { message: err.message }));
       }
     }
 

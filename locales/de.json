@@ -27,7 +27,8 @@
         "always_on": "Dieses Gerät ist auf „Immer eingeschaltet“ gestellt und kann nicht ausgeschaltet werden.",
         "command_failed": "Befehl fehlgeschlagen: __message__",
         "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__",
-        "not_metered": "Dieses Gateway scheint nicht über Messtechnik zu verfügen (keine Solar-Stromwandler erkannt). Die Steuerung der Produktionsbegrenzung erfordert ein Gateway mit Messtechnik."
+        "not_metered": "Dieses Gateway scheint nicht über Messtechnik zu verfügen (keine Solar-Stromwandler erkannt). Die Steuerung der Produktionsbegrenzung erfordert ein Gateway mit Messtechnik.",
+        "credentials_rejected": "Enphase hat diese E-Mail-Adresse und dieses Passwort nicht akzeptiert. Bitte auf Tippfehler prüfen."
       },
       "status": {
         "on": "Ein",
@@ -65,7 +66,8 @@
         "command_failed": "Befehl fehlgeschlagen: __message__",
         "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__",
         "not_metered": "Dieses Gateway scheint nicht über Messtechnik zu verfügen (keine Solar-Stromwandler erkannt). Die Steuerung der Produktionsbegrenzung erfordert ein Gateway mit Messtechnik.",
-        "legacy_conflict": "Nicht aktiv: Für dieses Gateway existiert ein Gerät vom Typ Envoy-Gateway (Legacy) oder Enphase Solar (Legacy). Bauen Sie Ihre Flows neu auf und entfernen Sie dann das alte Gerät, um dieses zu aktivieren."
+        "legacy_conflict": "Nicht aktiv: Für dieses Gateway existiert ein Gerät vom Typ Envoy-Gateway (Legacy) oder Enphase Solar (Legacy). Bauen Sie Ihre Flows neu auf und entfernen Sie dann das alte Gerät, um dieses zu aktivieren.",
+        "credentials_rejected": "Enphase hat diese E-Mail-Adresse und dieses Passwort nicht akzeptiert. Bitte auf Tippfehler prüfen."
       },
       "status": {
         "on": "Ein",
@@ -79,7 +81,8 @@
         "invalid_serial": "Ungültige Seriennummer des Gateways.",
         "invalid_ip": "Ungültige IP-Adresse. Geben Sie die IP-Adresse des Gateways ein (z. B. 10.0.0.123), keinen Hostnamen.",
         "auth_failed": "Verbindung fehlgeschlagen: __message__",
-        "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__"
+        "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__",
+        "credentials_rejected": "Enphase hat diese E-Mail-Adresse und dieses Passwort nicht akzeptiert. Bitte auf Tippfehler prüfen."
       }
     },
     "battery": {
@@ -89,7 +92,8 @@
         "invalid_serial": "Ungültige Seriennummer des Gateways.",
         "invalid_ip": "Ungültige IP-Adresse. Geben Sie die IP-Adresse des Gateways ein (z. B. 10.0.0.123), keinen Hostnamen.",
         "auth_failed": "Verbindung fehlgeschlagen: __message__",
-        "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__"
+        "save_settings_failed": "Speichern der Einstellungen fehlgeschlagen: Verbindungsfehler: __message__",
+        "credentials_rejected": "Enphase hat diese E-Mail-Adresse und dieses Passwort nicht akzeptiert. Bitte auf Tippfehler prüfen."
       },
       "warning": {
         "no_battery": "An diesem Gateway wurde keine Batterie erkannt."

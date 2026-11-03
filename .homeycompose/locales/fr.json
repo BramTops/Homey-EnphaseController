@@ -23,6 +23,7 @@
         "fields_required": "Veuillez remplir tous les champs obligatoires.",
         "invalid_serial": "Numéro de série de la passerelle invalide.",
         "auth_failed": "Échec de la connexion : __message__",
+        "credentials_rejected": "Enphase n'a pas accepté cette adresse e-mail et ce mot de passe. Vérifiez qu'il n'y a pas de fautes de frappe.",
         "no_maintainer": "Un compte Installateur/Mainteneur est nécessaire pour activer ou désactiver la production d'énergie.",
         "always_on": "Cet appareil est réglé sur « Toujours activé » et ne peut pas être désactivé.",
         "command_failed": "Échec de la commande : __message__",
@@ -60,6 +61,7 @@
         "invalid_serial": "Numéro de série de la passerelle invalide.",
         "invalid_ip": "Adresse IP invalide. Saisissez l'adresse IP de la passerelle (par exemple 10.0.0.123), et non un nom d'hôte.",
         "auth_failed": "Échec de la connexion : __message__",
+        "credentials_rejected": "Enphase n'a pas accepté cette adresse e-mail et ce mot de passe. Vérifiez qu'il n'y a pas de fautes de frappe.",
         "no_maintainer": "Un compte Installateur/Mainteneur est nécessaire pour activer ou désactiver la production d'énergie.",
         "always_on": "Cet appareil est réglé sur « Toujours activé » et ne peut pas être désactivé.",
         "command_failed": "Échec de la commande : __message__",
@@ -79,6 +81,7 @@
         "invalid_serial": "Numéro de série de la passerelle invalide.",
         "invalid_ip": "Adresse IP invalide. Saisissez l'adresse IP de la passerelle (par exemple 10.0.0.123), et non un nom d'hôte.",
         "auth_failed": "Échec de la connexion : __message__",
+        "credentials_rejected": "Enphase n'a pas accepté cette adresse e-mail et ce mot de passe. Vérifiez qu'il n'y a pas de fautes de frappe.",
         "save_settings_failed": "Échec de l'enregistrement des paramètres : erreur de connexion : __message__"
       }
     },
@@ -89,6 +92,7 @@
         "invalid_serial": "Numéro de série de la passerelle invalide.",
         "invalid_ip": "Adresse IP invalide. Saisissez l'adresse IP de la passerelle (par exemple 10.0.0.123), et non un nom d'hôte.",
         "auth_failed": "Échec de la connexion : __message__",
+        "credentials_rejected": "Enphase n'a pas accepté cette adresse e-mail et ce mot de passe. Vérifiez qu'il n'y a pas de fautes de frappe.",
         "save_settings_failed": "Échec de l'enregistrement des paramètres : erreur de connexion : __message__"
       },
       "warning": {
