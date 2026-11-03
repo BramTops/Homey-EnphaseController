@@ -3,6 +3,7 @@
 const net = require('net');
 const Homey = require('homey');
 const EnvoyApi = require('../../lib/EnvoyApi');
+const Credentials = require('../../lib/accountCredentials');
 
 // Declaration for the central polling manager: no slow telemetry, fast battery power read only.
 const REGISTRATION = { telemetry: null, fast: true, sources: ['batteryPower'] };
@@ -43,6 +44,9 @@ class BatteryDevice extends Homey.Device {
 
     // Shared client for this gateway (the core resolves it from the registered devices' settings and token)
     this.initApi(settings, initialToken);
+
+    // Show the account in use in the settings form (pairing never stored it on the device).
+    await Credentials.fillAccountEmail(this);
 
     // Snapshot state (onEnphaseState is the sole writer of all capabilities)
     this.registeredSerial = null;
@@ -241,11 +245,12 @@ class BatteryDevice extends Homey.Device {
   }
 
   initApi(settings, token) {
+    const { userEmail, password } = Credentials.resolveCredentials(this.homey, settings);
     this.homey.app.getApiInstance({
       serial: settings.envoy_serial,
       ip: settings.envoy_ip,
-      userEmail: settings.user_email,
-      password: settings.password,
+      userEmail,
+      password,
       initialToken: token || null,
     });
   }
@@ -253,16 +258,17 @@ class BatteryDevice extends Homey.Device {
   /**
    * Handle settings changes by the user in the Homey settings UI.
    */
-  async onSettings({ newSettings, changedKeys }) {
-    await this.applySettingsChange(newSettings, changedKeys);
+  async onSettings({ oldSettings, newSettings, changedKeys }) {
+    await this.applySettingsChange(newSettings, changedKeys, oldSettings);
   }
 
   /**
    * Apply changed settings: IP check, credential validation and the registration follow-up.
    * @param {Object} newSettings - The full new settings
    * @param {string[]} changedKeys
+   * @param {Object} [oldSettings] - Settings before the change (defaults to the current ones)
    */
-  async applySettingsChange(newSettings, changedKeys) {
+  async applySettingsChange(newSettings, changedKeys, oldSettings = this.getSettings()) {
     this.log('Device settings were modified:', JSON.stringify(changedKeys));
 
     // IP literals only: runtime connections never use hostnames.
@@ -270,21 +276,21 @@ class BatteryDevice extends Homey.Device {
       throw new Error(this.homey.__('driver.battery.error.invalid_ip'));
     }
 
-    // If credential-relevant keys are changed, validate them and refresh the shared client
-    if (
-      changedKeys.includes('user_email')
-      || changedKeys.includes('password')
-      || changedKeys.includes('envoy_serial')
-      || changedKeys.includes('envoy_ip')
-    ) {
+    // A new password, another account or another gateway: validate with a fresh login and refresh the shared client.
+    // Empty credential fields mean "keep the saved account" (see lib/accountCredentials.js).
+    const plan = Credentials.planCredentialChange(this.homey, oldSettings, newSettings, changedKeys);
+    if (plan.missingPassword) {
+      throw new Error(this.homey.__('driver.battery.error.password_required'));
+    }
+    if (plan.login) {
       this.log('Re-initializing API client with updated settings...');
 
       // Test the new settings by logging in using the newSettings IP directly.
       // The stored token is only replaced after this succeeded, so a rejected change keeps the working token.
       const tempApi = new EnvoyApi({
         log: (msg, ...args) => this.log(`[API Test] ${msg}`, ...args),
-        userEmail: newSettings.user_email,
-        password: newSettings.password,
+        userEmail: plan.userEmail,
+        password: plan.password,
         envoySerial: newSettings.envoy_serial,
         envoyIp: newSettings.envoy_ip,
       });
@@ -298,6 +304,8 @@ class BatteryDevice extends Homey.Device {
         this.log('Local connection and Envoy authentication verified successfully.');
 
         await this.setStoreValue('enphase_token', token);
+        // Accepted new credentials become the saved account, which devices with empty credential fields use.
+        if (plan.entered) await Credentials.saveAccount(this.homey, plan.userEmail, plan.password);
 
         this.initApi(newSettings, token);
 

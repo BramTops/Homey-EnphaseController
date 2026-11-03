@@ -13,7 +13,7 @@ Track bugs, features, improvements, ideas for Enphase Controller app.
 - Grid shows no home power when the system has no home consumption meter (same as Home load).
 - Battery absence is only proven by a definitive inventory answer; a 404 on `/ivp/ensemble/power` alone leaves "battery present?" unknown (home power stays empty without a consumption meter).
 - New drivers keep credential checks in device/driver code (copied from legacy); move into a single `lib/` helper, and stop returning the JWT/password to pairing views.
-- New drivers' settings forms require email/password; check whether `poll_interval` can be saved alone.
+- One saved account (`user_email`/`password` app settings) serves every device without its own credentials: with two gateways on different Enphase accounts, the last paired/changed account wins for those devices.
 - Prune `apiInstances` when the last device of a serial is removed; socket reuse on the fast tier; limiter slot is released at response headers (body streams after).
 - Dead code: pre-existing unused locale keys (`pair.start.discovery_badge`, `pair.start.warning_no_consumption`, `driver.envoy.status.*`).
 - `scanMdnsDirect` can return link-local (fe80) addresses.

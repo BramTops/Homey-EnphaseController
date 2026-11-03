@@ -62,6 +62,7 @@
         "invalid_ip": "Ongeldig IP-adres. Voer het IP-adres van de gateway in (bijvoorbeeld 10.0.0.123), geen hostnaam.",
         "auth_failed": "Verbinding mislukt: __message__",
         "credentials_rejected": "Enphase heeft dit e-mailadres en wachtwoord niet geaccepteerd. Controleer op typefouten.",
+        "password_required": "Vul het wachtwoord van dit Enphase-account in.",
         "no_maintainer": "U heeft een installateurs-/onderhoudsaccount nodig om stroomproductie in- of uit te schakelen.",
         "always_on": "Dit apparaat staat ingesteld op 'Altijd aan' en kan niet worden uitgeschakeld.",
         "command_failed": "Opdracht mislukt: __message__",
@@ -82,6 +83,7 @@
         "invalid_ip": "Ongeldig IP-adres. Voer het IP-adres van de gateway in (bijvoorbeeld 10.0.0.123), geen hostnaam.",
         "auth_failed": "Verbinding mislukt: __message__",
         "credentials_rejected": "Enphase heeft dit e-mailadres en wachtwoord niet geaccepteerd. Controleer op typefouten.",
+        "password_required": "Vul het wachtwoord van dit Enphase-account in.",
         "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__"
       }
     },
@@ -93,6 +95,7 @@
         "invalid_ip": "Ongeldig IP-adres. Voer het IP-adres van de gateway in (bijvoorbeeld 10.0.0.123), geen hostnaam.",
         "auth_failed": "Verbinding mislukt: __message__",
         "credentials_rejected": "Enphase heeft dit e-mailadres en wachtwoord niet geaccepteerd. Controleer op typefouten.",
+        "password_required": "Vul het wachtwoord van dit Enphase-account in.",
         "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__"
       },
       "warning": {

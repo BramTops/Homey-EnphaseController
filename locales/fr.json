@@ -67,7 +67,8 @@
         "save_settings_failed": "Échec de l'enregistrement des paramètres : erreur de connexion : __message__",
         "not_metered": "Cette passerelle ne semble pas équipée de mesure (aucune pince CT de production solaire détectée). Les commandes de limite de production nécessitent une passerelle équipée de mesure.",
         "legacy_conflict": "Non active : un appareil Envoy Gateway (Legacy) ou Enphase Solar (Legacy) existe pour cette passerelle. Recréez vos Flows, puis supprimez l'ancien appareil pour activer celui-ci.",
-        "credentials_rejected": "Enphase n'a pas accepté cette adresse e-mail et ce mot de passe. Vérifiez qu'il n'y a pas de fautes de frappe."
+        "credentials_rejected": "Enphase n'a pas accepté cette adresse e-mail et ce mot de passe. Vérifiez qu'il n'y a pas de fautes de frappe.",
+        "password_required": "Saisissez le mot de passe de ce compte Enphase."
       },
       "status": {
         "on": "Activé",
@@ -82,7 +83,8 @@
         "invalid_ip": "Adresse IP invalide. Saisissez l'adresse IP de la passerelle (par exemple 10.0.0.123), et non un nom d'hôte.",
         "auth_failed": "Échec de la connexion : __message__",
         "save_settings_failed": "Échec de l'enregistrement des paramètres : erreur de connexion : __message__",
-        "credentials_rejected": "Enphase n'a pas accepté cette adresse e-mail et ce mot de passe. Vérifiez qu'il n'y a pas de fautes de frappe."
+        "credentials_rejected": "Enphase n'a pas accepté cette adresse e-mail et ce mot de passe. Vérifiez qu'il n'y a pas de fautes de frappe.",
+        "password_required": "Saisissez le mot de passe de ce compte Enphase."
       }
     },
     "battery": {
@@ -93,7 +95,8 @@
         "invalid_ip": "Adresse IP invalide. Saisissez l'adresse IP de la passerelle (par exemple 10.0.0.123), et non un nom d'hôte.",
         "auth_failed": "Échec de la connexion : __message__",
         "save_settings_failed": "Échec de l'enregistrement des paramètres : erreur de connexion : __message__",
-        "credentials_rejected": "Enphase n'a pas accepté cette adresse e-mail et ce mot de passe. Vérifiez qu'il n'y a pas de fautes de frappe."
+        "credentials_rejected": "Enphase n'a pas accepté cette adresse e-mail et ce mot de passe. Vérifiez qu'il n'y a pas de fautes de frappe.",
+        "password_required": "Saisissez le mot de passe de ce compte Enphase."
       },
       "warning": {
         "no_battery": "Aucune batterie détectée sur cette passerelle."

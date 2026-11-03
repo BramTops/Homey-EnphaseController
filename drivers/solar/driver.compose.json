@@ -154,8 +154,13 @@
             "de": "E-Mail-Adresse"
           },
           "placeholder": "owner-or-installer@email.com",
-          "required": true,
-          "value": ""
+          "value": "",
+          "hint": {
+            "en": "The Enphase account used for this gateway. To switch to another account, also enter its password.",
+            "nl": "Het Enphase-account dat voor deze gateway wordt gebruikt. Vul bij een ander account ook het wachtwoord daarvan in.",
+            "fr": "Le compte Enphase utilisé pour cette passerelle. Pour passer à un autre compte, saisissez aussi son mot de passe.",
+            "de": "Das Enphase-Konto, das für dieses Gateway verwendet wird. Für ein anderes Konto auch dessen Passwort eingeben."
+          }
         },
         {
           "id": "password",
@@ -166,8 +171,13 @@
             "fr": "Mot de passe",
             "de": "Passwort"
           },
-          "required": true,
-          "value": ""
+          "value": "",
+          "hint": {
+            "en": "Leave empty to keep using the saved password. Only enter a password after changing it at Enphase or when switching account.",
+            "nl": "Laat leeg om het opgeslagen wachtwoord te blijven gebruiken. Vul alleen een wachtwoord in nadat u het bij Enphase hebt gewijzigd of bij een ander account.",
+            "fr": "Laissez vide pour conserver le mot de passe enregistré. Ne saisissez un mot de passe qu'après l'avoir modifié chez Enphase ou pour changer de compte.",
+            "de": "Leer lassen, um das gespeicherte Passwort weiter zu verwenden. Nur ein Passwort eingeben, wenn Sie es bei Enphase geändert haben oder das Konto wechseln."
+          }
         }
       ]
     },

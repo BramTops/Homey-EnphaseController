@@ -69,7 +69,8 @@
         "not_metered": "Deze gateway is niet gemeten (geen zonneproductie CT-klemmen gedetecteerd). Productielimiet opties vereisen een gemeten gateway.",
         "legacy_conflict": "Niet actief: er bestaat een apparaat van het type Envoy-gateway (Legacy) of Enphase Solar (Legacy) voor deze gateway. Bouw je Flows opnieuw op en verwijder daarna het oude apparaat om dit apparaat in te schakelen.",
         "invalid_ip": "Ongeldig IP-adres. Voer het IP-adres van de gateway in (bijvoorbeeld 10.0.0.123), geen hostnaam.",
-        "credentials_rejected": "Enphase heeft dit e-mailadres en wachtwoord niet geaccepteerd. Controleer op typefouten."
+        "credentials_rejected": "Enphase heeft dit e-mailadres en wachtwoord niet geaccepteerd. Controleer op typefouten.",
+        "password_required": "Vul het wachtwoord van dit Enphase-account in."
       },
       "status": {
         "on": "Aan",
@@ -84,7 +85,8 @@
         "auth_failed": "Verbinding mislukt: __message__",
         "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__",
         "invalid_ip": "Ongeldig IP-adres. Voer het IP-adres van de gateway in (bijvoorbeeld 10.0.0.123), geen hostnaam.",
-        "credentials_rejected": "Enphase heeft dit e-mailadres en wachtwoord niet geaccepteerd. Controleer op typefouten."
+        "credentials_rejected": "Enphase heeft dit e-mailadres en wachtwoord niet geaccepteerd. Controleer op typefouten.",
+        "password_required": "Vul het wachtwoord van dit Enphase-account in."
       }
     },
     "battery": {
@@ -95,7 +97,8 @@
         "auth_failed": "Verbinding mislukt: __message__",
         "save_settings_failed": "Instellingen opslaan mislukt: Verbindingsfout: __message__",
         "invalid_ip": "Ongeldig IP-adres. Voer het IP-adres van de gateway in (bijvoorbeeld 10.0.0.123), geen hostnaam.",
-        "credentials_rejected": "Enphase heeft dit e-mailadres en wachtwoord niet geaccepteerd. Controleer op typefouten."
+        "credentials_rejected": "Enphase heeft dit e-mailadres en wachtwoord niet geaccepteerd. Controleer op typefouten.",
+        "password_required": "Vul het wachtwoord van dit Enphase-account in."
       },
       "warning": {
         "no_battery": "Geen batterij gedetecteerd op deze gateway."

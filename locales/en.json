@@ -69,7 +69,8 @@
         "not_metered": "This gateway does not appear to be metered (no solar production CT clamps detected). Production limit controls require a metered gateway.",
         "legacy_conflict": "Not active: an Envoy Gateway (Legacy) or Enphase Solar (Legacy) device exists for this gateway. Rebuild your Flows, then remove the old device to enable this one.",
         "invalid_ip": "Invalid IP address. Enter the gateway's IP address (for example 10.0.0.123), not a hostname.",
-        "credentials_rejected": "Enphase did not accept this email address and password. Check for typos."
+        "credentials_rejected": "Enphase did not accept this email address and password. Check for typos.",
+        "password_required": "Enter the password of this Enphase account."
       },
       "status": {
         "on": "On",
@@ -84,7 +85,8 @@
         "auth_failed": "Connection failed: __message__",
         "save_settings_failed": "Failed to save settings: Connection error: __message__",
         "invalid_ip": "Invalid IP address. Enter the gateway's IP address (for example 10.0.0.123), not a hostname.",
-        "credentials_rejected": "Enphase did not accept this email address and password. Check for typos."
+        "credentials_rejected": "Enphase did not accept this email address and password. Check for typos.",
+        "password_required": "Enter the password of this Enphase account."
       }
     },
     "battery": {
@@ -95,7 +97,8 @@
         "auth_failed": "Connection failed: __message__",
         "save_settings_failed": "Failed to save settings: Connection error: __message__",
         "invalid_ip": "Invalid IP address. Enter the gateway's IP address (for example 10.0.0.123), not a hostname.",
-        "credentials_rejected": "Enphase did not accept this email address and password. Check for typos."
+        "credentials_rejected": "Enphase did not accept this email address and password. Check for typos.",
+        "password_required": "Enter the password of this Enphase account."
       },
       "warning": {
         "no_battery": "No battery detected on this gateway."

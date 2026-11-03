@@ -3,6 +3,7 @@
 const Homey = require('homey');
 const EnvoyApi = require('./lib/EnvoyApi');
 const PairingHelper = require('./lib/PairingHelper');
+const Credentials = require('./lib/accountCredentials');
 const { GatewayEnergyModel, monoMs } = require('./lib/energyModel');
 const { WidgetFeed } = require('./lib/widgetFeed');
 const { shouldLogAgain } = require('./lib/helpers');
@@ -283,10 +284,14 @@ class EnphaseController extends Homey.App {
   getApiInstance({
     serial,
     ip,
-    userEmail,
-    password,
+    userEmail: rawEmail,
+    password: rawPassword,
     initialToken,
   }) {
+    // Trimmed like the pairing views do: a stray space typed in a settings field must never reach the cloud login.
+    const userEmail = Credentials.clean(rawEmail);
+    const password = Credentials.clean(rawPassword);
+
     if (!this.apiInstances) {
       this.apiInstances = new Map();
     }
@@ -405,11 +410,13 @@ class EnphaseController extends Homey.App {
     try {
       const settings = rep.getSettings();
       const token = rep.getStoreValue('enphase_token');
+      // Empty device credential fields fall back to the saved account (see lib/accountCredentials.js).
+      const { userEmail, password } = Credentials.resolveCredentials(this.homey, settings);
       rt.api = this.getApiInstance({
         serial: rt.serial,
         ip: settings.envoy_ip,
-        userEmail: settings.user_email || this.homey.settings.get('user_email'),
-        password: settings.password || this.homey.settings.get('password'),
+        userEmail,
+        password,
         initialToken: token || null,
       });
       return rt.api;
