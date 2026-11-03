@@ -1,4 +1,10 @@
 {
+  "2.0.6": {
+    "en": "Remembers validated Enphase credentials. \nClarifies rejected login details. \nImproves handling of outdated power readings.",
+    "nl": "Onthoudt geverifieerde Enphase-inloggegevens. \nVerduidelijkt afgewezen inloggegevens. \nVerbetert verwerking van verouderde vermogensmetingen.",
+    "fr": "Mémorise les identifiants Enphase validés. \nClarifie les identifiants refusés. \nAméliore le traitement des mesures électriques obsolètes.",
+    "de": "Speichert bestätigte Enphase-Zugangsdaten. \nErklärt abgelehnte Anmeldedaten klarer. \nVerbessert den Umgang mit veralteten Leistungswerten."
+  },
   "2.0.5": {
     "en": "Fixes solar power not updating.",
     "nl": "Zonnevermogen wordt weer bijgewerkt.",

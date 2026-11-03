@@ -9,6 +9,12 @@ Store rules, for this file and .homeychangelog.json (JSON cannot hold comments, 
 
 All notable changes to the Enphase Controller application for Homey Pro will be documented in this file, grouped by work session (day) and described in a user-centric way.
 
+## 2.0.6 (2026-11-03)
+
+- Remembers validated Enphase credentials.
+- Clarifies rejected login details.
+- Improves handling of outdated power readings.
+
 ## 2.0.5 (2026-10-28)
 
 - Fixes solar power not updating.
