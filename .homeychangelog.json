@@ -1,4 +1,10 @@
 {
+  "2.0.7": {
+    "en": "Fixes readings marked outdated incorrectly. \nKeeps grid power updating more reliably.",
+    "nl": "Metingen niet langer onterecht verouderd. \nNetvermogen wordt betrouwbaarder bijgewerkt.",
+    "fr": "Corrige des mesures jugées obsolètes à tort. \nMise à jour plus fiable du réseau.",
+    "de": "Behebt fälschlich veraltete Messwerte. \nNetzleistung wird zuverlässiger aktualisiert."
+  },
   "2.0.6": {
     "en": "Remembers validated Enphase credentials. \nClarifies rejected login details. \nImproves handling of outdated power readings.",
     "nl": "Onthoudt geverifieerde Enphase-inloggegevens. \nVerduidelijkt afgewezen inloggegevens. \nVerbetert verwerking van verouderde vermogensmetingen.",

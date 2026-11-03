@@ -287,6 +287,35 @@ test.describe('GatewayEnergyModel snapshot', () => {
     assert.equal(snap.fields.solarW.status, 'stale');
   });
 
+  test('a gateway clock running 30 s behind does not make advancing readings stale, a frozen one still goes stale', () => {
+    const m = modelWith();
+    m.setFastIntervalMs(5000);
+    const LAG = 30000;
+    const record = (t, power) => m.recordMeters([reading(704643584, { activePower: power, timestamp: (t - LAG) / 1000 })], t);
+    const at = (t) => m.snapshot(t, { fastIntervalSeconds: 5 });
+    for (let i = 0; i < 12; i += 1) record(NOW + i * 5000, 100 + i);
+    const last = NOW + 55000;
+    assert.equal(at(last).fields.gridW.status, 'fresh');
+    assert.equal(at(last).gridW, 111);
+    assert.equal(at(last + 15000).fields.gridW.status, 'fresh');
+    // The gateway keeps answering with the same reading time: it ages from the last advance.
+    const frozen = (t) => m.recordMeters([reading(704643584, { activePower: 999, timestamp: (last - LAG) / 1000 })], t);
+    frozen(last + 5000);
+    frozen(last + 10000);
+    assert.equal(at(last + 15000).fields.gridW.status, 'fresh');
+    assert.equal(at(last + 16000).fields.gridW.status, 'stale');
+  });
+
+  test('a lag beyond the tolerated clock offset still counts as stale', () => {
+    const m = modelWith();
+    m.setFastIntervalMs(5000);
+    for (let i = 0; i < 5; i += 1) {
+      const t = NOW + i * 5000;
+      m.recordMeters([reading(704643584, { timestamp: (t - 300000) / 1000 })], t);
+    }
+    assert.equal(m.snapshot(NOW + 20000, { fastIntervalSeconds: 5 }).fields.gridW.status, 'stale');
+  });
+
   test('the meters staleness threshold follows a smoothed measured cadence slower than the poll', () => {
     const m = modelWith();
     m.setFastIntervalMs(15000);
@@ -326,6 +355,20 @@ test.describe('GatewayEnergyModel snapshot', () => {
     ], NOW);
     const snap = m.snapshot(NOW, { fastIntervalSeconds: 60 });
     assert.equal(snap.homeW, null);
+  });
+
+  test('grid falls back to the slow tier while the net CT reading is stale, and the CT wins when fresh', () => {
+    const m = modelWith();
+    m.setFastIntervalMs(5000);
+    m.recordMeters([reading(704643584, { activePower: 250, timestamp: NOW / 1000 })], NOW);
+    m.recordProduction({ grid: { w: -190, observedAt: NOW + 55000 } }, NOW + 60000);
+    const at = (t) => m.snapshot(t, { fastIntervalSeconds: 5 });
+    assert.equal(at(NOW + 10000).gridW, 250);
+    assert.equal(at(NOW + 10000).fields.gridW.source, 'meters');
+    const later = at(NOW + 60000);
+    assert.equal(later.gridW, -190);
+    assert.equal(later.fields.gridW.source, 'production');
+    assert.equal(later.fields.gridW.status, 'fresh');
   });
 
   test('a generic consumption CT never yields a grid or home reading', () => {
