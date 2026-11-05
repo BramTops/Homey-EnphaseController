@@ -1,4 +1,10 @@
 {
+  "2.0.8": {
+    "en": "Fixes inflated solar energy today. \nFixes missing inverter alert Flows. \nPrevents false alerts after gateway restarts.",
+    "nl": "Herstelt te hoge zonne-energie vandaag. \nOmvormer-alarmflows werken weer. \nGeen valse alarmen na herstart gateway.",
+    "fr": "Corrige l'énergie solaire du jour gonflée. \nCorrige les Flows d'alerte onduleur. \nÉvite les fausses alertes après redémarrage.",
+    "de": "Behebt überhöhte Solarenergie von heute. \nWechselrichter-Alarm-Flows funktionieren wieder. \nKeine Fehlalarme nach Gateway-Neustart."
+  },
   "2.0.7": {
     "en": "Fixes readings marked outdated incorrectly. \nKeeps grid power updating more reliably.",
     "nl": "Metingen niet langer onterecht verouderd. \nNetvermogen wordt betrouwbaarder bijgewerkt.",

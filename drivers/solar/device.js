@@ -815,7 +815,7 @@ class SolarDevice extends Homey.Device {
    * Calculate Energy Today production based on lifetime value and daily reset.
    * @param {Object} prodData
    * @param {number} currentDay
-   * @returns {Promise<number>} Energy produced today in kWh
+   * @returns {Promise<number|null>} Energy produced today in kWh, or null when the lifetime reading is skipped
    */
   async calculateDailyEnergy(prodData, currentDay) {
     let todayDay = this.getStoreValue('today_day');
@@ -832,6 +832,7 @@ class SolarDevice extends Homey.Device {
     }
 
     if (todayDay !== currentDay || typeof todayStartKwh !== 'number' || sourceChanged) {
+      this.lastLifetimeKwh = null;
       this.log(`New day or counter source detected. Resetting today's start energy meter to: ${prodData.kwhLifetime} kWh `
         + `(previous day: ${todayDay}, current day: ${currentDay}, source: ${todaySource} -> ${source})`);
       todayDay = currentDay;
@@ -840,14 +841,19 @@ class SolarDevice extends Homey.Device {
       await this.setStoreValue('today_start_kwh', todayStartKwh).catch(this.error);
     }
 
-    let energyToday = prodData.kwhLifetime - todayStartKwh;
-    if (energyToday < 0) {
-      this.log(`Warning: Energy today calculated as negative (${energyToday} kWh). Resetting start value.`);
-      todayStartKwh = prodData.kwhLifetime;
-      await this.setStoreValue('today_start_kwh', todayStartKwh).catch(this.error);
-      energyToday = 0;
+    // A lifetime counter never runs backwards. A lower reading is a glitch, e.g. a gateway that has just restarted
+    // and has not heard from all inverters yet (observed: ~1,200 kWh too low for some minutes). Taking it as the new
+    // start of the day would count the whole drop as today's energy once the counter recovers, so the reading is
+    // skipped and the capabilities keep their last values. A real counter reset is picked up at the next new day.
+    const floorKwh = Math.max(todayStartKwh, typeof this.lastLifetimeKwh === 'number' ? this.lastLifetimeKwh : todayStartKwh);
+    if (prodData.kwhLifetime < floorKwh) {
+      this.log(`Lifetime counter reading skipped: ${prodData.kwhLifetime} kWh is below the last accepted ${floorKwh} kWh `
+        + '(a lifetime counter cannot decrease); keeping the start of day and the last values.');
+      return null;
     }
+    this.lastLifetimeKwh = prodData.kwhLifetime;
 
+    let energyToday = prodData.kwhLifetime - todayStartKwh;
     energyToday = Math.round(energyToday * 100) / 100;
     this.log(`Energy today calculation: current lifetime = ${prodData.kwhLifetime} kWh, start of day = ${todayStartKwh} kWh, energy today = ${energyToday} kWh`);
     return energyToday;
@@ -858,7 +864,7 @@ class SolarDevice extends Homey.Device {
    *
    * @param {Object} prodData - Live production readings
    * @param {boolean} powerForcedOff - True if unmetered contactor is forced off
-   * @param {number} energyToday - Calculated energy production today in kWh
+   * @param {number|null} energyToday - Calculated energy production today in kWh; null keeps both energy capabilities
    * @param {Object} [pelSettings] - Live Dynamic PEL configuration
    */
   async updateDeviceCapabilities(prodData, powerForcedOff, energyToday, pelSettings = null) {
@@ -909,8 +915,12 @@ class SolarDevice extends Homey.Device {
       await this.setCapabilityValue('onoff', productionEnabled).catch(this.error);
     }
     // measure_power and last_update are written by onEnphaseState (snapshot), not here.
-    await this.setCapabilityValue('meter_power', prodData.kwhLifetime);
-    await this.setCapabilityValue('meter_power_today', energyToday);
+    // A skipped lifetime reading (see calculateDailyEnergy) must not reach meter_power either: Homey Energy would count
+    // the recovery from the drop as production.
+    if (energyToday !== null) {
+      await this.setCapabilityValue('meter_power', prodData.kwhLifetime);
+      await this.setCapabilityValue('meter_power_today', energyToday);
+    }
     await this.setCapabilityValue('connected_inverters', prodData.connectedInverters);
 
     const powerProductionStr = productionEnabled

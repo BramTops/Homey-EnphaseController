@@ -64,12 +64,30 @@ test.describe('solar calculateDailyEnergy (current behavior)', () => {
     assert.equal(dev.store.today_start_kwh, 1005);
   });
 
-  test('lifetime counter below the baseline (reset or replacement): baseline follows the counter, today restarts at 0', async () => {
+  test('lifetime counter below the baseline: the reading is skipped (null) and the baseline is kept', async () => {
+    // Field case (2.0.4): a restarting gateway reported ~1,177 kWh too little for a while; re-baselining on it made
+    // "today" show the whole drop once the counter recovered.
+    const dev = fakeDevice({ today_day: 5, today_start_kwh: 5930.9 });
+    assert.equal(await calc(dev, 5931.5, 5), 0.6);
+    assert.equal(await calc(dev, 4759.45, 5), null);
+    assert.equal(dev.store.today_start_kwh, 5930.9);
+    assert.deepEqual(dev.writes, []);
+    assert.equal(await calc(dev, 5936.5, 5), 5.6); // the recovered counter continues from the original baseline
+  });
+
+  test('a drop that stays above the baseline is skipped too (compared with the last accepted reading)', async () => {
     const dev = fakeDevice({ today_day: 8, today_start_kwh: 1000 });
-    assert.equal(await calc(dev, 50, 8), 0);
-    assert.equal(dev.store.today_start_kwh, 50);
-    assert.equal(dev.store.today_day, 8);
-    assert.equal(await calc(dev, 52.5, 8), 2.5); // and accumulation continues from the new baseline
+    assert.equal(await calc(dev, 1005, 8), 5);
+    assert.equal(await calc(dev, 1002, 8), null);
+    assert.equal(await calc(dev, 1005.5, 8), 5.5);
+  });
+
+  test('a real counter reset is taken at the next new day', async () => {
+    const dev = fakeDevice({ today_day: 8, today_start_kwh: 1000 });
+    assert.equal(await calc(dev, 50, 8), null);
+    assert.equal(await calc(dev, 52.5, 9), 0);
+    assert.equal(dev.store.today_start_kwh, 52.5);
+    assert.equal(await calc(dev, 53, 9), 0.5);
   });
 
   test('KNOWN LIMITATION: the same day number in a later month looks like the same day', async () => {
@@ -384,5 +402,38 @@ test.describe('which clock each driver uses for its day (current behavior)', () 
     await InvertersDevice.prototype.updateTelemetry.call(dev, reading);
     assert.equal(dev.store.invertersData.A.lastResetDay, SENTINEL + 1);
     assert.equal(dev.store.invertersData.A.meter_power_today, 0);
+  });
+});
+
+test.describe('solar updateDeviceCapabilities with a skipped lifetime reading', () => {
+  const run = async (energyToday) => {
+    const written = {};
+    const dev = {
+      isMetered: false,
+      isMaintainer: false,
+      productionLimiting: false,
+      homey: { __: (key) => key },
+      log() { },
+      error() { },
+      hasCapability: () => false,
+      async setCapabilityValue(cap, value) {
+        written[cap] = value;
+      },
+    };
+    await SolarDevice.prototype.updateDeviceCapabilities.call(dev, { kwhLifetime: 4759.45, connectedInverters: 0 }, false, energyToday);
+    return written;
+  };
+
+  test('null keeps meter_power and meter_power_today; the other capabilities still update', async () => {
+    const written = await run(null);
+    assert.equal('meter_power' in written, false);
+    assert.equal('meter_power_today' in written, false);
+    assert.equal(written.connected_inverters, 0);
+  });
+
+  test('a number writes both energy capabilities', async () => {
+    const written = await run(1.5);
+    assert.equal(written.meter_power, 4759.45);
+    assert.equal(written.meter_power_today, 1.5);
   });
 });

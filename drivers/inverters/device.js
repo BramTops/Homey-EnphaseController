@@ -159,6 +159,14 @@ class InvertersDevice extends Homey.Device {
    * @returns {Promise<boolean>}
    */
   async validateTelemetry(inverterData, serials) {
+    // An empty list is a gateway that has not collected inverter data yet (seen right after a restart): the gateway
+    // keeps listing inverters it no longer hears from, with their last report time, so an empty list never means the
+    // inverters are gone. Skip the poll without raising a mismatch or touching the inverter statuses.
+    if (inverterData.length === 0 && serials.length > 0) {
+      this.log(`Envoy returned no inverters (expected ${serials.length}); skipping this poll, gateway is probably still starting.`);
+      return false;
+    }
+
     const incomingSerials = inverterData.map((inv) => inv.serialNumber);
     const hasMismatch = serials.length !== incomingSerials.length
       || !serials.every((s) => incomingSerials.includes(s));
@@ -564,8 +572,10 @@ class InvertersDevice extends Homey.Device {
    * Helper to trigger the alert flow card.
    */
   async triggerAlertFlow(serial, type, message) {
+    // inverter_index is a number token (Homey rejects the whole trigger for null): 1-based for an inverter alert,
+    // 0 for an alert about the inverter list as a whole (mismatch).
     const serials = this.getStoreValue('inverters') || [];
-    const index = serials.indexOf(serial) !== -1 ? serials.indexOf(serial) + 1 : null;
+    const index = serials.indexOf(serial) + 1;
 
     const triggerCard = this.homey.flow.getDeviceTriggerCard('inverter_alert_triggered');
     if (triggerCard) {

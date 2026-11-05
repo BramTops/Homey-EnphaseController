@@ -9,6 +9,12 @@ Store rules, for this file and .homeychangelog.json (JSON cannot hold comments, 
 
 All notable changes to the Enphase Controller application for Homey Pro will be documented in this file, grouped by work session (day) and described in a user-centric way.
 
+## 2.0.8 (2026-11-05)
+
+- Fixes inflated solar energy today.
+- Fixes missing inverter alert Flows.
+- Prevents false alerts after gateway restarts.
+
 ## 2.0.7 (2026-11-03)
 
 - Fixes readings marked outdated incorrectly.
