@@ -6,7 +6,7 @@ const PairingHelper = require('./lib/PairingHelper');
 const Credentials = require('./lib/accountCredentials');
 const { GatewayEnergyModel, monoMs } = require('./lib/energyModel');
 const { WidgetFeed } = require('./lib/widgetFeed');
-const { shouldLogAgain } = require('./lib/helpers');
+const { shouldLogAgain, parseWifiStatus } = require('./lib/helpers');
 
 // Central polling loop and device registration manager.
 // Current drivers: solar, grid, battery, inverters. The envoy, gateway and homeload drivers are deprecated but stay
@@ -24,6 +24,9 @@ const { shouldLogAgain } = require('./lib/helpers');
 //    burden the gateway, and endpoint freshness and cost vary by firmware (the Enphase brief says several
 //    aggregates only refresh every 5 minutes; nklerk treats meter readings as live at 2 s). Staleness is judged
 //    from the reading timestamps and the measured cadence (see lib/energyModel.js), not from arrival time.
+//  * Network uplink: /home.json is read once per gateway runtime, in the first slow poll. Only when the gateway is
+//    on Wi-Fi is it re-read every slow poll (signal strength); wired or unknown uplinks are never asked again (a
+//    failed read is retried next slow poll, a 404 counts as unknown). Delivered to devices exposing onNetworkStatus.
 //  * Background (never awaited by a tick): /ivp/ensemble/inventory (battery presence, grid-tie state, SoC
 //    fallback) every 60 s with a battery, 10 min without, retried with backoff (30 s .. 5 min) when unknown;
 //    /ivp/meters configuration every 10 min.
@@ -480,6 +483,7 @@ class EnphaseController extends Homey.App {
 
     // Snapshot devices get the latest state immediately, then every publication.
     if (snapshot && rt.latest) this._deliver(device, rt.latest);
+    if (rt.network) this._deliverNetwork(device, rt.network);
 
     if (isFirst) {
       this.log(`[Manager] Starting polling for serial: ${serial}`);
@@ -594,6 +598,8 @@ class EnphaseController extends Homey.App {
       cfgTriedAt: 0,
       wantsSnapshots: false,
       latest: null,
+      network: null, // last parsed /home.json uplink: { wifi, signalPercent }
+      networkMode: 'unknown', // 'unknown' (not read yet) | 'wifi' (keep polling) | 'done' (wired/unsupported: stop)
       consecutiveMaintainerFailures: 0,
       errLog: new Map(),
       skipLog: new Map(),
@@ -901,7 +907,10 @@ class EnphaseController extends Homey.App {
       }
     }
 
-    // 3. Dispatch legacy telemetry, then settle availability
+    // 3. Network uplink (/home.json): once, then only while on Wi-Fi
+    if (rt.networkMode !== 'done') await this._refreshNetwork(rt, api);
+
+    // 4. Dispatch legacy telemetry, then settle availability
     for (const dev of productionDevices) {
       if (prodData) {
         // homeload-style handlers ignore the extra arguments
@@ -925,6 +934,40 @@ class EnphaseController extends Homey.App {
     if (invertersDevices.length > 0) settleDevices(invertersDevices, invertersError, null);
 
     if (prodData) this._publish(rt);
+  }
+
+  /**
+   * Read /home.json and deliver the uplink to devices. Failures never affect availability or the rest of the cycle.
+   * @private
+   */
+  async _refreshNetwork(rt, api) {
+    let network;
+    try {
+      network = parseWifiStatus(await api.getHomeStatus());
+    } catch (err) {
+      if (err.status !== 404) {
+        this._logFailure(rt, 'Home status poll', err);
+        return; // retried next slow poll
+      }
+      network = null;
+    }
+    if (this.gateways.get(rt.serial) !== rt) return;
+    if (rt.networkMode === 'unknown') {
+      let label = 'unknown (no interface data)';
+      if (network) label = network.wifi ? `Wi-Fi (${network.signalPercent ?? '?'}%)` : 'wired';
+      this.log(`[Manager] Serial ${rt.serial}: network uplink ${label}`);
+    }
+    rt.networkMode = network && network.wifi ? 'wifi' : 'done';
+    rt.network = network || { wifi: false, signalPercent: null };
+    for (const device of rt.devices.keys()) this._deliverNetwork(device, rt.network);
+  }
+
+  /** Deliver the network uplink to one device (duck-typed onNetworkStatus); never throws. @private */
+  _deliverNetwork(device, network) {
+    if (typeof device.onNetworkStatus !== 'function') return;
+    Promise.resolve()
+      .then(() => device.onNetworkStatus(network))
+      .catch((err) => this.error(`[Manager] Device ${device.getName()} onNetworkStatus failed:`, err.message));
   }
 
   async _callTelemetry(device, args) {

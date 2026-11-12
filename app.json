@@ -2504,6 +2504,32 @@
       "setable": false,
       "uiComponent": "sensor",
       "icon": "/assets/production_limiting.svg"
+    },
+    "wifi_strength": {
+      "type": "number",
+      "title": {
+        "en": "Wi-Fi strength",
+        "nl": "Wifi-sterkte",
+        "fr": "Puissance Wi-Fi",
+        "de": "WLAN-Stärke"
+      },
+      "description": {
+        "en": "Wi-Fi signal strength of the Envoy gateway. Only shown when the gateway is connected over Wi-Fi.",
+        "nl": "Wifi-signaalsterkte van de Envoy gateway. Alleen zichtbaar als de gateway via wifi verbonden is.",
+        "fr": "Puissance du signal Wi-Fi de la passerelle Envoy. Affiché uniquement lorsque la passerelle est connectée en Wi-Fi.",
+        "de": "WLAN-Signalstärke des Envoy-Gateways. Wird nur angezeigt, wenn das Gateway per WLAN verbunden ist."
+      },
+      "units": {
+        "en": "%"
+      },
+      "min": 0,
+      "max": 100,
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "insights": true,
+      "icon": "/assets/wifi.svg"
     }
   },
   "discovery": {

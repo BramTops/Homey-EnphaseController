@@ -740,6 +740,39 @@ class SolarDevice extends Homey.Device {
   }
 
   /**
+   * Gateway network uplink from the app's slow tier (/home.json). `wifi_strength` exists only while the gateway is on
+   * Wi-Fi: added on the first Wi-Fi report, removed when the uplink turns out wired. Calls are serialized so
+   * overlapping reports cannot race the capability add/remove.
+   * @param {{wifi: boolean, signalPercent: number|null}} network
+   */
+  async onNetworkStatus(network) {
+    this.networkChain = (this.networkChain || Promise.resolve()).then(async () => {
+      if (this.destroyed || !network) return;
+      if (!network.wifi) {
+        if (this.hasCapability('wifi_strength')) {
+          this.log('Gateway is not on Wi-Fi: removing capability wifi_strength');
+          await this.removeCapability('wifi_strength').catch((err) => {
+            this.error('Failed to remove capability wifi_strength:', err.message);
+          });
+        }
+        return;
+      }
+      if (!this.hasCapability('wifi_strength')) {
+        this.log('Gateway is on Wi-Fi: adding capability wifi_strength');
+        await this.addCapability('wifi_strength').catch((err) => {
+          this.error('Failed to add capability wifi_strength:', err.message);
+        });
+      }
+      if (this.hasCapability('wifi_strength')) {
+        await this.setCapabilityValue('wifi_strength', network.signalPercent).catch((err) => {
+          this.error('Failed to set wifi_strength:', err.message);
+        });
+      }
+    });
+    return this.networkChain;
+  }
+
+  /**
    * Update production telemetry received from the App orchestrator.
    * This is called by the central orchestrator poll loop.
    *
