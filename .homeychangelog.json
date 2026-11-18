@@ -1,4 +1,10 @@
 {
+  "2.1.0": {
+    "en": "Adds energy distribution widget. \nShows Envoy Wi-Fi signal strength.",
+    "nl": "Nieuwe widget voor energieverdeling. \nToont Wi-Fi-signaalsterkte van de Envoy.",
+    "fr": "Ajoute un widget de répartition d'énergie. \nAffiche la force du signal Wi-Fi de l'Envoy.",
+    "de": "Neues Widget zur Energieverteilung. \nZeigt die WLAN-Signalstärke des Envoy."
+  },
   "2.0.8": {
     "en": "Fixes inflated solar energy today. \nFixes missing inverter alert Flows. \nPrevents false alerts after gateway restarts.",
     "nl": "Herstelt te hoge zonne-energie vandaag. \nOmvormer-alarmflows werken weer. \nGeen valse alarmen na herstart gateway.",
