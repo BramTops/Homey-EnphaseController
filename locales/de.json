@@ -263,6 +263,14 @@
       "aria": {
         "summary": "Energiefluss"
       }
+    },
+    "energy_distribution": {
+      "aria": {
+        "summary": "Energieverteilung"
+      },
+      "message": {
+        "no_flow": "Es fließt keine Leistung"
+      }
     }
   }
 }

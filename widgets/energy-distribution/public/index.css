@@ -1,0 +1,122 @@
+/*
+ * Theme: Homey injects its own CSS variables into the widget frame. We resolve
+ * --homey-text-color / --homey-text-color-light through real elements and let
+ * index.js derive light/dark from the resolved text colour, so the widget follows
+ * Homey's theme and not only the OS preference. The fallbacks below only apply when
+ * those variables are absent (e.g. a plain browser preview).
+ */
+:root {
+  color-scheme: light dark;
+  --ef-fb-text: #20242a;
+  --ef-fb-sub: #6b7280;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ef-fb-text: #f2f3f5;
+    --ef-fb-sub: #9aa0a8;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: transparent;
+  color: var(--homey-text-color, var(--ef-fb-text));
+  font-family: var(--homey-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+}
+
+#app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 160px;
+  overflow: hidden;
+}
+
+#flow-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.probe {
+  position: absolute;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+  color: var(--homey-text-color-light, var(--ef-fb-sub));
+}
+
+.chooser {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  display: flex;
+  justify-content: flex-start;
+  z-index: 2;
+}
+
+#flow-canvas[hidden],
+.chooser[hidden],
+.message[hidden],
+.message-retry[hidden] { display: none; }
+
+.chooser select {
+  max-width: 100%;
+  font: inherit;
+  font-size: 13px;
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  padding: 4px 8px;
+  opacity: 0.8;
+}
+
+.chooser select option {
+  color: #20242a;
+  background: #ffffff;
+}
+
+.message {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 40px 16px 16px;
+  text-align: center;
+}
+
+.message-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.message-body {
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--homey-text-color-light, var(--ef-fb-sub));
+  max-width: 28em;
+}
+
+.message-retry {
+  margin-top: 6px;
+  font: inherit;
+  font-size: 13px;
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  padding: 6px 14px;
+}

@@ -2183,6 +2183,216 @@
     }
   ],
   "widgets": {
+    "energy-distribution": {
+      "name": {
+        "en": "Energy distribution",
+        "nl": "Energieverdeling",
+        "fr": "Répartition de l'énergie",
+        "de": "Energieverteilung"
+      },
+      "height": 300,
+      "settings": [
+        {
+          "id": "scale",
+          "type": "dropdown",
+          "title": {
+            "en": "Scale",
+            "nl": "Schaal",
+            "fr": "Échelle",
+            "de": "Skala"
+          },
+          "hint": {
+            "en": "Relative always uses the full height. Absolute grows with the total power, up to the full-scale power.",
+            "nl": "Relatief gebruikt altijd de volledige hoogte. Absoluut groeit mee met het totale vermogen, tot het maximale vermogen.",
+            "fr": "Relative utilise toujours toute la hauteur. Absolue grandit avec la puissance totale, jusqu'à la puissance maximale.",
+            "de": "Relativ nutzt immer die volle Höhe. Absolut wächst mit der Gesamtleistung, bis zur maximalen Leistung."
+          },
+          "value": "relative",
+          "values": [
+            {
+              "id": "relative",
+              "title": {
+                "en": "Relative",
+                "nl": "Relatief",
+                "fr": "Relative",
+                "de": "Relativ"
+              }
+            },
+            {
+              "id": "absolute",
+              "title": {
+                "en": "Absolute",
+                "nl": "Absoluut",
+                "fr": "Absolue",
+                "de": "Absolut"
+              }
+            }
+          ]
+        },
+        {
+          "id": "labels",
+          "type": "dropdown",
+          "title": {
+            "en": "Labels",
+            "nl": "Labels",
+            "fr": "Libellés",
+            "de": "Beschriftungen"
+          },
+          "hint": {
+            "en": "Outside keeps the labels beside the bars. Inside places them over the flows, leaving more room for the flows on narrow widgets.",
+            "nl": "Buiten houdt de labels naast de balken. Binnen plaatst ze over de stromen, zodat er op smalle widgets meer ruimte voor de stromen is.",
+            "fr": "À l'extérieur garde les libellés à côté des barres. À l'intérieur les place sur les flux, ce qui laisse plus de place aux flux sur les widgets étroits.",
+            "de": "Außen hält die Beschriftungen neben den Balken. Innen legt sie über die Flüsse, damit auf schmalen Widgets mehr Platz für die Flüsse bleibt."
+          },
+          "value": "outside",
+          "values": [
+            {
+              "id": "outside",
+              "title": {
+                "en": "Outside",
+                "nl": "Buiten",
+                "fr": "À l'extérieur",
+                "de": "Außen"
+              }
+            },
+            {
+              "id": "inside",
+              "title": {
+                "en": "Inside",
+                "nl": "Binnen",
+                "fr": "À l'intérieur",
+                "de": "Innen"
+              }
+            }
+          ]
+        },
+        {
+          "id": "trackOpacity",
+          "type": "number",
+          "title": {
+            "en": "Ribbon opacity (%)",
+            "nl": "Dekking van de stromen (%)",
+            "fr": "Opacité des flux (%)",
+            "de": "Deckkraft der Flüsse (%)"
+          },
+          "hint": {
+            "en": "Brightness of the bands behind the particles.",
+            "nl": "Helderheid van de banden achter de deeltjes.",
+            "fr": "Luminosité des bandes affichées derrière les particules.",
+            "de": "Helligkeit der Bänder hinter den Partikeln."
+          },
+          "value": 20,
+          "min": 0,
+          "max": 100
+        },
+        {
+          "id": "particleSpeed",
+          "type": "number",
+          "title": {
+            "en": "Particle speed (%)",
+            "nl": "Snelheid van deeltjes (%)",
+            "fr": "Vitesse des particules (%)",
+            "de": "Geschwindigkeit der Partikel (%)"
+          },
+          "hint": {
+            "en": "Overall flow speed of the particles. 100 = default.",
+            "nl": "Algemene stroomsnelheid van de deeltjes. 100 = standaard.",
+            "fr": "Vitesse globale d'écoulement des particules. 100 = valeur par défaut.",
+            "de": "Gesamtgeschwindigkeit der Partikel. 100 = Standard."
+          },
+          "value": 100,
+          "min": 10,
+          "max": 400
+        },
+        {
+          "id": "trailLength",
+          "type": "number",
+          "title": {
+            "en": "Trail length",
+            "nl": "Lengte van de staart",
+            "fr": "Longueur de la traînée",
+            "de": "Länge des Schweifs"
+          },
+          "hint": {
+            "en": "Length of each particle's fading tail (2 to 40).",
+            "nl": "Lengte van de vervagende staart van elk deeltje (2 tot 40).",
+            "fr": "Longueur de la traînée qui s'estompe derrière chaque particule (2 à 40).",
+            "de": "Länge des verblassenden Schweifs jedes Partikels (2 bis 40)."
+          },
+          "value": 10,
+          "min": 2,
+          "max": 40
+        },
+        {
+          "id": "particleOpacity",
+          "type": "number",
+          "title": {
+            "en": "Particle opacity (%)",
+            "nl": "Dekking van deeltjes (%)",
+            "fr": "Opacité des particules (%)",
+            "de": "Deckkraft der Partikel (%)"
+          },
+          "hint": {
+            "en": "Brightness of the moving particles. 100 = fully opaque.",
+            "nl": "Helderheid van de bewegende deeltjes. 100 = volledig dekkend.",
+            "fr": "Luminosité des particules en mouvement. 100 = totalement opaque.",
+            "de": "Helligkeit der bewegten Partikel. 100 = volle Deckkraft."
+          },
+          "value": 90,
+          "min": 0,
+          "max": 100
+        },
+        {
+          "id": "maxPower",
+          "type": "number",
+          "title": {
+            "en": "Full-scale power (W)",
+            "nl": "Maximaal vermogen (W)",
+            "fr": "Puissance maximale (W)",
+            "de": "Maximale Leistung (W)"
+          },
+          "hint": {
+            "en": "Power at which particles reach full density and speed. With the absolute scale, also the total power that fills the full height.",
+            "nl": "Vermogen waarbij deeltjes hun volle dichtheid en snelheid bereiken. Bij de absolute schaal ook het totale vermogen dat de volledige hoogte vult.",
+            "fr": "Puissance à laquelle les particules atteignent leur densité et vitesse maximales. Avec l'échelle absolue, aussi la puissance totale qui remplit toute la hauteur.",
+            "de": "Leistung, bei der Partikel volle Dichte und Geschwindigkeit erreichen. Bei absoluter Skala auch die Gesamtleistung, die die volle Höhe füllt."
+          },
+          "value": 5000,
+          "min": 500,
+          "max": 20000
+        },
+        {
+          "id": "deadzone",
+          "type": "number",
+          "title": {
+            "en": "Deadzone (W)",
+            "nl": "Dode zone (W)",
+            "fr": "Zone morte (W)",
+            "de": "Totzone (W)"
+          },
+          "hint": {
+            "en": "Flows at or below this power are not drawn.",
+            "nl": "Stromen met dit vermogen of lager worden niet getekend.",
+            "fr": "Les flux dont la puissance est inférieure ou égale à cette valeur ne sont pas dessinés.",
+            "de": "Flüsse mit dieser Leistung oder weniger werden nicht gezeichnet."
+          },
+          "value": 25,
+          "min": 0,
+          "max": 500
+        }
+      ],
+      "api": {
+        "getGateways": {
+          "method": "GET",
+          "path": "/gateways"
+        },
+        "getState": {
+          "method": "GET",
+          "path": "/state/:serial"
+        }
+      },
+      "id": "energy-distribution"
+    },
     "energy-flow": {
       "name": {
         "en": "Energy flow",

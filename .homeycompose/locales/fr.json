@@ -262,6 +262,14 @@
       "aria": {
         "summary": "Flux d'énergie"
       }
+    },
+    "energy_distribution": {
+      "aria": {
+        "summary": "Répartition de l'énergie"
+      },
+      "message": {
+        "no_flow": "Aucune puissance ne circule"
+      }
     }
   }
 }

@@ -262,6 +262,14 @@
       "aria": {
         "summary": "Energy flow"
       }
+    },
+    "energy_distribution": {
+      "aria": {
+        "summary": "Energy distribution"
+      },
+      "message": {
+        "no_flow": "No power flowing"
+      }
     }
   }
 }
