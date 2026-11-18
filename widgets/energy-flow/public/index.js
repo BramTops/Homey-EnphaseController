@@ -28,10 +28,11 @@
 /* eslint-env browser */
 /* eslint-disable no-use-before-define, no-nested-ternary, @typescript-eslint/no-floating-promises, @typescript-eslint/no-unused-vars, strict */
 
-// Data model: the widget only reads app state snapshots,
-// via the widget API (GET /gateways, GET /state/:serial) plus the realtime
+// Data model: the widget is a renderer of the app's widget view (lib/widgetView.js),
+// read via the widget API (GET /gateways, GET /state/:serial) plus the realtime
 // events 'enphase:flow' and 'enphase:gateways'. It never talks to a gateway.
-// Snapshot fields may come from the gateway or from user Flow cards (source 'flow'; see lib/widgetFeed.js).
+// The app decides which readings are usable, which nodes exist and how power is allocated over flows;
+// this widget only applies its own display settings (deadzone, scale) and draws.
 // Everything drawn is an allocation of the aggregate readings, not a measurement
 // of individual source-to-load paths.
 // eslint-disable-next-line no-unused-vars
@@ -48,12 +49,11 @@ function onHomeyReady(Homey) {
   const MAX_PARTICLES_PER_EDGE = 40;
   const MAX_PARTICLES_TOTAL = 120;
   const MIN_FRAME_MS = 33; // ~30 fps is plenty for a dashboard widget
-  const TICK_MS = 5000; // staleness / theme re-evaluation while visible
-  const STALE_INTERVALS = 3; // stale after at most three expected update intervals
-  const STALE_SLACK_MS = 5000;
-  // Values pushed by user Flows arrive only on change; same window as FLOW_STALE_MS in lib/widgetFeed.js.
-  const FLOW_STALE_MS = 10 * 60 * 1000;
-  const SOC_STALE_MS = 25 * 60 * 60 * 1000;
+  const TICK_MS = 5000; // view validity / theme re-evaluation while visible
+  // A view is re-fetched when its validUntil passes (the app then judges staleness anew). Should that fail, every
+  // reading counts as outdated this long after validUntil (the app stopped answering).
+  const EXPIRY_GRACE_MS = 15000;
+  const DUE_DELAY_MS = 250; // re-fetch just after validUntil, so the app sees the reading as stale
   const READY_TIMEOUT_MS = 8000;
   // Visuals ease toward each new reading (exponential smoothing) instead of jumping; ~95% settled after 3 * tau.
   const TWEEN_TAU_S = 0.7;
@@ -191,7 +191,7 @@ function onHomeyReady(Homey) {
   let gateways = null; // null until the first successful /gateways answer
   let gatewaysFailed = false;
   let selected = null;
-  const latest = {}; // serial -> { snap, perf, lag } (newest snapshot per serial)
+  const latest = {}; // serial -> { view, perf, lag } (newest widget view per serial)
   let stateProblem = null; // 'unavailable' when the last /state call failed
   let model = null;
   let viewMode = 'loading';
@@ -437,48 +437,30 @@ function onHomeyReady(Homey) {
     return typeof v === 'number' && Number.isFinite(v) ? v : null;
   }
 
-  function intervalSeconds(source, snap) {
-    const slow = num(snap.slowIntervalSeconds) || 120;
-    const fast = num(snap.fastIntervalSeconds);
-    if (source === 'meters' || source === 'batteryPower') return fast || slow;
-    return slow; // production / inventory run on the slow cadence
+  // The app's clock as seen from here: the view's own time, plus how old it was on arrival, plus the time since.
+  function serverNow(rx) {
+    return rx.view.ts + rx.lag + (performance.now() - rx.perf);
+  }
+  // validUntil passed: time to ask the app for a fresh view.
+  function isDue(rx) {
+    const until = num(rx.view.validUntil);
+    return until !== null && serverNow(rx) >= until;
+  }
+  // No fresh view arrived in time after validUntil: the app stopped answering, so nothing is current any more.
+  function isExpired(rx) {
+    const until = num(rx.view.validUntil);
+    return until !== null && serverNow(rx) > until + EXPIRY_GRACE_MS;
   }
 
-  function staleAfterMs(name, snap, depth) {
-    const meta = snap.fields && snap.fields[name];
-    const source = meta && meta.source;
-    if (source === 'persisted') return Infinity;
-    if (source === 'flow') return name === 'soc' ? SOC_STALE_MS : FLOW_STALE_MS;
-    if (source === 'derived' && depth < 1) {
-      // A derived value is only as fresh as its slowest input.
-      const inputs = ['solarW', 'gridW', 'homeW', 'batteryW']
-        .filter((n) => snap.fields[n] && snap.fields[n].source !== 'derived')
-        .map((n) => staleAfterMs(n, snap, depth + 1));
-      if (inputs.length) return Math.max(...inputs);
-    }
-    return (STALE_INTERVALS * intervalSeconds(source, snap)) * 1000 + STALE_SLACK_MS;
-  }
-
-  // Effective status of one snapshot field: the server's per-field status, downgraded to
-  // 'stale' by the observation age (skew-free: snapshot-time delta + time since receipt).
+  // One reading from the view: { status: 'ok' | 'stale' | 'unknown' | 'absent', value }.
   function readField(rx, name) {
-    const { snap } = rx;
-    const meta = snap.fields && snap.fields[name];
-    const raw = snap[name];
-    if (!meta) return { status: 'unknown', value: null };
-    if (meta.status === 'absent') return { status: 'absent', value: null };
-    if (meta.status === 'unknown') return { status: 'unknown', value: null };
-    const isString = name === 'gridStatus';
-    const value = isString ? (typeof raw === 'string' ? raw : null) : num(raw);
-    if (value === null) return { status: 'unknown', value: null };
-    if (meta.status === 'stale') return { status: 'stale', value };
-    // Time since receipt also covers the app no longer publishing at all.
-    const elapsed = performance.now() - rx.perf + rx.lag;
-    const observed = num(meta.observedAt);
-    const ts = num(snap.ts);
-    const age = (observed !== null && ts !== null ? Math.max(0, ts - observed) : 0) + elapsed;
-    if (age > staleAfterMs(name, snap, 0)) return { status: 'stale', value };
-    return { status: 'ok', value };
+    const r = rx.view.readings && rx.view.readings[name];
+    if (!r || typeof r !== 'object') return { status: 'unknown', value: null };
+    if (r.status === 'absent') return { status: 'absent', value: null };
+    const value = name === 'gridStatus' ? (typeof r.value === 'string' ? r.value : null) : num(r.value);
+    if (value === null || (r.status !== 'ok' && r.status !== 'stale')) return { status: 'unknown', value: null };
+    if (r.status === 'ok' && isExpired(rx)) return { status: 'stale', value };
+    return { status: r.status, value };
   }
 
   // --- Model ----------------------------------------------------------------
@@ -487,25 +469,22 @@ function onHomeyReady(Homey) {
   }
 
   function buildModel(rx) {
-    const { snap } = rx;
-    const has = snap.has || {};
-    const meta = snap.fields || {};
+    const { view } = rx;
+    const present = view.present || {};
     const solar = readField(rx, 'solarW');
     const grid = readField(rx, 'gridW');
     const home = readField(rx, 'homeW');
     const batt = readField(rx, 'batteryW');
     const soc = readField(rx, 'soc');
-    const gridStatus = readField(rx, 'gridStatus');
-    const disconnected = gridStatus.status === 'ok' && gridStatus.value === 'disconnected';
+    const disconnected = view.gridDisconnected === true && readField(rx, 'gridStatus').status === 'ok';
 
     // Grid and home are always drawn (their Enphase devices, or CT clamps, may not exist; a Flow can fill them).
-    // Solar and battery are optional: drawn only once they are known to exist, never as a placeholder 0.
-    // Solar exists once it has a reading, or had one that is now outdated (the gateway nulls outdated values).
+    // Solar and battery are optional: drawn only once the app knows they exist, never as a placeholder 0.
     const vis = {
-      solar: solar.status === 'ok' || solar.status === 'stale' || (!!meta.solarW && meta.solarW.status === 'stale'),
+      solar: present.solar === true,
       grid: true,
       home: true,
-      battery: has.battery === true,
+      battery: present.battery === true,
     };
 
     const nodes = {};
@@ -528,7 +507,7 @@ function onHomeyReady(Homey) {
       if (grid.value >= config.deadzoneW) label = tr('state.importing');
       else if (grid.value <= -config.deadzoneW) label = tr('state.exporting');
       // Tariff for the direction the grid is flowing (import while idle), only once a Flow has supplied one.
-      const tariff = snap.tariff || {};
+      const tariff = view.tariff || {};
       const price = num(grid.value <= -config.deadzoneW ? tariff.export : tariff.import);
       nodes.grid = {
         ok: true, ...formatPower(grid.value), raw: grid.value, label, tariff: price === null ? null : formatPrice(price),
@@ -561,17 +540,14 @@ function onHomeyReady(Homey) {
     }
     nodes.battery.soc = soc.status === 'ok' ? Math.max(0, Math.min(100, soc.value)) : null;
 
-    // Flow allocation. Only usable readings take part; flows to or from a node with
-    // unknown/stale data are not drawn. Greedy priority matching keeps every node's
-    // displayed in/out within its own reading, so displayed power is conserved (the
-    // allocation is an estimate: aggregate readings do not identify individual paths).
-    const gridActive = grid.status === 'ok' && !disconnected && Math.abs(grid.value) >= config.deadzoneW;
-    const flows = computeFlows({
-      solarW: solar.status === 'ok' ? solar.value : 0,
-      gridW: gridActive ? grid.value : 0,
-      batteryW: batt.status === 'ok' && vis.battery ? batt.value : 0,
-      homeW: home.status === 'ok' ? home.value : 0,
-    });
+    // Flows are the app's allocation of the usable readings (lib/widgetView.js); the deadzone is this widget's display
+    // setting. Once the view has expired nothing is current, so nothing flows. A flow is coloured by its source.
+    const flows = isExpired(rx) ? [] : (Array.isArray(view.flows) ? view.flows : [])
+      .filter((f) => f && typeof f.from === 'string' && typeof f.to === 'string'
+        && num(f.watts) !== null && f.watts > config.deadzoneW)
+      .map((f) => ({
+        from: f.from, to: f.to, watts: f.watts, color: f.from,
+      }));
 
     const summary = NODE_ORDER.filter((id) => vis[id])
       .map((id) => `${tr(`node.${id}`)}: ${nodes[id].value}${nodes[id].unit || ''} ${nodes[id].label}`)
@@ -585,34 +561,6 @@ function onHomeyReady(Homey) {
     const w = Math.min(Math.abs(watts), config.maxW);
     if (w < config.deadzoneW) return 0;
     return (w / config.maxW) ** SCALE_EXP;
-  }
-
-  function computeFlows({
-    solarW, gridW, batteryW, homeW,
-  }) {
-    const flows = [];
-    const push = (from, to, watts, color) => {
-      if (watts > config.deadzoneW) {
-        flows.push({
-          from, to, watts, color,
-        });
-      }
-    };
-    let solarSrc = Math.max(solarW, 0);
-    let gridImport = Math.max(gridW, 0);
-    let battDischarge = Math.max(-batteryW, 0);
-    let homeSink = Math.max(homeW, 0);
-    let gridExport = Math.max(-gridW, 0);
-    let battCharge = Math.max(batteryW, 0);
-    let t;
-    t = Math.min(solarSrc, homeSink); push('solar', 'home', t, 'solar'); solarSrc -= t; homeSink -= t;
-    t = Math.min(solarSrc, battCharge); push('solar', 'battery', t, 'solar'); solarSrc -= t; battCharge -= t;
-    t = Math.min(solarSrc, gridExport); push('solar', 'grid', t, 'solar'); solarSrc -= t; gridExport -= t;
-    t = Math.min(battDischarge, homeSink); push('battery', 'home', t, 'battery'); battDischarge -= t; homeSink -= t;
-    t = Math.min(battDischarge, gridExport); push('battery', 'grid', t, 'battery'); battDischarge -= t; gridExport -= t;
-    t = Math.min(gridImport, homeSink); push('grid', 'home', t, 'grid'); gridImport -= t; homeSink -= t;
-    t = Math.min(gridImport, battCharge); push('grid', 'battery', t, 'grid'); gridImport -= t; battCharge -= t;
-    return flows;
   }
 
   function resolveEdge(from, to) {
@@ -1129,6 +1077,7 @@ function onHomeyReady(Homey) {
     updateChooser();
     scheduleFrame();
     scheduleRetry();
+    checkDue();
   }
 
   // Resolve the selected serial from the stored choice / single eligible gateway.
@@ -1162,20 +1111,47 @@ function onHomeyReady(Homey) {
     refresh();
   });
 
-  // --- Snapshots ------------------------------------------------------------
-  // Newer-or-equal snapshots win; older ones (e.g. a slow initial fetch racing a realtime event)
-  // are discarded. `lag` is how old the snapshot already was when we received it.
-  function acceptSnapshot(snap, lag) {
-    if (!snap || typeof snap !== 'object' || typeof snap.serial !== 'string') return false;
-    const prev = latest[snap.serial];
-    const ts = num(snap.ts);
-    if (prev && ts !== null && num(prev.snap.ts) !== null && ts < prev.snap.ts) return false;
-    latest[snap.serial] = { snap, perf: performance.now(), lag: Math.max(0, lag || 0) };
+  // --- Views ----------------------------------------------------------------
+  // Newer-or-equal views win; older ones (e.g. a slow initial fetch racing a realtime event)
+  // are discarded. `lag` is how old the view already was when we received it.
+  function acceptView(view, lag) {
+    if (!view || typeof view !== 'object' || typeof view.serial !== 'string') return false;
+    if (num(view.ts) === null || !view.readings || typeof view.readings !== 'object') return false;
+    const prev = latest[view.serial];
+    if (prev && view.ts < prev.view.ts) return false;
+    latest[view.serial] = { view, perf: performance.now(), lag: Math.max(0, lag || 0) };
     return true;
   }
 
-  function onFlow(snap) {
-    if (acceptSnapshot(snap, 0) && snap.serial === selected) {
+  // Ask for a fresh view once the current one's validUntil has passed. Once per validUntil, so a clock estimate running
+  // slightly ahead of the app cannot cause a fetch loop; expiry covers a fetch that never succeeds.
+  let dueTimer = 0;
+  let dueFetchedFor = null;
+  function checkDue() {
+    if (dueTimer) {
+      clearTimeout(dueTimer); dueTimer = 0;
+    }
+    const rx = selected && latest[selected];
+    if (!rx || document.hidden || viewMode !== 'flow') return;
+    const until = num(rx.view.validUntil);
+    if (until === null) return;
+    if (isDue(rx)) {
+      if (dueFetchedFor !== until) {
+        dueFetchedFor = until;
+        fetchState();
+      }
+      return;
+    }
+    // Browser code inside the widget iframe: the app-side timer rule does not apply here.
+    // eslint-disable-next-line homey-app/global-timers
+    dueTimer = setTimeout(() => {
+      dueTimer = 0;
+      checkDue();
+    }, Math.max(0, until - serverNow(rx)) + DUE_DELAY_MS);
+  }
+
+  function onFlow(view) {
+    if (acceptView(view, 0) && view.serial === selected) {
       stateProblem = null;
       update();
     }
@@ -1211,7 +1187,7 @@ function onHomeyReady(Homey) {
       if (res && res.status === 'ok' && res.state) {
         const lag = num(res.serverTime) !== null && num(res.state.ts) !== null
           ? res.serverTime - res.state.ts : 0;
-        acceptSnapshot(res.state, lag);
+        acceptView(res.state, lag);
         if (serial === selected) stateProblem = null;
       } else if (res && res.status === 'unavailable') {
         if (serial === selected) stateProblem = 'unavailable';

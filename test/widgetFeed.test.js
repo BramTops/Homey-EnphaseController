@@ -290,18 +290,19 @@ test.describe('EnphaseController widget wiring', () => {
       gateways: new Map(rt ? [[SERIAL, rt]] : []),
       _realtime: (event, data) => emitted.push([event, data]),
       getLatestState: proto.getLatestState,
+      getWidgetView: proto.getWidgetView,
       _emitWidgetState: proto._emitWidgetState,
     };
     return { app, emitted };
   };
 
-  test('setWidgetValue caches, emits the merged snapshot and leaves the raw snapshot alone', () => {
+  test('setWidgetValue caches, emits the widget view of the merged snapshot and leaves the raw snapshot alone', () => {
     const raw = ctFreeSnapshot();
     const { app, emitted } = makeApp({ serial: SERIAL, latest: raw });
     assert.equal(proto.setWidgetValue.call(app, SERIAL, 'gridW', 350), true);
     assert.equal(emitted.length, 1);
     assert.equal(emitted[0][0], 'enphase:flow');
-    assert.equal(emitted[0][1].gridW, 350);
+    assert.deepEqual(emitted[0][1].readings.gridW, { status: 'ok', value: 350 });
     assert.equal(app.gateways.get(SERIAL).latest, raw);
     assert.equal(raw.gridW, null);
     assert.equal(proto.getLatestState.call(app, SERIAL).gridW, 350);
@@ -316,7 +317,7 @@ test.describe('EnphaseController widget wiring', () => {
     assert.equal(proto.getLatestState.call(app, SERIAL).gridW, null);
   });
 
-  test('setWidgetTariff caches, emits the merged snapshot and ignores unknown gateways and invalid prices', () => {
+  test('setWidgetTariff caches, emits the widget view and ignores unknown gateways and invalid prices', () => {
     const { app, emitted } = makeApp({ serial: SERIAL, latest: ctFreeSnapshot() });
     assert.equal(proto.setWidgetTariff.call(app, '999999999999', 0.2, 0.1), false);
     assert.equal(proto.setWidgetTariff.call(app, SERIAL, null, 'x'), false);

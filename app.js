@@ -6,6 +6,7 @@ const PairingHelper = require('./lib/PairingHelper');
 const Credentials = require('./lib/accountCredentials');
 const { GatewayEnergyModel, monoMs } = require('./lib/energyModel');
 const { WidgetFeed } = require('./lib/widgetFeed');
+const { buildWidgetView } = require('./lib/widgetView');
 const { shouldLogAgain, parseWifiStatus } = require('./lib/helpers');
 
 // Central polling loop and device registration manager.
@@ -1218,10 +1219,10 @@ class EnphaseController extends Homey.App {
     }
   }
 
-  /** Emit `enphase:flow`: the latest snapshot with the widget-only Flow values laid over it. @private */
+  /** Emit `enphase:flow`: the widget view (lib/widgetView.js) of the latest snapshot with Flow values laid over it. @private */
   _emitWidgetState(rt) {
-    const state = this.getLatestState(rt.serial);
-    if (state) this._realtime(EVENT_FLOW, state);
+    const view = this.getWidgetView(rt.serial);
+    if (view) this._realtime(EVENT_FLOW, view);
   }
 
   /**
@@ -1328,6 +1329,19 @@ class EnphaseController extends Homey.App {
     const rt = this.gateways ? this.gateways.get(serial) : null;
     if (!rt || !rt.latest) return null;
     return this.widgetFeed.merge(serial, rt.latest, Date.now());
+  }
+
+  /**
+   * What the widgets draw for a gateway right now (lib/widgetView.js): readings with their status, present nodes and
+   * the allocated flows, judged at the current time.
+   * @param {string} serial - Gateway serial
+   * @returns {Object|null} View, or null before the first publication / without snapshot devices
+   */
+  getWidgetView(serial) {
+    const now = Date.now();
+    const rt = this.gateways ? this.gateways.get(serial) : null;
+    if (!rt || !rt.latest) return null;
+    return buildWidgetView(this.widgetFeed.merge(serial, rt.latest, now), now);
   }
 
   /**

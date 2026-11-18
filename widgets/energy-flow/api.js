@@ -2,14 +2,14 @@
 
 /*
  * Widget-scoped API for the Energy flow widget. Read-only view on the app's
- * state snapshots. No credentials are ever handled here:
+ * state. No credentials are ever handled here:
  * gateway entries are projected to { serial, name, widgetEligible } and the
- * snapshot is passed through as published by the app.
+ * state is the widget view (lib/widgetView.js) as the app builds it.
  *
  * Response shapes (stable, consumed by public/index.js):
  *   GET /gateways       -> { status: 'ok', gateways: [{ serial, name, widgetEligible }] }
  *                          { status: 'unavailable', gateways: [], reason }
- *   GET /state/:serial  -> { status: 'ok', state, serverTime }  eligible gateway with a snapshot
+ *   GET /state/:serial  -> { status: 'ok', state, serverTime }  eligible gateway with a snapshot (state: widget view)
  *                          { status: 'waiting' }            eligible, no snapshot yet
  *                          { status: 'upgrade', name }      legacy-only gateway (no solar/grid/battery device)
  *                          { status: 'missing' }            unknown/removed serial
@@ -50,7 +50,7 @@ module.exports = {
       if (!SERIAL_PATTERN.test(serial)) return { status: 'missing' };
 
       const gateways = readGateways(homey);
-      if (gateways === null || typeof homey.app.getLatestState !== 'function') {
+      if (gateways === null || typeof homey.app.getWidgetView !== 'function') {
         return { status: 'unavailable', reason: 'unsupported' };
       }
 
@@ -58,9 +58,9 @@ module.exports = {
       if (!gateway) return { status: 'missing' };
       if (!gateway.widgetEligible) return { status: 'upgrade', name: gateway.name };
 
-      const state = homey.app.getLatestState(serial);
+      const state = homey.app.getWidgetView(serial);
       if (!state || typeof state !== 'object') return { status: 'waiting' };
-      // serverTime lets the widget judge snapshot age without trusting its own wall clock.
+      // serverTime lets the widget judge the view's age without trusting its own wall clock.
       return { status: 'ok', state, serverTime: Date.now() };
     } catch (err) {
       return { status: 'unavailable', reason: 'error' };
