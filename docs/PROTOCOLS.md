@@ -68,6 +68,7 @@ nklerk sends only the Bearer header (no cookie) and reads work (observed). Wheth
 ```
 * `state` `"enabled"` means the CT is active; `"disabled"` means installed but inactive.
 * `measurementType`: `production`, `net-consumption`, `total-consumption`, or generic `consumption` (older firmware, D5.x and earlier per earlier notes). A generic `consumption` CT is ambiguous between grid and home; it needs configuration evidence.
+* **Combiner/PCS CT types (observed):** firmware 8.3.x also lists `storage`, `backfeed`, `load`, `evse` and `pv3p`, usually `disabled`. Source: pyenphase @ `fc236a9` (2026-11-17), fixtures `8.3.1598_collar`, `8.3.5422_standard-no-eim`, `8.3.5433_tot_is_net_cons` and `8.3.6087_storage_ct_drops`, all split-phase US systems. The eids were the same in every fixture: production `704643328`, net/total-consumption `704643584`, storage `704643840`, backfeed `704644352`, load `704644608`, evse `704644864`, pv3p `704645120` (base `0x2A000100` plus `0x100` per slot; `0x400` unused). Do not hard-code these eids; match by `measurementType`. The app ignores the types it does not know (`classifyMeters` in `lib/energyModel.js`). For `evse`, see section 6.1.
 * Production and consumption CTs can be enabled together. A storage CT may also be listed (storage meter with lifetime counters) (unverified; mentioned in the Enphase brief only as "storage" readings, hardware dependent).
 * The config can change when an installer enables/disables a CT, so it should be refreshed rather than cached forever.
 
@@ -76,6 +77,7 @@ Array of meters matched by `eid`; each has `activePower` (W, signed), `actEnergy
 * `actEnergyDlvd` = delivered (import for the net-consumption meter); `actEnergyRcvd` = received (export for the net-consumption meter).
 * Net-consumption `activePower`: **+ import, - export**. Used by this app. nklerk also uses + = import but its own source comment says it was never verified against a clear import/export event, so treat the sign as plausible, not proven.
 * Production meter `activePower` can be slightly negative at night; clamp to 0.
+* **Disabled CTs still report readings (observed, pyenphase fixtures above):** every CT slot from `/ivp/meters` has a readings entry, enabled or not, and a disabled one can show noise. In `8.3.1598_collar` the disabled `evse` CT reported `activePower` -14.6 W, `actEnergyDlvd` 123 Wh and a negative `actEnergyRcvd` (-19.7 Wh). Only read an eid whose `/ivp/meters` entry is `state: "enabled"`. The readings can also include an eid that `/ivp/meters` does not list (`1023410688`, all zeros); pyenphase ignores it.
 
 **Per phase (`channels[]`).** On a 3-phase gateway each meter's `channels` has one entry per phase with its own `activePower` and `voltage` (plus `current`, `pwrFactor` and energy counters). Observed (pull request #4 of this repo, one IQ Gateway Metered, 3-phase, firmware D8.3.5289, 2026-08-16): per-phase `activePower` of the production and net-consumption meters matched `/ivp/livedata/status` within about 10 W (5035 W PV: 1888 / 242 / 2904 W against 1888 / 237 / 2910 W), and the channels sum to the meter total. nklerk's system (section Evidence labels) is also 3-phase but this was not checked against its data.
 * The app maps channel index 0, 1, 2 to L1, L2, L3. That order is **assumed**, not documented; the gateway does not label the phases. A meter with fewer than two channels (or none) counts as single-phase. A split-phase (two-leg) system would show two channels; (unverified: no sample).
@@ -172,12 +174,22 @@ From IQ Gateway firmware 8.2.4225, local writes for storage mode, reserve SoC an
 
 ## 6. IQ EV Charger
 
-Summary of the July 2026 research recorded in `BACKLOG.md`; none of it is verified against a real charger.
+Summary of the July 2026 research (formerly in `BACKLOG.md`, removed there 2026-11-18); none of it is verified against a real charger. References: [Enphase API release notes](https://developer-v4.enphase.com/docs/release_notes), [Enphase developer plans](https://developer-v4.enphase.com/developer-plans), [Enphase installer plans](https://developer-v4.enphase.com/installer-plans), [IQ EV Charger 2 partner integrations](https://enphase.com/en-gb/download/iq-ev-charger-2-partner-integrations).
 * **No local gateway REST API** for EV charger status or control is established. Do not assume it appears under `/ivp/ensemble/*`.
 * **Cloud monitoring (Enphase API v4):** `GET /api/v4/systems/{system_id}/devices`, `GET /api/v4/systems/{system_id}/latest_telemetry`, `GET /api/v4/systems/{system_id}/{serial_no}/evse_telemetry` and `.../evse_lifetime`. Included in the Watt developer plan, subject to rate limits.
 * **Control is partner-restricted** (EV Charger Control / VPP control are not a general homeowner API).
 * **IQ EV Charger 2:** OCPP 1.6J/2.0.1 and local Modbus/TCP exist but need Enphase partner onboarding, owner authorization and charger configuration.
 * Earlier notes listed `activations/{activation_id}/ev_charger/status|control` endpoints; no source supports them and BACKLOG does not repeat them. Disproven/unsupported, dropped.
+* **Home Assistant (checked 2026-11-18):** neither `vincentwolsink/home_assistant_enphase_envoy_installer` (@ `ba0ada4`) nor pyenphase (the core `enphase_envoy` integration) reads charger state, sessions or control. pyenphase only exposes the `evse` CT (section 6.1). Its feature request, pyenphase issue #195 "Support Enphase EV Chargers", is open: the maintainer found the charger reports through the Enphase cloud or the IQ Energy Router (OCPP), not the gateway. They suggest pointing the charger at a Home Assistant OCPP server, which would probably break the Enphase app link and needs an installer to reconfigure the charger (unverified).
+
+### 6.1 EVSE CT in `/ivp/meters` (observed, never seen enabled)
+The only local EV data path found. It measures the charger circuit, not the charger itself: power and energy only, no state or session data.
+* **Configuration:** a `measurementType: "evse"` entry in `/ivp/meters` (section 3.1), eid `704644864` in all pyenphase fixtures. It was `disabled` in every fixture; no sample with an enabled EVSE CT is known.
+* **Readings:** the matching eid in `/ivp/meters/readings` (section 3.2) has the usual CT fields: `activePower`, `actEnergyDlvd` / `actEnergyRcvd` (Wh), `voltage`, `current`, `freq`, `channels[]`. `/production.json` has no EV section; this is the only local source.
+* **Sign (pyenphase CT model, documentation only):** every CT faces the switchboard. `actEnergyDlvd` is energy towards the switchboard and `actEnergyRcvd` energy from the switchboard. Positive `activePower` flows towards the switchboard. For the EV charger, `actEnergyRcvd` is charging energy and `activePower` is negative while charging, so negate it for charger power. pyenphase says some CT positions in its model are still assumptions (unverified).
+* **Hardware (Enphase IQ Combiner 6C datasheet and install guide, US):** the EV charger CT is not built in. The installer buys a CT-200-CLAMP or CT-200-SPLIT, clamps it on the charger's L2 line and wires it to the IQ Gateway. The 6C supports only IQ 40/50/60 EV Chargers. Firmware 8.2.4378 release notes (US, Puerto Rico) add dynamic load balancing for the IQ EV Charger with an IQ Gateway or IQ Combiner.
+* **Outside the US:** Enphase's European documentation connects EV chargers through the IQ Energy Router over OCPP, so EU systems are unlikely to have an EVSE CT (unverified). The phase layout of an EVSE CT on a 1- or 3-phase system is unknown; all fixtures are split-phase (`phaseCount: 2`).
+* **Before using it:** get an `/ivp/meters` + `/ivp/meters/readings` dump from a system with the EVSE CT enabled, to confirm the sign and the `channels[]` layout. Read it only when its `/ivp/meters` entry is `enabled` (section 3.2).
 
 ---
 
